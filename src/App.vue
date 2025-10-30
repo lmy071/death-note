@@ -1,15 +1,13 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
-  <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <cqny></cqny>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
+import cqny from './notion/ChongQiNaoYu.vue';
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    cqny
   }
 }
 </script>
@@ -21,6 +19,10 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+	height: 100vh;
+	width: 100vw;
+	position: relative;
+	margin: 0;
+	padding: 0;
 }
 </style>
