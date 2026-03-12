@@ -1,19 +1,18 @@
 <template>
-  <cqny></cqny>
+  <div id="layout">
+    <router-view />
+  </div>
 </template>
 
 <script>
-import cqny from './notion/ChongQiNaoYu.vue';
 export default {
-  name: 'App',
-  components: {
-    cqny
-  }
+  name: 'App'
 }
 </script>
 
 <style>
-#app {
+#app,
+#layout {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

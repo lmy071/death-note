@@ -1,0 +1,357 @@
+<template>
+  <div class="lc-page">
+    <aside class="lc-sidebar">
+      <div class="lc-sidebar__header">
+        <div class="lc-title">LeetCode 题解</div>
+        <input
+          v-model.trim="query"
+          class="lc-search"
+          type="search"
+          placeholder="搜索文件名…"
+        />
+      </div>
+
+      <div class="lc-list" role="list">
+        <button
+          v-for="item in filteredItems"
+          :key="item.key"
+          class="lc-item"
+          :class="{ 'is-active': item.key === activeKey }"
+          type="button"
+          @click="select(item.key)"
+        >
+          <div class="lc-item__name" :title="item.name">{{ item.name }}</div>
+          <div class="lc-item__meta">
+            <span>{{ item.lines }} 行</span>
+            <span class="lc-dot">·</span>
+            <span>{{ formatBytes(item.bytes) }}</span>
+          </div>
+        </button>
+
+        <div v-if="filteredItems.length === 0" class="lc-empty">
+          没有匹配的文件
+        </div>
+      </div>
+    </aside>
+
+    <main class="lc-main">
+      <div class="lc-main__header">
+        <div class="lc-main__title">
+          <div class="lc-main__filename">{{ activeItem?.name ?? '未选择文件' }}</div>
+          <div class="lc-main__subtitle" v-if="activeItem">
+            {{ activeItem.path }}
+          </div>
+        </div>
+
+        <div class="lc-actions">
+          <button
+            class="lc-btn"
+            type="button"
+            :disabled="!activeCode"
+            @click="copyActive()"
+          >
+            复制代码
+          </button>
+        </div>
+      </div>
+
+      <div class="lc-codeWrap">
+        <pre class="lc-pre" v-if="activeCode"><code>{{ activeCode }}</code></pre>
+        <div class="lc-placeholder" v-else>从左侧选择一个文件查看源码</div>
+      </div>
+    </main>
+  </div>
+</template>
+
+<script setup>
+import { computed, ref } from 'vue'
+
+// Vue CLI (Webpack) 方案：
+// 1) 在 vue.config.js 里把 src/leetCode/*.js 配成 asset/source（导入为 string）
+// 2) 这里用 require.context 批量收集
+const ctx = require.context('../../leetCode', false, /\.js$/)
+const rawModules = Object.fromEntries(ctx.keys().map((k) => [k, ctx(k)]))
+
+function baseName(p) {
+  const s = String(p)
+  const idx = s.lastIndexOf('/')
+  return idx >= 0 ? s.slice(idx + 1) : s
+}
+
+function extractLeadingNumber(name) {
+  // 支持 "1009. xxx.js" / "1.两数之和.js" / "26. 删除....js"
+  const m = String(name).match(/^\s*(\d+)\s*\./)
+  return m ? Number(m[1]) : Number.POSITIVE_INFINITY
+}
+
+function toBytes(s) {
+  // 仅用于展示大概大小，UTF-8 多字节会略有误差但可接受
+  return String(s).length
+}
+
+function countLines(s) {
+  const str = String(s ?? '')
+  if (!str) return 0
+  return str.endsWith('\n') ? str.split('\n').length - 1 : str.split('\n').length
+}
+
+const items = computed(() => {
+  const list = Object.entries(rawModules).map(([key, code]) => {
+    const name = baseName(key)
+    const text = String(code ?? '')
+    return {
+      key,
+      path: `src/leetCode/${name}`,
+      name,
+      order: extractLeadingNumber(name),
+      bytes: toBytes(text),
+      lines: countLines(text),
+      code: text
+    }
+  })
+
+  list.sort((a, b) => {
+    if (a.order !== b.order) return a.order - b.order
+    return a.name.localeCompare(b.name, 'zh-Hans-CN-u-co-pinyin')
+  })
+
+  return list
+})
+
+const query = ref('')
+const activeKey = ref(items.value[0]?.key ?? '')
+
+const filteredItems = computed(() => {
+  const q = query.value.toLowerCase()
+  if (!q) return items.value
+  return items.value.filter((x) => x.name.toLowerCase().includes(q))
+})
+
+const activeItem = computed(() => items.value.find((x) => x.key === activeKey.value))
+const activeCode = computed(() => activeItem.value?.code ?? '')
+
+function select(key) {
+  activeKey.value = key
+}
+
+function formatBytes(bytes) {
+  const b = Number(bytes || 0)
+  if (b < 1024) return `${b} B`
+  const kb = b / 1024
+  if (kb < 1024) return `${kb.toFixed(1)} KB`
+  const mb = kb / 1024
+  return `${mb.toFixed(1)} MB`
+}
+
+async function copyActive() {
+  const text = activeCode.value
+  if (!text) return
+  try {
+    await navigator.clipboard.writeText(text)
+  } catch {
+    // 兼容性兜底（某些环境不支持 clipboard API）
+    const ta = document.createElement('textarea')
+    ta.value = text
+    ta.style.position = 'fixed'
+    ta.style.left = '-9999px'
+    ta.style.top = '-9999px'
+    document.body.appendChild(ta)
+    ta.focus()
+    ta.select()
+    document.execCommand('copy')
+    document.body.removeChild(ta)
+  }
+}
+</script>
+
+<style scoped>
+.lc-page {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  background: #0b1020;
+  color: #e6e8ef;
+  overflow: hidden;
+}
+
+.lc-sidebar {
+  width: 340px;
+  min-width: 280px;
+  max-width: 420px;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
+  display: flex;
+  flex-direction: column;
+}
+
+.lc-sidebar__header {
+  padding: 16px 14px 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.lc-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+  text-align: left;
+}
+
+.lc-search {
+  width: 100%;
+  height: 36px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(0, 0, 0, 0.25);
+  color: #e6e8ef;
+  outline: none;
+}
+.lc-search::placeholder {
+  color: rgba(230, 232, 239, 0.55);
+}
+.lc-search:focus {
+  border-color: rgba(130, 177, 255, 0.55);
+  box-shadow: 0 0 0 3px rgba(130, 177, 255, 0.14);
+}
+
+.lc-list {
+  padding: 6px;
+  overflow: auto;
+}
+
+.lc-item {
+  width: 100%;
+  text-align: left;
+  padding: 10px 10px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  display: grid;
+  gap: 6px;
+}
+.lc-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+.lc-item.is-active {
+  background: rgba(130, 177, 255, 0.14);
+  border-color: rgba(130, 177, 255, 0.28);
+}
+
+.lc-item__name {
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lc-item__meta {
+  font-size: 12px;
+  color: rgba(230, 232, 239, 0.7);
+}
+.lc-dot {
+  margin: 0 6px;
+}
+
+.lc-empty {
+  padding: 18px 12px;
+  color: rgba(230, 232, 239, 0.7);
+}
+
+.lc-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.lc-main__header {
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.15);
+}
+
+.lc-main__title {
+  min-width: 0;
+  text-align: left;
+}
+
+.lc-main__filename {
+  font-weight: 750;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lc-main__subtitle {
+  margin-top: 2px;
+  font-size: 12px;
+  color: rgba(230, 232, 239, 0.65);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lc-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.lc-btn {
+  height: 34px;
+  padding: 0 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  color: #e6e8ef;
+  cursor: pointer;
+}
+.lc-btn:hover:enabled {
+  background: rgba(255, 255, 255, 0.09);
+}
+.lc-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.lc-codeWrap {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 14px 16px 18px;
+}
+
+.lc-pre {
+  margin: 0;
+  padding: 14px 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.35);
+  overflow: auto;
+  line-height: 1.55;
+  font-size: 12px;
+  text-align: left;
+  tab-size: 2;
+  white-space: pre;
+}
+
+.lc-placeholder {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  color: rgba(230, 232, 239, 0.65);
+  border: 1px dashed rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.18);
+}
+</style>
