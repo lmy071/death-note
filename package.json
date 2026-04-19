@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.8.3",
+    "highlight.js": "^11.11.1",
     "vue": "^3.2.13",
     "vue-router": "^4.6.4"
   },
@@ -33,7 +34,20 @@
     "parserOptions": {
       "parser": "@babel/eslint-parser"
     },
-    "rules": {}
+    "rules": {},
+    "overrides": [
+      {
+        "files": [
+          "src/leetCode/**/*.js"
+        ],
+        "rules": {
+          "no-unused-vars": "off",
+          "no-undef": "off",
+          "no-mixed-spaces-and-tabs": "off",
+          "no-constant-condition": "off"
+        }
+      }
+    ]
   },
   "browserslist": [
     "> 1%",

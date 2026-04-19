@@ -10,7 +10,6 @@
  * @return {number}
  */
 var numRookCaptures = function(board) {
-	let res = 0
 		const ll = board[0].length
     for (let index = 0; index < board.length; index++) {
 			for (let i = 0; i < ll; i++) {
@@ -18,13 +17,13 @@ var numRookCaptures = function(board) {
 					let flag = true
 
 					while(flag){
-						if(board[index][j] === 'B'){
+						if(board[index][i] === 'B'){
 							break;
-						}else if(board[index][j] === 'p'){
+						}else if(board[index][i] === 'p'){
 							res++
 							break;
 						}else {
-							j--
+							i--
 						}
 					}
 

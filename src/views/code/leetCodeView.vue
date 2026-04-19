@@ -37,7 +37,14 @@
     <main class="lc-main">
       <div class="lc-main__header">
         <div class="lc-main__title">
-          <div class="lc-main__filename">{{ activeItem?.name ?? '未选择文件' }}</div>
+          <div class="lc-main__filenameRow">
+            <div class="lc-main__filename">{{ activeItem?.name ?? '未选择文件' }}</div>
+            <span
+              v-if="activeItem"
+              class="lc-lang"
+              title="预览高亮固定为 JavaScript"
+            >JavaScript</span>
+          </div>
           <div class="lc-main__subtitle" v-if="activeItem">
             {{ activeItem.path }}
           </div>
@@ -56,7 +63,7 @@
       </div>
 
       <div class="lc-codeWrap">
-        <pre class="lc-pre" v-if="activeCode"><code>{{ activeCode }}</code></pre>
+        <pre v-if="activeCode" class="lc-pre"><code class="hljs lc-pre__code" v-html="highlightedHtml"></code></pre>
         <div class="lc-placeholder" v-else>从左侧选择一个文件查看源码</div>
       </div>
     </main>
@@ -65,6 +72,11 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import hljs from 'highlight.js/lib/core'
+import javascript from 'highlight.js/lib/languages/javascript'
+import 'highlight.js/styles/github-dark.css'
+
+hljs.registerLanguage('javascript', javascript)
 
 // Vue CLI (Webpack) 方案：
 // 1) 在 vue.config.js 里把 src/leetCode/*.js 配成 asset/source（导入为 string）
@@ -129,6 +141,13 @@ const filteredItems = computed(() => {
 
 const activeItem = computed(() => items.value.find((x) => x.key === activeKey.value))
 const activeCode = computed(() => activeItem.value?.code ?? '')
+
+/** 右侧预览固定按 JavaScript 高亮（题解文件均为 .js） */
+const highlightedHtml = computed(() => {
+  const code = activeCode.value
+  if (!code) return ''
+  return hljs.highlight(code, { language: 'javascript', ignoreIllegals: true }).value
+})
 
 function select(key) {
   activeKey.value = key
@@ -285,12 +304,33 @@ async function copyActive() {
   text-align: left;
 }
 
+.lc-main__filenameRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
 .lc-main__filename {
   font-weight: 750;
   font-size: 14px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-width: 0;
+  flex: 1;
+}
+
+.lc-lang {
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.2px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(130, 177, 255, 0.35);
+  color: rgba(200, 218, 255, 0.95);
+  background: rgba(130, 177, 255, 0.12);
 }
 
 .lc-main__subtitle {
@@ -343,6 +383,60 @@ async function copyActive() {
   text-align: left;
   tab-size: 2;
   white-space: pre;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+}
+
+.lc-pre__code {
+  display: block;
+}
+
+.lc-pre :deep(.hljs) {
+  background: transparent !important;
+  padding: 0;
+}
+
+/* 滚动条：与主题色一致，细轨道 + 圆角滑块 */
+.lc-list,
+.lc-codeWrap,
+.lc-pre {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(130, 177, 255, 0.5) rgba(255, 255, 255, 0.06);
+}
+
+.lc-list::-webkit-scrollbar,
+.lc-codeWrap::-webkit-scrollbar,
+.lc-pre::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+.lc-list::-webkit-scrollbar-track,
+.lc-codeWrap::-webkit-scrollbar-track,
+.lc-pre::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 999px;
+}
+
+.lc-list::-webkit-scrollbar-thumb,
+.lc-codeWrap::-webkit-scrollbar-thumb,
+.lc-pre::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+  background-color: rgba(130, 177, 255, 0.38);
+}
+
+.lc-list::-webkit-scrollbar-thumb:hover,
+.lc-codeWrap::-webkit-scrollbar-thumb:hover,
+.lc-pre::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(130, 177, 255, 0.58);
+}
+
+.lc-list::-webkit-scrollbar-corner,
+.lc-codeWrap::-webkit-scrollbar-corner,
+.lc-pre::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 .lc-placeholder {
