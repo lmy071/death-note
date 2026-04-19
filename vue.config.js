@@ -3,6 +3,7 @@ const path = require('path')
 
 module.exports = defineConfig({
   transpileDependencies: true,
+  outputDir: 'death-note',
   chainWebpack: (config) => {
     const leetCodeDir = path.resolve(__dirname, 'src/leetCode')
 
