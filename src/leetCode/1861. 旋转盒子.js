@@ -24,7 +24,3 @@ var rotateTheBox = function(boxGrid) {
         })
         return ary
 };
-const a = [["#",".","*","."],
-        ["#","#","*","."]]
-
-console.log(rotateTheBox(a))
