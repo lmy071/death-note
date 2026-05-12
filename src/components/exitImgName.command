@@ -27,16 +27,7 @@ for ext in "${extensions[@]}"; do
 done
 unset 'find_args[${#find_args[@]}-1]'
 
-# 后缀序列：空 -> a..z -> aa..zz
-suffixes=("")
-for c in {a..z}; do
-    suffixes+=("$c")
-done
-for c1 in {a..z}; do
-    for c2 in {a..z}; do
-        suffixes+=("$c1$c2")
-    done
-done
+# 后缀序列逻辑已改为动态生成 -1, -2, -3...
 
 renamed=0
 skipped=0
@@ -61,15 +52,30 @@ while IFS= read -r -d '' file; do
     target_dir="$dir"
     fname=$(basename "$file")
 
+    # 1. 检查是否已经满足命名格式：[文件夹名][日期](-数字).扩展名
+    # 使用正则匹配：精确匹配 base+cdate，后面可选 -数字，最后匹配 .ext
+    if [[ "$fname" == "${base}${cdate}.${ext}" ]] || [[ "$fname" =~ ^"${base}${cdate}"-[0-9]+\."${ext}"$ ]]; then
+        echo "⏭  已符合格式，跳过：$fname"
+        continue
+    fi
+
     newname=""
-    for sfx in "${suffixes[@]}"; do
-        candidate="${base}${cdate}${sfx}.${ext}"
-        # 关键修复：目标文件不存在，或目标文件就是当前文件自身 → 可用
-        if [ ! -e "$target_dir/$candidate" ] || [ "$fname" = "$candidate" ]; then
-            newname="$candidate"
-            break
-        fi
-    done
+    # 2. 尝试不带数字后缀
+    candidate="${base}${cdate}.${ext}"
+    if [ ! -e "$target_dir/$candidate" ] || [ "$fname" = "$candidate" ]; then
+        newname="$candidate"
+    else
+        # 3. 尝试 -1, -2, -3... 依次递增
+        i=1
+        while :; do
+            candidate="${base}${cdate}-${i}.${ext}"
+            if [ ! -e "$target_dir/$candidate" ] || [ "$fname" = "$candidate" ]; then
+                newname="$candidate"
+                break
+            fi
+            ((i++))
+        done
+    fi
 
     if [ -z "$newname" ]; then
         echo "❌ 无法分配可用文件名，跳过：$file"
@@ -77,7 +83,7 @@ while IFS= read -r -d '' file; do
         continue
     fi
 
-    # 名字没变化则跳过
+    # 再次确认名字是否有变化（理论上前面的 check 已经处理了，这里做二次保险）
     if [ "$fname" = "$newname" ]; then
         continue
     fi
