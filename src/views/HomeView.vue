@@ -7,12 +7,9 @@
 
     <main class="home-main">
       <section class="home-grid">
-        <router-link class="home-card" to="/notion">
-          <h2 class="home-card__title">重启脑语（Notion）</h2>
-          <p class="home-card__desc">打开内嵌 Notion 页，专注阅读 / 记录。</p>
-        </router-link>
 
-        <router-link class="home-card" to="/leetcode">
+
+        <router-link class="home-card" to="/code/leet-code">
           <h2 class="home-card__title">LeetCode 题解</h2>
           <p class="home-card__desc">浏览 `src/leetCode` 下的所有题解源码。</p>
         </router-link>
