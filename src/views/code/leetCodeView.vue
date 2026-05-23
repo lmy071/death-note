@@ -1,34 +1,34 @@
 <template>
-  <div class="lc-page">
-    <aside class="lc-sidebar">
-      <div class="lc-sidebar__header">
-        <div class="lc-title">LeetCode 题解</div>
+  <div page-full-row bg-page text-body>
+    <aside w-340px min-w-280px max-w-420px border-r border-card bg-sidebar flex flex-col>
+      <div p-16px_14px_12px grid gap-10px>
+        <div text-16px font-700 tracking-[0.2px] text-left>LeetCode 题解</div>
         <input
           v-model.trim="query"
-          class="lc-search"
+          class="input-search"
           type="search"
           placeholder="搜索文件名…"
         />
       </div>
 
-      <div class="lc-list" role="list">
+      <div class="lc-scroll" p-6px overflow-auto role="list">
         <button
           v-for="item in filteredItems"
           :key="item.key"
-          class="lc-item"
-          :class="{ 'is-active': item.key === activeKey }"
+          class="list-item"
+          :class="{ 'list-item-active': item.key === activeKey }"
           type="button"
           @click="select(item.key)"
         >
-          <div class="lc-item__name" :title="item.name">{{ item.name }}</div>
-          <div class="lc-item__meta">
+          <div text-13px font-650 leading-[1.2] truncate :title="item.name">{{ item.name }}</div>
+          <div text-12px text-dim-3>
             <span>{{ item.lines }} 行</span>
-            <span class="lc-dot">·</span>
+            <span mx-6px>·</span>
             <span>{{ formatBytes(item.bytes) }}</span>
           </div>
         </button>
 
-        <div v-if="filteredItems.length === 0" class="lc-empty">
+        <div v-if="filteredItems.length === 0" p-18px_12px text-dim-3>
           没有匹配的文件
         </div>
       </div>
