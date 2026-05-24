@@ -16,17 +16,27 @@
         <div class="card-link">浏览全部 →</div>
       </router-link>
 
-      <!-- Card 2: 粒子效果 -->
-      <div class="waterfall-card particle-card">
-        <div class="card-head">
-          <span class="card-icon">✨</span>
-          <h3 class="card-name">粒子特效</h3>
+      <!-- Card 2: 粒子效果（点击进入详情） -->
+      <router-link
+        to="/fun/particle-canvas"
+        custom
+        v-slot="{ navigate }"
+      >
+        <div
+          class="waterfall-card"
+          @click="navigate"
+        >
+          <div class="card-head">
+            <span class="card-icon">✨</span>
+            <h3 class="card-name">粒子特效</h3>
+          </div>
+          <div class="particle-wrap">
+            <ParticleCanvas />
+          </div>
+          <p class="card-desc" style="margin-top:8px">鼠标移入 · 流光粒子 · 渐隐动画</p>
+          <div class="card-link">查看详情 →</div>
         </div>
-        <div class="particle-wrap">
-          <ParticleCanvas />
-        </div>
-        <p class="card-desc" style="margin-top:8px">鼠标移入 · 流光粒子 · 渐隐动画</p>
-      </div>
+      </router-link>
 
       <!-- Card 3: 魔方（点击进入详情） -->
       <router-link
@@ -177,7 +187,5 @@ const problemCount = computed(() => {
   margin-top: 6px;
 }
 
-.particle-card {
-  cursor: default;
-}
+
 </style>
