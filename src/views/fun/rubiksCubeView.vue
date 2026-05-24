@@ -3,12 +3,12 @@
     <header class="detail-bar">
       <router-link to="/" class="back-btn">← 返回首页</router-link>
       <h1 class="detail-title">魔方</h1>
-      <span class="detail-badge">3×3×3</span>
+      <span class="detail-badge">3×3×3 可扭动</span>
     </header>
 
     <main class="detail-body">
       <section class="cube-stage">
-        <RubiksCube :size="480" :scale="48" />
+        <RubiksCube ref="cubeRef" :size="480" :scale="48" :auto-rotate="false" :show-controls="true" />
       </section>
 
       <section class="info-panel">
@@ -23,7 +23,14 @@
           <span class="info-icon">🖱️</span>
           <div>
             <h4>交互方式</h4>
-            <p>拖拽旋转 · 自动旋转 · 触屏支持</p>
+            <p>拖拽旋转 · 键盘扭动 · 按钮控制 · 触屏支持</p>
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="info-icon">⌨️</span>
+          <div>
+            <h4>快捷键</h4>
+            <p>U D R L F B 扭动 · Shift 键反向</p>
           </div>
         </div>
         <div class="info-item">
@@ -39,7 +46,11 @@
 </template>
 
 <script setup>
+import { ref, onMounted } from 'vue'
 import RubiksCube from '../../components/RubiksCube.vue'
+
+const cubeRef = ref(null)
+onMounted(() => { cubeRef.value?.scramble?.(20) })
 </script>
 
 <style scoped>
