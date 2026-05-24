@@ -16,17 +16,27 @@
         <div class="card-link">浏览全部 →</div>
       </router-link>
 
-      <!-- Card 2: 魔方 -->
-      <div class="waterfall-card cube-card">
-        <div class="card-head">
-          <span class="card-icon">🎲</span>
-          <h3 class="card-name">魔方</h3>
+      <!-- Card 2: 魔方（点击进入详情） -->
+      <router-link
+        to="/fun/rubiks-cube"
+        custom
+        v-slot="{ navigate }"
+      >
+        <div
+          class="waterfall-card cube-card"
+          @click="navigate"
+        >
+          <div class="card-head">
+            <span class="card-icon">🎲</span>
+            <h3 class="card-name">魔方</h3>
+          </div>
+          <div class="cube-wrap">
+            <RubiksCube :size="260" />
+          </div>
+          <p class="card-desc" style="margin-top:8px">Canvas 绘制 · 拖拽旋转 · 标准配色</p>
+          <div class="card-link">查看详情 →</div>
         </div>
-        <div class="cube-wrap">
-          <RubiksCube />
-        </div>
-        <p class="card-desc" style="margin-top:8px">Canvas 绘制 · 拖拽旋转 · 标准配色</p>
-      </div>
+      </router-link>
     </main>
   </div>
 </template>
@@ -105,10 +115,6 @@ const problemCount = computed(() => {
   background: rgba(18, 28, 60, 0.98);
   border-color: rgba(130, 177, 255, 0.6);
   box-shadow: 0 16px 35px rgba(2, 8, 38, 0.8);
-}
-
-.cube-card {
-  cursor: default;
 }
 
 /* Card head */
