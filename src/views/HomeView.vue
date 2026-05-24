@@ -16,7 +16,19 @@
         <div class="card-link">浏览全部 →</div>
       </router-link>
 
-      <!-- Card 2: 魔方（点击进入详情） -->
+      <!-- Card 2: 粒子效果 -->
+      <div class="waterfall-card particle-card">
+        <div class="card-head">
+          <span class="card-icon">✨</span>
+          <h3 class="card-name">粒子特效</h3>
+        </div>
+        <div class="particle-wrap">
+          <ParticleCanvas />
+        </div>
+        <p class="card-desc" style="margin-top:8px">鼠标移入 · 流光粒子 · 渐隐动画</p>
+      </div>
+
+      <!-- Card 3: 魔方（点击进入详情） -->
       <router-link
         to="/fun/rubiks-cube"
         custom
@@ -44,6 +56,7 @@
 <script setup>
 import { computed } from 'vue'
 import RubiksCube from '../components/RubiksCube.vue'
+import ParticleCanvas from '../components/ParticleCanvas.vue'
 
 const problemCount = computed(() => {
   const m = import.meta.glob('../leetCode/*.js', { eager: true })
@@ -82,14 +95,17 @@ const problemCount = computed(() => {
 
 /* ---- Waterfall ---- */
 .waterfall {
-  column-count: 2;
+  column-count: 3;
   column-gap: 16px;
-  max-width: 720px;
+  max-width: 960px;
   width: 100%;
   padding: 0;
 }
 
-@media (max-width: 640px) {
+@media (max-width: 860px) {
+  .waterfall { column-count: 2; max-width: 640px; }
+}
+@media (max-width: 560px) {
   .waterfall { column-count: 1; max-width: 380px; }
 }
 
@@ -154,10 +170,14 @@ const problemCount = computed(() => {
 }
 
 /* Cube wrapper */
-.cube-wrap {
+.cube-wrap, .particle-wrap {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-top: 6px;
+}
+
+.particle-card {
+  cursor: default;
 }
 </style>
