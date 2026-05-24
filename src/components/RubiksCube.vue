@@ -344,6 +344,7 @@ onMounted(() => {
   initSolved()
   const el = cvs.value
   el.width = props.size; el.height = props.size
+  ctx = el.getContext('2d')
   animId = requestAnimationFrame(render)
   window.addEventListener('keydown', onKeyDown)
 })
