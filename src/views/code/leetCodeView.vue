@@ -78,11 +78,11 @@ import 'highlight.js/styles/github-dark.css'
 
 hljs.registerLanguage('javascript', javascript)
 
-// Vue CLI (Webpack) 方案：
-// 1) 在 vue.config.js 里把 src/leetCode/*.js 配成 asset/source（导入为 string）
-// 2) 这里用 require.context 批量收集
-const ctx = require.context('../../leetCode', false, /\.js$/)
-const rawModules = Object.fromEntries(ctx.keys().map((k) => [k, ctx(k)]))
+// Vite 方案：import.meta.glob + ?raw 批量收集 src/leetCode/*.js 源码字符串
+const rawGlob = import.meta.glob('../../leetCode/*.js', { query: '?raw', eager: true })
+const rawModules = Object.fromEntries(
+  Object.entries(rawGlob).map(([k, mod]) => [k, mod.default])
+)
 
 function baseName(p) {
   const s = String(p)

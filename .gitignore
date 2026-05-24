@@ -3,7 +3,6 @@ node_modules
 /dist
 /death-note
 
-
 # local env files
 .env.local
 .env.*.local
@@ -23,3 +22,4 @@ pnpm-debug.log*
 *.sln
 *.sw?
 package-lock.json
+pnpm-lock.yaml
