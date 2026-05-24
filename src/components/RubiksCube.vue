@@ -179,11 +179,21 @@ function twist(key) {
 function scramble(count = 20) {
   const keys = ['U', "U'", 'D', "D'", 'R', "R'", 'L', "L'", 'F', "F'", 'B', "B'"]
   for (let i = 0; i < count; i++) {
-    const { axis, sign, level } = ['U', 'D', 'R', 'L', 'F', 'B'].flatMap(k => {
-      const cw = { U: ['y', 1, 2], D: ['y', -1, 0], R: ['x', 1, 2], L: ['x', -1, 0], F: ['z', 1, 2], B: ['z', -1, 0] }[k]
-      return Math.random() > 0.5 ? [cw] : [[cw[0], -cw[1], cw[2]]] // random direction
-    })[Math.floor(Math.random() * 12)]
-    applyTwistToState(axis, sign, level)
+    const key = keys[Math.floor(Math.random() * keys.length)]
+    const t = { axis: '', sign: 0, level: 0 }
+    // parse key to axis/sign/level directly
+    const face = key[0]
+    const prime = key.includes("'")
+    const faceMap = {
+      U: { axis: 'y', sign:  prime ? -1 : 1,  level: 2 },
+      D: { axis: 'y', sign: !prime ? -1 : 1, level: 0 },
+      R: { axis: 'x', sign:  prime ? -1 : 1, level: 2 },
+      L: { axis: 'x', sign: !prime ? -1 : 1, level: 0 },
+      F: { axis: 'z', sign:  prime ? -1 : 1, level: 2 },
+      B: { axis: 'z', sign: !prime ? -1 : 1, level: 0 },
+    }
+    const info = faceMap[face]
+    if (info) applyTwistToState(info.axis, info.sign, info.level)
   }
 }
 
