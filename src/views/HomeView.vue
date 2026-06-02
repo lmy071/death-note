@@ -59,6 +59,31 @@
           <div class="card-link">查看详情 →</div>
         </div>
       </router-link>
+
+      <!-- Card 4: 折线图（点击进入详情） -->
+      <router-link
+        to="/fun/line-chart"
+        custom
+        v-slot="{ navigate }"
+      >
+        <div
+          class="waterfall-card"
+          @click="navigate"
+        >
+          <div class="card-head">
+            <span class="card-icon">📈</span>
+            <h3 class="card-name">折线图</h3>
+          </div>
+          <div class="chart-preview">
+            <LineChart
+              :options="miniChart"
+              :height="180"
+            />
+          </div>
+          <p class="card-desc" style="margin-top:4px">Canvas 绘制 · 平滑曲线 · 面积填充 · 悬浮提示</p>
+          <div class="card-link">查看详情 →</div>
+        </div>
+      </router-link>
     </main>
   </div>
 </template>
@@ -67,11 +92,22 @@
 import { computed } from 'vue'
 import RubiksCube from '../components/RubiksCube.vue'
 import ParticleCanvas from '../components/ParticleCanvas.vue'
+import LineChart from '../components/LineChart.vue'
 
 const problemCount = computed(() => {
   const m = import.meta.glob('../leetCode/*.js', { eager: true })
   return Object.keys(m).length
 })
+
+const miniChart = {
+  xAxis: { data: ['1月', '2月', '3月', '4月', '5月', '6月'] },
+  yAxis: { splitNumber: 3 },
+  legend: false,
+  series: [
+    { name: '销售额', data: [120, 200, 150, 280, 220, 310], area: true },
+    { name: '利润', data: [40, 75, 55, 100, 85, 120] }
+  ]
+}
 </script>
 
 <style scoped>
@@ -185,6 +221,13 @@ const problemCount = computed(() => {
   justify-content: center;
   align-items: center;
   margin-top: 6px;
+}
+
+/* Chart preview in card */
+.chart-preview {
+  margin: 6px -18px 0 -18px;
+  overflow: hidden;
+  border-radius: 8px;
 }
 
 
