@@ -16,7 +16,17 @@
         <div class="card-link">浏览全部 →</div>
       </router-link>
 
-      <!-- Card 2: 粒子效果（点击进入详情） -->
+      <!-- Card 2: 笔记 -->
+      <router-link to="/md/md-note" class="waterfall-card">
+        <div class="card-head">
+          <span class="card-icon">📝</span>
+          <h3 class="card-name">笔记</h3>
+        </div>
+        <p class="card-desc">Vue3 解析、JavaScript 深入、场景分析，共 {{ noteCount }} 篇笔记，Markdown 渲染 + 目录树导航。</p>
+        <div class="card-link">浏览笔记 →</div>
+      </router-link>
+
+      <!-- Card 3: 粒子效果（点击进入详情） -->
       <router-link
         to="/fun/particle-canvas"
         custom
@@ -38,7 +48,7 @@
         </div>
       </router-link>
 
-      <!-- Card 3: 魔方（点击进入详情） -->
+      <!-- Card 4: 魔方（点击进入详情） -->
       <router-link
         to="/fun/rubiks-cube"
         custom
@@ -60,7 +70,7 @@
         </div>
       </router-link>
 
-      <!-- Card 4: 折线图（点击进入详情） -->
+      <!-- Card 5: 折线图（点击进入详情） -->
       <router-link
         to="/fun/line-chart"
         custom
@@ -96,6 +106,11 @@ import LineChart from '../components/LineChart.vue'
 
 const problemCount = computed(() => {
   const m = import.meta.glob('../leetCode/*.js', { eager: true })
+  return Object.keys(m).length
+})
+
+const noteCount = computed(() => {
+  const m = import.meta.glob('../md/**/*.md', { eager: true })
   return Object.keys(m).length
 })
 
