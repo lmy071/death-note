@@ -131,7 +131,7 @@ function lerpColor(c1, c2, t) {
 
 // ============ DRAW ============
 
-function drawTree(progress) {
+function drawTree(progress, time) {
   if (!ctx) return
   ctx.clearRect(0, 0, canvasW, canvasH)
   branchHitAreas = []
@@ -157,7 +157,7 @@ function drawTree(progress) {
   // Canopy
   if (progress > 0.3) {
     const canopyP = Math.min(1, (progress - 0.3) / 0.7)
-    drawCanopy(cx, groundY - trunkH, canopyP, rng)
+    drawCanopy(cx, groundY - trunkH, canopyP, rng, time)
   }
 }
 
@@ -236,7 +236,7 @@ function drawTrunk(cx, groundY, trunkH, progress, rng) {
   ctx.fillRect(cx - botW * 3, groundY - h - botW, botW * 6, h + botW * 2)
 }
 
-function drawCanopy(cx, baseY, progress, rng) {
+function drawCanopy(cx, baseY, progress, rng, time) {
   const allBranches = branches.value
   const leetCodePages = allBranches.filter(b => b.group === 'leetcode')
   const mdDirPages = allBranches.filter(b => b.group === 'md-dir')
@@ -344,14 +344,37 @@ function drawCanopy(cx, baseY, progress, rng) {
     ctx.lineCap = 'round'
     ctx.stroke()
 
-    // Category label glow at endpoint
+    // Flickering glow at main branch endpoint
     if (catP > 0.5) {
-      const glowAlpha = (catP - 0.5) * 2 * 0.2
-      const gGrad = ctx.createRadialGradient(endX, endY, 2, endX, endY, 25)
+      // Each branch has independent flicker phase
+      const flickerPhase = time * (1.8 + ci * 0.7) + ci * 2.3
+      const flicker = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(flickerPhase) * Math.cos(flickerPhase * 0.7))
+      const baseAlpha = (catP - 0.5) * 2
+      const glowAlpha = baseAlpha * 0.35 * flicker
+
+      // Outer glow
+      const gGrad = ctx.createRadialGradient(endX, endY, 2, endX, endY, 35)
       gGrad.addColorStop(0, `rgba(240, 192, 64, ${glowAlpha})`)
+      gGrad.addColorStop(0.5, `rgba(212, 160, 23, ${glowAlpha * 0.3})`)
       gGrad.addColorStop(1, 'rgba(0,0,0,0)')
       ctx.fillStyle = gGrad
-      ctx.fillRect(endX - 25, endY - 25, 50, 50)
+      ctx.fillRect(endX - 35, endY - 35, 70, 70)
+
+      // Title text with flicker
+      if (baseAlpha > 0.5) {
+        const textAlpha = baseAlpha * flicker * 0.95
+        ctx.save()
+        ctx.font = 'bold 13px Avenir, Helvetica, Arial, sans-serif'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'bottom'
+        // Text shadow/glow
+        ctx.shadowColor = `rgba(240, 192, 64, ${textAlpha * 0.6})`
+        ctx.shadowBlur = 12
+        ctx.fillStyle = `rgba(240, 210, 100, ${textAlpha})`
+        ctx.fillText(cat.label, endX, endY - 10)
+        ctx.shadowBlur = 0
+        ctx.restore()
+      }
     }
 
     // Draw child sub-branches
@@ -531,7 +554,7 @@ function animate(ts) {
   let t = Math.min(1, elapsed / GROWTH_MS)
   // Ease-out cubic
   growthProgress = 1 - Math.pow(1 - t, 3)
-  drawTree(growthProgress)
+  drawTree(growthProgress, ts * 0.001)
   if (t < 1) {
     animId = requestAnimationFrame(animate)
   } else {
@@ -546,7 +569,7 @@ let idleTime = 0
 function idleLoop(ts) {
   idleTime += 0.01
   // Redraw with slight animated shimmer on fireflies
-  drawTree(1)
+  drawTree(1, idleTime)
   animId = requestAnimationFrame(idleLoop)
 }
 
