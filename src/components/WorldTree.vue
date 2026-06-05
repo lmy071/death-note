@@ -344,37 +344,14 @@ function drawCanopy(cx, baseY, progress, rng, time) {
     ctx.lineCap = 'round'
     ctx.stroke()
 
-    // Flickering glow at main branch endpoint
+    // Subtle glow at main branch endpoint (static)
     if (catP > 0.5) {
-      // Each branch has independent flicker phase
-      const flickerPhase = time * (1.8 + ci * 0.7) + ci * 2.3
-      const flicker = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(flickerPhase) * Math.cos(flickerPhase * 0.7))
       const baseAlpha = (catP - 0.5) * 2
-      const glowAlpha = baseAlpha * 0.35 * flicker
-
-      // Outer glow
-      const gGrad = ctx.createRadialGradient(endX, endY, 2, endX, endY, 35)
-      gGrad.addColorStop(0, `rgba(240, 192, 64, ${glowAlpha})`)
-      gGrad.addColorStop(0.5, `rgba(212, 160, 23, ${glowAlpha * 0.3})`)
+      const gGrad = ctx.createRadialGradient(endX, endY, 2, endX, endY, 20)
+      gGrad.addColorStop(0, `rgba(212, 160, 23, ${baseAlpha * 0.15})`)
       gGrad.addColorStop(1, 'rgba(0,0,0,0)')
       ctx.fillStyle = gGrad
-      ctx.fillRect(endX - 35, endY - 35, 70, 70)
-
-      // Title text with flicker
-      if (baseAlpha > 0.5) {
-        const textAlpha = baseAlpha * flicker * 0.95
-        ctx.save()
-        ctx.font = 'bold 13px Avenir, Helvetica, Arial, sans-serif'
-        ctx.textAlign = 'center'
-        ctx.textBaseline = 'bottom'
-        // Text shadow/glow
-        ctx.shadowColor = `rgba(240, 192, 64, ${textAlpha * 0.6})`
-        ctx.shadowBlur = 12
-        ctx.fillStyle = `rgba(240, 210, 100, ${textAlpha})`
-        ctx.fillText(cat.label, endX, endY - 10)
-        ctx.shadowBlur = 0
-        ctx.restore()
-      }
+      ctx.fillRect(endX - 20, endY - 20, 40, 40)
     }
 
     // Draw child sub-branches
@@ -382,7 +359,7 @@ function drawCanopy(cx, baseY, progress, rng, time) {
       const child = cat.children[bi]
       const bP = Math.min(1, (catP - 0.25) * 2.8 - bi * 0.008)
       if (bP <= 0) continue
-      drawSubBranch(endX, endY, child, bP, rng)
+      drawSubBranch(endX, endY, child, bP, rng, time, bi)
     }
   }
 
@@ -402,7 +379,7 @@ function drawCanopy(cx, baseY, progress, rng, time) {
   }
 }
 
-function drawSubBranch(sx, sy, branch, progress, rng) {
+function drawSubBranch(sx, sy, branch, progress, rng, time, branchIdx) {
   const len = branch.vLen * progress
   const a = branch.vAngle
   const ex = sx + Math.sin(a) * len
@@ -425,29 +402,63 @@ function drawSubBranch(sx, sy, branch, progress, rng) {
   ctx.lineCap = 'round'
   ctx.stroke()
 
-  // Leaf / fruit at tip
+  // Leaf / fruit at tip with flicker
   if (progress > 0.7) {
     const alpha = (progress - 0.7) / 0.3
-    const sz = 2.5 + rng() * 3
+    const sz = 3 + rng() * 3
 
-    // Golden glow
-    ctx.beginPath()
-    ctx.arc(ex, ey, sz * 2.2, 0, Math.PI * 2)
-    ctx.fillStyle = `rgba(212, 160, 23, ${alpha * 0.12})`
-    ctx.fill()
+    // Slow flicker: each fruit has unique phase, period ~3-5s
+    const flickerSpeed = 0.25 + (branchIdx % 7) * 0.08
+    const flickerPhase = time * flickerSpeed + branchIdx * 1.7 + rng() * 0.1
+    // Smooth sine-based flicker: 0.15 ~ 1.0 range
+    const flicker = 0.15 + 0.85 * (0.5 + 0.5 * Math.sin(flickerPhase))
 
-    // Leaf dot
+    // Outer glow (pulsing)
     ctx.beginPath()
-    ctx.arc(ex, ey, sz, 0, Math.PI * 2)
+    ctx.arc(ex, ey, sz * 3, 0, Math.PI * 2)
     ctx.fillStyle = branch.isSubCategory
-      ? `rgba(76, 187, 108, ${alpha * 0.85})`
-      : `rgba(240, 192, 64, ${alpha * 0.9})`
+      ? `rgba(76, 187, 108, ${alpha * flicker * 0.18})`
+      : `rgba(212, 160, 23, ${alpha * flicker * 0.18})`
     ctx.fill()
+
+    // Fruit dot
+    ctx.beginPath()
+    ctx.arc(ex, ey, sz * flicker, 0, Math.PI * 2)
+    const fruitColor = branch.isSubCategory
+      ? `rgba(76, 187, 108, ${alpha * flicker * 0.9})`
+      : `rgba(240, 192, 64, ${alpha * flicker * 0.95})`
+    ctx.fillStyle = fruitColor
+    ctx.fill()
+
+    // Fruit highlight
+    ctx.beginPath()
+    ctx.arc(ex - sz * 0.2, ey - sz * 0.2, sz * 0.4 * flicker, 0, Math.PI * 2)
+    ctx.fillStyle = `rgba(255, 255, 220, ${alpha * flicker * 0.3})`
+    ctx.fill()
+
+    // Label text: fades in/out slowly with flicker
+    if (progress > 0.85 && flicker > 0.45) {
+      const textAlpha = alpha * (flicker - 0.45) / 0.55 * 0.9
+      if (textAlpha > 0.05) {
+        ctx.save()
+        ctx.font = '11px Avenir, Helvetica, Arial, sans-serif'
+        ctx.textAlign = 'center'
+        ctx.textBaseline = 'bottom'
+        ctx.shadowColor = `rgba(0, 0, 0, ${textAlpha * 0.8})`
+        ctx.shadowBlur = 4
+        ctx.fillStyle = branch.isSubCategory
+          ? `rgba(160, 230, 180, ${textAlpha})`
+          : `rgba(255, 220, 120, ${textAlpha})`
+        ctx.fillText(branch.label, ex, ey - sz - 4)
+        ctx.shadowBlur = 0
+        ctx.restore()
+      }
+    }
 
     // Hit area
     if (progress > 0.85) {
       branchHitAreas.push({
-        x: ex, y: ey, radius: Math.max(12, sz * 2.5),
+        x: ex, y: ey, radius: Math.max(14, sz * 3),
         label: branch.label, desc: branch.desc, route: branch.route,
       })
     }
