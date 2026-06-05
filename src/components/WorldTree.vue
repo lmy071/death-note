@@ -139,7 +139,7 @@ function drawTree(progress, time) {
   const cx = canvasW / 2
   const groundY = canvasH * 0.92
   const trunkH = canvasH * 0.28
-  const rng = createRng(42)
+  const rng = createRng(currentSeed)
 
   // Ground glow
   drawGround(cx, groundY, progress)
@@ -558,6 +558,7 @@ function drawFireflies(progress, rng) {
 const GROWTH_MS = 4200
 let startTime = null
 let fullyGrown = false
+let currentSeed = Math.floor(Math.random() * 2147483646) + 1
 
 function animate(ts) {
   if (!startTime) startTime = ts
