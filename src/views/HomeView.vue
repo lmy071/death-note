@@ -48,29 +48,7 @@
         </div>
       </router-link>
 
-      <!-- Card 4: 魔方（点击进入详情） -->
-      <router-link
-        to="/fun/rubiks-cube"
-        custom
-        v-slot="{ navigate }"
-      >
-        <div
-          class="waterfall-card cube-card"
-          @click="navigate"
-        >
-          <div class="card-head">
-            <span class="card-icon">🎲</span>
-            <h3 class="card-name">魔方</h3>
-          </div>
-          <div class="cube-wrap">
-            <RubiksCube :size="260" />
-          </div>
-          <p class="card-desc" style="margin-top:8px">Canvas 绘制 · 拖拽旋转 · 标准配色</p>
-          <div class="card-link">查看详情 →</div>
-        </div>
-      </router-link>
-
-      <!-- Card 5: 折线图（点击进入详情） -->
+<!-- Card 5: 折线图（点击进入详情） -->
       <router-link
         to="/fun/line-chart"
         custom
@@ -100,7 +78,6 @@
 
 <script setup>
 import { computed } from 'vue'
-import RubiksCube from '../components/RubiksCube.vue'
 import ParticleCanvas from '../components/ParticleCanvas.vue'
 import LineChart from '../components/LineChart.vue'
 
@@ -230,8 +207,7 @@ const miniChart = {
   color: rgba(160, 200, 255, 1);
 }
 
-/* Cube wrapper */
-.cube-wrap, .particle-wrap {
+.particle-wrap {
   display: flex;
   justify-content: center;
   align-items: center;
