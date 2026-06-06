@@ -203,8 +203,8 @@ function drawTree(progress, time) {
 
     // Compute angle spread for level-1 branches
     const l1Count = treeData.length
-    const totalSpread = Math.PI * 0.85  // ~153 degrees
-    const startAngle = -totalSpread / 2 - Math.PI / 2
+    const totalSpread = Math.PI  // upper 180 degrees
+    const startAngle = -totalSpread / 2
 
     for (let i = 0; i < l1Count; i++) {
       const b = treeData[i]
@@ -342,13 +342,15 @@ function drawBranch(sx, sy, branch, parentProgress, maxLen, angle, time, rng) {
   if (myProgress > 0.3) {
     const childMaxLen = maxLen * branch.lenRatio * 0.85
     const childCount = branch.children.length
-    const childSpread = Math.PI * (0.35 + rng() * 0.3)
+    const childSpread = Math.PI * (0.25 + rng() * 0.2)
 
     for (let i = 0; i < childCount; i++) {
       const child = branch.children[i]
       // Spread children around parent direction
       const childAngleOffset = -childSpread / 2 + (i / (childCount - 1 || 1)) * childSpread
-      child.angleOffset = angle + childAngleOffset + (rng() - 0.5) * 0.12
+      // Clamp to upper 180 degrees: angle ∈ [-π/2, π/2]
+      const rawAngle = angle + childAngleOffset + (rng() - 0.5) * 0.12
+      child.angleOffset = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rawAngle))
       child.thicknessBase = Math.max(1, thickness - 1.5)
 
       drawBranch(ex, ey, child, myProgress, childMaxLen, child.angleOffset, time, rng)
