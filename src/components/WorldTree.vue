@@ -122,7 +122,7 @@ function buildBranch(rng, depth, index, siblingCount) {
     children: [],
     page: null,
     // All random visual params computed once, never changes across frames
-    lenRatio: 0.55 + rng() * 0.35,
+    lenRatio: 0.6 + rng() * 0.35,
     angleOffset: 0,           // filled by initTreeVisuals
     curveWobble: (rng() - 0.5) * 12,
     curveJitter: (rng() - 0.5) * 6,
@@ -151,15 +151,16 @@ function initTreeVisuals() {
   const rng = createRng(currentSeed)
   treeData = buildTree(rng)
 
-  const totalSpread = Math.PI * 2 / 3   // 120° cone: 30°-150° from horizontal
-  const startAngle = -totalSpread / 2
   const l1Count = treeData.length
+  // Spread adapts to branch count: 2 branches = 60°, 5 branches = full 120°
+  const totalSpread = Math.PI / 3 + (Math.PI / 3) * (l1Count - 2) / 3
+  const startAngle = -totalSpread / 2
 
   for (let i = 0; i < l1Count; i++) {
     const b = treeData[i]
-    b.angleOffset = startAngle + (i / (l1Count - 1 || 1)) * totalSpread + (rng() - 0.5) * 0.15
+    b.angleOffset = startAngle + (i / (l1Count - 1 || 1)) * totalSpread + (rng() - 0.5) * 0.08
     b.thicknessBase = 7 - b.depth * 1.5
-    b._maxLen = canvasH * (0.20 + rng() * 0.12)
+    b._maxLen = canvasH * (0.22 + rng() * 0.15)
     initChildVisuals(b, rng)
   }
 }
@@ -168,7 +169,8 @@ function initChildVisuals(parent, rng) {
   const n = parent.children.length
   if (n === 0) return
 
-  const childSpread = Math.PI * (0.18 + rng() * 0.12)
+  // Spread wider with more children: 2 children = 40°, 5 children = 80°
+  const childSpread = Math.PI * (0.22 + 0.08 * n + rng() * 0.06)
   const parentAngle = parent.angleOffset || 0
 
   for (let i = 0; i < n; i++) {
@@ -177,7 +179,7 @@ function initChildVisuals(parent, rng) {
     const raw = parentAngle + offset + (rng() - 0.5) * 0.12
     child.angleOffset = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, raw))
     child.thicknessBase = Math.max(1, (parent.thicknessBase || 5) - 1.5)
-    child._maxLen = parent._maxLen * child.lenRatio * 0.85
+    child._maxLen = parent._maxLen * child.lenRatio * 0.92
     initChildVisuals(child, rng)
   }
 }
