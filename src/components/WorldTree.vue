@@ -36,7 +36,7 @@ const realPages = [
 ]
 
 // ---- Tree structure ----
-let treeData = null    // generated once per mount, regenerated each render cycle
+let treeData = null
 let branchHitAreas = []
 let globalBranchIdx = 0
 
@@ -49,10 +49,7 @@ let currentSeed = 0
 
 // Colors
 const GOLDEN = '#d4a017'
-const GOLDEN_LIGHT = '#f0c040'
 const GOLDEN_DARK = '#8b6914'
-const GREEN_LEAF = '#2d8a4e'
-const GREEN_DARK = '#1a6b35'
 const BARK = '#6b4423'
 const BARK_DARK = '#3d2510'
 
@@ -85,15 +82,9 @@ function lerpColor(c1, c2, t) {
 }
 
 // ---- Build 4-level tree structure ----
-// Level 1: trunk splits into 2-5 main branches
-// Level 2: each main branch splits into 2-5 sub branches
-// Level 3: each sub branch splits into 2-5 twigs
-// Level 4: leaf tips (fruits) — some bound to real pages, rest are decorative
-
 function buildTree(rng) {
   globalBranchIdx = 0
 
-  // Shuffle real pages to random assignment
   const pages = [...realPages]
   for (let i = pages.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1))
@@ -103,51 +94,42 @@ function buildTree(rng) {
   const level1Count = 2 + Math.floor(rng() * 4)  // 2-5
   const branches = []
 
-  // Pre-calculate total leaf count so we can distribute pages
-  // First build structure, then assign pages
   for (let i = 0; i < level1Count; i++) {
     branches.push(buildBranch(rng, 1, i, level1Count))
   }
 
-  // Count all leaf tips
+  // Assign real pages to random leaf positions
   const leaves = []
   collectLeaves(branches, leaves)
-
-  // Assign real pages to random leaf positions
-  const shuffledLeaves = [...leaves]
-  for (let i = shuffledLeaves.length - 1; i > 0; i--) {
+  const shuffled = [...leaves]
+  for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(rng() * (i + 1))
-    ;[shuffledLeaves[i], shuffledLeaves[j]] = [shuffledLeaves[j], shuffledLeaves[i]]
+    ;[shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]]
   }
-  for (let i = 0; i < Math.min(pages.length, shuffledLeaves.length); i++) {
-    const leaf = shuffledLeaves[i]
-    leaf.page = pages[i]
-    leaf.label = pages[i].label
+  for (let i = 0; i < Math.min(pages.length, shuffled.length); i++) {
+    shuffled[i].page = pages[i]
   }
 
   return branches
 }
 
 function buildBranch(rng, depth, index, siblingCount) {
-  const childCount = depth < 3
-    ? (2 + Math.floor(rng() * 4))  // 2-5 for levels 1-3
-    : 0                              // level 4 = leaf
+  const childCount = depth < 3 ? (2 + Math.floor(rng() * 4)) : 0
 
   const branch = {
     depth,
     index,
-    siblingCount,
-    // Visual props filled during drawing based on parent position
     children: [],
     page: null,
-    label: null,
-    // Random visual params (stored for consistency across frames)
-    lenRatio: 0.55 + rng() * 0.35,     // length relative to parent
-    angleOffset: 0,                      // computed during draw
+    // All random visual params computed once, never changes across frames
+    lenRatio: 0.55 + rng() * 0.35,
+    angleOffset: 0,           // filled by initTreeVisuals
     curveWobble: (rng() - 0.5) * 12,
-    thicknessBase: 0,
+    curveJitter: (rng() - 0.5) * 6,
+    thicknessBase: 0,         // filled by initTreeVisuals
     leafSize: 2.5 + rng() * 3,
     branchId: globalBranchIdx++,
+    _maxLen: 0,               // filled by initTreeVisuals
   }
 
   for (let i = 0; i < childCount; i++) {
@@ -159,16 +141,48 @@ function buildBranch(rng, depth, index, siblingCount) {
 
 function collectLeaves(branches, out) {
   for (const b of branches) {
-    if (b.children.length === 0) {
-      out.push(b)
-    } else {
-      collectLeaves(b.children, out)
-    }
+    if (b.children.length === 0) out.push(b)
+    else collectLeaves(b.children, out)
+  }
+}
+
+// ---- Pre-compute all visual params (run once per seed, NOT per frame) ----
+function initTreeVisuals() {
+  const rng = createRng(currentSeed)
+  treeData = buildTree(rng)
+
+  const totalSpread = Math.PI * 2 / 3   // 120° cone: 30°-150° from horizontal
+  const startAngle = -totalSpread / 2
+  const l1Count = treeData.length
+
+  for (let i = 0; i < l1Count; i++) {
+    const b = treeData[i]
+    b.angleOffset = startAngle + (i / (l1Count - 1 || 1)) * totalSpread + (rng() - 0.5) * 0.15
+    b.thicknessBase = 7 - b.depth * 1.5
+    b._maxLen = canvasH * (0.20 + rng() * 0.12)
+    initChildVisuals(b, rng)
+  }
+}
+
+function initChildVisuals(parent, rng) {
+  const n = parent.children.length
+  if (n === 0) return
+
+  const childSpread = Math.PI * (0.18 + rng() * 0.12)
+  const parentAngle = parent.angleOffset || 0
+
+  for (let i = 0; i < n; i++) {
+    const child = parent.children[i]
+    const offset = -childSpread / 2 + (i / (n - 1 || 1)) * childSpread
+    const raw = parentAngle + offset + (rng() - 0.5) * 0.12
+    child.angleOffset = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, raw))
+    child.thicknessBase = Math.max(1, (parent.thicknessBase || 5) - 1.5)
+    child._maxLen = parent._maxLen * child.lenRatio * 0.85
+    initChildVisuals(child, rng)
   }
 }
 
 // ---- Draw ----
-
 function drawTree(progress, time) {
   if (!ctx) return
   ctx.clearRect(0, 0, canvasW, canvasH)
@@ -177,51 +191,23 @@ function drawTree(progress, time) {
   const cx = canvasW / 2
   const groundY = canvasH * 0.92
   const trunkH = canvasH * 0.25
-  const rng = createRng(currentSeed)
+  const decoRng = createRng(currentSeed + 7777)  // deterministic for decorations
 
-  // Rebuild tree each render for randomness
-  treeData = buildTree(rng)
-
-  // Ground glow
   drawGround(cx, groundY, progress)
 
-  // Roots
-  if (progress > 0.05) {
-    drawRoots(cx, groundY, Math.min(1, progress * 3), rng)
-  }
+  if (progress > 0.05) drawRoots(cx, groundY, Math.min(1, progress * 3), decoRng)
+  if (progress > 0) drawTrunk(cx, groundY, trunkH, Math.min(1, progress * 2.5), decoRng)
 
-  // Trunk
-  if (progress > 0) {
-    drawTrunk(cx, groundY, trunkH, Math.min(1, progress * 2.5), rng)
-  }
-
-  // Branches (level 1+)
-  if (progress > 0.25) {
+  if (progress > 0.25 && treeData) {
     const branchP = Math.min(1, (progress - 0.25) / 0.75)
-    const trunkTopX = cx
-    const trunkTopY = groundY - trunkH
+    const topX = cx, topY = groundY - trunkH
 
-    // Compute angle spread for level-1 branches
-    const l1Count = treeData.length
-    const totalSpread = Math.PI * 2 / 3  // 120 degrees: 30° to 150° from horizontal
-    const startAngle = -totalSpread / 2
-
-    for (let i = 0; i < l1Count; i++) {
-      const b = treeData[i]
-      // Distribute branches evenly with slight random offset
-      const baseAngle = startAngle + (i / (l1Count - 1 || 1)) * totalSpread
-      b.angleOffset = baseAngle + (rng() - 0.5) * 0.15
-      b.thicknessBase = 7 - b.depth * 1.5
-
-      const maxLen = canvasH * (0.20 + rng() * 0.12)
-      drawBranch(trunkTopX, trunkTopY, b, branchP, maxLen, b.angleOffset, time, rng)
+    for (const b of treeData) {
+      drawBranch(topX, topY, b, branchP, time)
     }
   }
 
-  // Fireflies
-  if (progress > 0.8) {
-    drawFireflies(Math.min(1, (progress - 0.8) * 5), rng)
-  }
+  if (progress > 0.8) drawFireflies(Math.min(1, (progress - 0.8) * 5), decoRng)
 }
 
 function drawGround(cx, groundY, progress) {
@@ -299,30 +285,26 @@ function drawTrunk(cx, groundY, trunkH, progress, rng) {
   ctx.fillRect(cx - botW * 3, groundY - h - botW, botW * 6, h + botW * 2)
 }
 
-// Recursive branch drawing
-function drawBranch(sx, sy, branch, parentProgress, maxLen, angle, time, rng) {
-  // This branch starts growing when parent is ~30% done
+// Recursive branch drawing — NO rng calls, all params pre-computed
+function drawBranch(sx, sy, branch, parentProgress, time) {
   const startThreshold = 0.15 + branch.index * 0.05
   const myProgress = Math.min(1, Math.max(0, (parentProgress - startThreshold) / (1 - startThreshold + 0.01)))
   if (myProgress <= 0) return
 
-  const len = maxLen * branch.lenRatio * myProgress
+  const len = branch._maxLen * myProgress
+  const angle = branch.angleOffset
   const ex = sx + Math.sin(angle) * len
   const ey = sy - Math.cos(angle) * len
 
-  // Line width decreases with depth
   const thickness = Math.max(1, branch.thicknessBase - branch.depth * 1.2)
-
-  // Color gradient: deeper = more green
   const depthRatio = Math.min(1, branch.depth / 4)
   const color = lerpColor(GOLDEN_DARK, GOLDEN, 1 - depthRatio * 0.5)
 
-  // Draw the branch line
   ctx.beginPath()
   ctx.moveTo(sx, sy)
   ctx.quadraticCurveTo(
     (sx + ex) / 2 + branch.curveWobble,
-    (sy + ey) / 2 - 8 + (rng() - 0.5) * 6,
+    (sy + ey) / 2 - 8 + branch.curveJitter,
     ex, ey
   )
   ctx.strokeStyle = color
@@ -330,35 +312,21 @@ function drawBranch(sx, sy, branch, parentProgress, maxLen, angle, time, rng) {
   ctx.lineCap = 'round'
   ctx.stroke()
 
-  // If leaf (level 4, no children) → draw fruit + label
+  // Leaf (level 4) → fruit
   if (branch.children.length === 0) {
-    if (myProgress > 0.5) {
-      drawFruit(ex, ey, branch, myProgress, time, rng)
-    }
+    if (myProgress > 0.5) drawFruit(ex, ey, branch, myProgress, time)
     return
   }
 
   // Recurse into children
   if (myProgress > 0.3) {
-    const childMaxLen = maxLen * branch.lenRatio * 0.85
-    const childCount = branch.children.length
-    const childSpread = Math.PI * (0.18 + rng() * 0.12)
-
-    for (let i = 0; i < childCount; i++) {
-      const child = branch.children[i]
-      // Spread children around parent direction
-      const childAngleOffset = -childSpread / 2 + (i / (childCount - 1 || 1)) * childSpread
-      // Clamp to 30°-150° from horizontal: ±60° from vertical
-      const rawAngle = angle + childAngleOffset + (rng() - 0.5) * 0.12
-      child.angleOffset = Math.max(-Math.PI / 3, Math.min(Math.PI / 3, rawAngle))
-      child.thicknessBase = Math.max(1, thickness - 1.5)
-
-      drawBranch(ex, ey, child, myProgress, childMaxLen, child.angleOffset, time, rng)
+    for (const child of branch.children) {
+      drawBranch(ex, ey, child, myProgress, time)
     }
   }
 }
 
-function drawFruit(x, y, branch, progress, time, rng) {
+function drawFruit(x, y, branch, progress, time) {
   const alpha = (progress - 0.5) / 0.5
   const sz = branch.leafSize
   const hasPage = !!branch.page
@@ -390,7 +358,7 @@ function drawFruit(x, y, branch, progress, time, rng) {
   ctx.fillStyle = `rgba(255, 255, 220, ${alpha * flicker * 0.25})`
   ctx.fill()
 
-  // Label text — only for branches with pages, slow fade in/out
+  // Label — only for real pages, slow fade
   if (hasPage && flicker > 0.4) {
     const textAlpha = alpha * (flicker - 0.4) / 0.6 * 0.95
     if (textAlpha > 0.05) {
@@ -407,7 +375,7 @@ function drawFruit(x, y, branch, progress, time, rng) {
     }
   }
 
-  // Hit area — only for branches with real pages
+  // Hit area — only for real pages
   if (hasPage && progress > 0.7) {
     branchHitAreas.push({
       x, y,
@@ -446,6 +414,7 @@ let fullyGrown = false
 
 function newSeed() {
   currentSeed = Math.floor(Math.random() * 2147483646) + 1
+  initTreeVisuals()
 }
 
 function animate(ts) {
@@ -504,6 +473,13 @@ function onMouseMove(e) {
 function onMouseLeave() {
   hoveredBranch.value = null
   if (cvs.value) cvs.value.style.cursor = 'default'
+}
+
+// Also re-init tree visuals on resize (canvasH changes)
+const origResize = resize
+resize = function () {
+  origResize()
+  if (currentSeed) initTreeVisuals()
 }
 
 onMounted(() => {
