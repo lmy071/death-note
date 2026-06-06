@@ -27,74 +27,31 @@ const tooltipStyle = computed(() => ({
   top: `${tooltipPos.value.y - 10}px`,
 }))
 
-// ---- Collect all pages as branches ----
-const viewGlob = import.meta.glob('../../views/**/*.vue', { eager: true })
-const leetCodeGlob = import.meta.glob('../../leetCode/*.js', { eager: true })
-const mdGlob = import.meta.glob('../../md/**/*.md', { eager: true })
+// ---- Real pages ----
+const realPages = [
+  { label: 'LeetCode 题解', route: '/code/leet-code', desc: '算法题解集' },
+  { label: '笔记', route: '/md/md-note', desc: '技术笔记' },
+  { label: '粒子特效', route: '/fun/particle-canvas', desc: 'Canvas 粒子动画' },
+  { label: '折线图', route: '/fun/line-chart', desc: '数据可视化' },
+]
 
-function baseName(p) {
-  const idx = p.lastIndexOf('/')
-  return idx >= 0 ? p.slice(idx + 1) : p
-}
+// ---- Tree structure ----
+let treeData = null    // generated once per mount, regenerated each render cycle
+let branchHitAreas = []
+let globalBranchIdx = 0
 
-function extractLeadingNumber(name) {
-  const m = String(name).match(/^\s*(\d+)\s*\./)
-  return m ? Number(m[1]) : Number.POSITIVE_INFINITY
-}
-
-const branches = computed(() => {
-  const list = []
-
-  // Main pages
-  const mainPages = [
-    { label: 'LeetCode 题解', route: '/code/leet-code', desc: '算法题解集', group: 'main', icon: '📖' },
-    { label: '笔记', route: '/md/md-note', desc: '技术笔记', group: 'main', icon: '📝' },
-    { label: '粒子特效', route: '/fun/particle-canvas', desc: 'Canvas 粒子动画', group: 'main', icon: '✨' },
-    { label: '折线图', route: '/fun/line-chart', desc: '数据可视化', group: 'main', icon: '📈' },
-  ]
-  list.push(...mainPages)
-
-  // LeetCode problems
-  const problems = Object.keys(leetCodeGlob)
-    .map(k => {
-      const name = baseName(k).replace(/\.js$/, '')
-      const num = extractLeadingNumber(name)
-      return { label: name, route: '/code/leet-code', desc: `LeetCode #${num}`, group: 'leetcode', order: num, icon: '🧩' }
-    })
-    .sort((a, b) => a.order - b.order)
-  list.push(...problems)
-
-  // MD directories & notes
-  const mdDirs = new Set()
-  const notes = Object.keys(mdGlob).map(k => {
-    const parts = k.split('/')
-    const mdIdx = parts.indexOf('md')
-    const dir = mdIdx >= 0 && parts[mdIdx + 1] ? parts[mdIdx + 1] : '未分类'
-    mdDirs.add(dir)
-    const name = baseName(k).replace(/\.md$/, '')
-    return { label: name, route: '/md/md-note', desc: dir, group: 'md', order: 1, icon: '📋' }
-  })
-  for (const dir of mdDirs) {
-    list.push({ label: dir, route: '/md/md-note', desc: '笔记分类', group: 'md-dir', order: 0, icon: '📁' })
-  }
-  list.push(...notes)
-
-  return list
-})
-
-// ---- Tree drawing engine ----
+// ---- Canvas state ----
 let ctx = null
 let animId = null
 let canvasW = 0, canvasH = 0, dpr = 1
 let growthProgress = 0
-let branchHitAreas = []
+let currentSeed = 0
 
 // Colors
 const GOLDEN = '#d4a017'
 const GOLDEN_LIGHT = '#f0c040'
 const GOLDEN_DARK = '#8b6914'
 const GREEN_LEAF = '#2d8a4e'
-const GREEN_LIGHT = '#4cbb6c'
 const GREEN_DARK = '#1a6b35'
 const BARK = '#6b4423'
 const BARK_DARK = '#3d2510'
@@ -112,7 +69,7 @@ function resize() {
   ctx.scale(dpr, dpr)
 }
 
-// Deterministic seeded RNG
+// Seeded RNG
 function createRng(seed) {
   let s = seed
   return () => {
@@ -122,14 +79,95 @@ function createRng(seed) {
 }
 
 function lerpColor(c1, c2, t) {
-  const parse = c => [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)]
-  const [r1, g1, b1] = parse(c1)
-  const [r2, g2, b2] = parse(c2)
-  const r = Math.round(r1 + (r2 - r1) * t), g = Math.round(g1 + (g2 - g1) * t), b = Math.round(b1 + (b2 - b1) * t)
-  return `rgb(${r},${g},${b})`
+  const p = c => [parseInt(c.slice(1, 3), 16), parseInt(c.slice(3, 5), 16), parseInt(c.slice(5, 7), 16)]
+  const [r1, g1, b1] = p(c1), [r2, g2, b2] = p(c2)
+  return `rgb(${Math.round(r1 + (r2 - r1) * t)},${Math.round(g1 + (g2 - g1) * t)},${Math.round(b1 + (b2 - b1) * t)})`
 }
 
-// ============ DRAW ============
+// ---- Build 4-level tree structure ----
+// Level 1: trunk splits into 2-5 main branches
+// Level 2: each main branch splits into 2-5 sub branches
+// Level 3: each sub branch splits into 2-5 twigs
+// Level 4: leaf tips (fruits) — some bound to real pages, rest are decorative
+
+function buildTree(rng) {
+  globalBranchIdx = 0
+
+  // Shuffle real pages to random assignment
+  const pages = [...realPages]
+  for (let i = pages.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1))
+    ;[pages[i], pages[j]] = [pages[j], pages[i]]
+  }
+
+  const level1Count = 2 + Math.floor(rng() * 4)  // 2-5
+  const branches = []
+
+  // Pre-calculate total leaf count so we can distribute pages
+  // First build structure, then assign pages
+  for (let i = 0; i < level1Count; i++) {
+    branches.push(buildBranch(rng, 1, i, level1Count))
+  }
+
+  // Count all leaf tips
+  const leaves = []
+  collectLeaves(branches, leaves)
+
+  // Assign real pages to random leaf positions
+  const shuffledLeaves = [...leaves]
+  for (let i = shuffledLeaves.length - 1; i > 0; i--) {
+    const j = Math.floor(rng() * (i + 1))
+    ;[shuffledLeaves[i], shuffledLeaves[j]] = [shuffledLeaves[j], shuffledLeaves[i]]
+  }
+  for (let i = 0; i < Math.min(pages.length, shuffledLeaves.length); i++) {
+    const leaf = shuffledLeaves[i]
+    leaf.page = pages[i]
+    leaf.label = pages[i].label
+  }
+
+  return branches
+}
+
+function buildBranch(rng, depth, index, siblingCount) {
+  const childCount = depth < 3
+    ? (2 + Math.floor(rng() * 4))  // 2-5 for levels 1-3
+    : 0                              // level 4 = leaf
+
+  const branch = {
+    depth,
+    index,
+    siblingCount,
+    // Visual props filled during drawing based on parent position
+    children: [],
+    page: null,
+    label: null,
+    // Random visual params (stored for consistency across frames)
+    lenRatio: 0.55 + rng() * 0.35,     // length relative to parent
+    angleOffset: 0,                      // computed during draw
+    curveWobble: (rng() - 0.5) * 12,
+    thicknessBase: 0,
+    leafSize: 2.5 + rng() * 3,
+    branchId: globalBranchIdx++,
+  }
+
+  for (let i = 0; i < childCount; i++) {
+    branch.children.push(buildBranch(rng, depth + 1, i, childCount))
+  }
+
+  return branch
+}
+
+function collectLeaves(branches, out) {
+  for (const b of branches) {
+    if (b.children.length === 0) {
+      out.push(b)
+    } else {
+      collectLeaves(b.children, out)
+    }
+  }
+}
+
+// ---- Draw ----
 
 function drawTree(progress, time) {
   if (!ctx) return
@@ -138,8 +176,11 @@ function drawTree(progress, time) {
 
   const cx = canvasW / 2
   const groundY = canvasH * 0.92
-  const trunkH = canvasH * 0.28
+  const trunkH = canvasH * 0.25
   const rng = createRng(currentSeed)
+
+  // Rebuild tree each render for randomness
+  treeData = buildTree(rng)
 
   // Ground glow
   drawGround(cx, groundY, progress)
@@ -154,10 +195,32 @@ function drawTree(progress, time) {
     drawTrunk(cx, groundY, trunkH, Math.min(1, progress * 2.5), rng)
   }
 
-  // Canopy
-  if (progress > 0.3) {
-    const canopyP = Math.min(1, (progress - 0.3) / 0.7)
-    drawCanopy(cx, groundY - trunkH, canopyP, rng, time)
+  // Branches (level 1+)
+  if (progress > 0.25) {
+    const branchP = Math.min(1, (progress - 0.25) / 0.75)
+    const trunkTopX = cx
+    const trunkTopY = groundY - trunkH
+
+    // Compute angle spread for level-1 branches
+    const l1Count = treeData.length
+    const totalSpread = Math.PI * 0.85  // ~153 degrees
+    const startAngle = -totalSpread / 2 - Math.PI / 2
+
+    for (let i = 0; i < l1Count; i++) {
+      const b = treeData[i]
+      // Distribute branches evenly with slight random offset
+      const baseAngle = startAngle + (i / (l1Count - 1 || 1)) * totalSpread
+      b.angleOffset = baseAngle + (rng() - 0.5) * 0.15
+      b.thicknessBase = 7 - b.depth * 1.5
+
+      const maxLen = canvasH * (0.20 + rng() * 0.12)
+      drawBranch(trunkTopX, trunkTopY, b, branchP, maxLen, b.angleOffset, time, rng)
+    }
+  }
+
+  // Fireflies
+  if (progress > 0.8) {
+    drawFireflies(Math.min(1, (progress - 0.8) * 5), rng)
   }
 }
 
@@ -236,317 +299,137 @@ function drawTrunk(cx, groundY, trunkH, progress, rng) {
   ctx.fillRect(cx - botW * 3, groundY - h - botW, botW * 6, h + botW * 2)
 }
 
-function drawCanopy(cx, baseY, progress, rng, time) {
-  const allBranches = branches.value
-  const leetCodePages = allBranches.filter(b => b.group === 'leetcode')
-  const mdDirPages = allBranches.filter(b => b.group === 'md-dir')
-  const mdPages = allBranches.filter(b => b.group === 'md')
-  const mainPages = allBranches.filter(b => b.group === 'main')
-  const funPages = mainPages.filter(p => p.route.startsWith('/fun'))
-  const otherPages = mainPages.filter(p => !p.route.startsWith('/fun'))
+// Recursive branch drawing
+function drawBranch(sx, sy, branch, parentProgress, maxLen, angle, time, rng) {
+  // This branch starts growing when parent is ~30% done
+  const startThreshold = 0.15 + branch.index * 0.05
+  const myProgress = Math.min(1, Math.max(0, (parentProgress - startThreshold) / (1 - startThreshold + 0.01)))
+  if (myProgress <= 0) return
 
-  // 4 main thick branches (category limbs)
-  const H = canvasH
-  const categories = [
-    { label: '题解', angle: -0.65, len: H * 0.22, thick: 7, children: [] },
-    { label: '笔记', angle: -0.15, len: H * 0.25, thick: 6, children: [] },
-    { label: '趣味', angle: 0.35, len: H * 0.20, thick: 5, children: [] },
-    { label: '更多', angle: 0.70, len: H * 0.18, thick: 5, children: [] },
-  ]
+  const len = maxLen * branch.lenRatio * myProgress
+  const ex = sx + Math.sin(angle) * len
+  const ey = sy - Math.cos(angle) * len
 
-  // ---- LeetCode → 题解 ----
-  const leetCat = categories[0]
-  const leetN = leetCodePages.length
-  for (let i = 0; i < leetN; i++) {
-    leetCat.children.push({
-      ...leetCodePages[i],
-      vAngle: -1.3 + (i / Math.max(1, leetN - 1)) * 1.5,
-      vLen: H * (0.12 + rng() * 0.14),
-      vThick: 1.2 + rng() * 1.0,
-    })
-  }
+  // Line width decreases with depth
+  const thickness = Math.max(1, branch.thicknessBase - branch.depth * 1.2)
 
-  // ---- MD dirs + notes → 笔记 ----
-  const mdCat = categories[1]
-  let di = 0
-  for (const dir of mdDirPages) {
-    mdCat.children.push({
-      ...dir,
-      vAngle: -0.55 + (di / Math.max(1, mdDirPages.length)) * 0.7,
-      vLen: H * (0.09 + rng() * 0.07),
-      vThick: 2 + rng(),
-      isSubCategory: true,
-    })
-    di++
-  }
-  for (const note of mdPages) {
-    mdCat.children.push({
-      ...note,
-      vAngle: -0.4 + rng() * 0.6,
-      vLen: H * (0.07 + rng() * 0.12),
-      vThick: 1 + rng() * 0.8,
-    })
-  }
+  // Color gradient: deeper = more green
+  const depthRatio = Math.min(1, branch.depth / 4)
+  const color = lerpColor(GOLDEN_DARK, GOLDEN, 1 - depthRatio * 0.5)
 
-  // ---- Fun → 趣味 ----
-  const funCat = categories[2]
-  for (let i = 0; i < funPages.length; i++) {
-    funCat.children.push({
-      ...funPages[i],
-      vAngle: -0.35 + (i / Math.max(1, funPages.length - 1)) * 0.7,
-      vLen: H * (0.10 + rng() * 0.10),
-      vThick: 2 + rng() * 0.5,
-    })
-  }
-
-  // ---- Other → 更多 ----
-  const otherCat = categories[3]
-  for (let i = 0; i < otherPages.length; i++) {
-    otherCat.children.push({
-      ...otherPages[i],
-      vAngle: -0.3 + (i / Math.max(1, otherPages.length - 1)) * 0.6,
-      vLen: H * (0.08 + rng() * 0.08),
-      vThick: 1.5 + rng(),
-    })
-  }
-
-  // Count real branches (categories + children)
-  const realCount = categories.length + categories.reduce((s, c) => s + c.children.length, 0)
-  // Add decorative branches to guarantee ≥ 50 visual branches
-  const minDeco = Math.max(0, 55 - realCount)
-
-  // ---- Draw thick category limbs ----
-  for (let ci = 0; ci < categories.length; ci++) {
-    const cat = categories[ci]
-    const catP = Math.min(1, progress * 2.2 - ci * 0.12)
-    if (catP <= 0) continue
-
-    const a = cat.angle
-    const len = cat.len * catP
-    const endX = cx + Math.sin(a) * len
-    const endY = baseY - Math.cos(a) * len
-
-    // Thick branch gradient
-    const grad = ctx.createLinearGradient(cx, baseY, endX, endY)
-    grad.addColorStop(0, GOLDEN_DARK)
-    grad.addColorStop(0.5, GOLDEN)
-    grad.addColorStop(1, GREEN_DARK)
-
-    ctx.beginPath()
-    ctx.moveTo(cx, baseY)
-    ctx.quadraticCurveTo(
-      cx + Math.sin(a) * len * 0.5 + (rng() - 0.5) * 10,
-      baseY - Math.cos(a) * len * 0.5 - 10,
-      endX, endY
-    )
-    ctx.strokeStyle = grad
-    ctx.lineWidth = cat.thick
-    ctx.lineCap = 'round'
-    ctx.stroke()
-
-    // Subtle glow at main branch endpoint (static)
-    if (catP > 0.5) {
-      const baseAlpha = (catP - 0.5) * 2
-      const gGrad = ctx.createRadialGradient(endX, endY, 2, endX, endY, 20)
-      gGrad.addColorStop(0, `rgba(212, 160, 23, ${baseAlpha * 0.15})`)
-      gGrad.addColorStop(1, 'rgba(0,0,0,0)')
-      ctx.fillStyle = gGrad
-      ctx.fillRect(endX - 20, endY - 20, 40, 40)
-    }
-
-    // Draw child sub-branches
-    for (let bi = 0; bi < cat.children.length; bi++) {
-      const child = cat.children[bi]
-      const bP = Math.min(1, (catP - 0.25) * 2.8 - bi * 0.008)
-      if (bP <= 0) continue
-      drawSubBranch(endX, endY, child, bP, rng, time, bi)
-    }
-  }
-
-  // ---- Decorative leaf clusters ----
-  if (progress > 0.5) {
-    drawLeafClusters(cx, baseY, categories, Math.min(1, (progress - 0.5) * 2), rng)
-  }
-
-  // ---- Extra decorative branches ----
-  if (minDeco > 0 && progress > 0.6) {
-    drawDecoBranches(cx, baseY, categories, minDeco, Math.min(1, (progress - 0.6) * 2.5), rng)
-  }
-
-  // ---- Floating pollen / firefly particles ----
-  if (progress > 0.8) {
-    drawFireflies(Math.min(1, (progress - 0.8) * 5), rng)
-  }
-}
-
-function drawSubBranch(sx, sy, branch, progress, rng, time, branchIdx) {
-  const len = branch.vLen * progress
-  const a = branch.vAngle
-  const ex = sx + Math.sin(a) * len
-  const ey = sy - Math.cos(a) * len
-
-  // Color: golden → green gradient along branch
-  const color = progress > 0.5
-    ? lerpColor(GOLDEN, GREEN_LEAF, (progress - 0.5) * 2)
-    : GOLDEN
-
+  // Draw the branch line
   ctx.beginPath()
   ctx.moveTo(sx, sy)
   ctx.quadraticCurveTo(
-    (sx + ex) / 2 + (rng() - 0.5) * 8,
-    (sy + ey) / 2 + (rng() - 0.5) * 6,
+    (sx + ex) / 2 + branch.curveWobble,
+    (sy + ey) / 2 - 8 + (rng() - 0.5) * 6,
     ex, ey
   )
   ctx.strokeStyle = color
-  ctx.lineWidth = branch.vThick
+  ctx.lineWidth = thickness
   ctx.lineCap = 'round'
   ctx.stroke()
 
-  // Leaf / fruit at tip with flicker
-  if (progress > 0.7) {
-    const alpha = (progress - 0.7) / 0.3
-    const sz = 3 + rng() * 3
-
-    // Slow flicker: each fruit has unique phase, period ~3-5s
-    const flickerSpeed = 0.25 + (branchIdx % 7) * 0.08
-    const flickerPhase = time * flickerSpeed + branchIdx * 1.7 + rng() * 0.1
-    // Smooth sine-based flicker: 0.15 ~ 1.0 range
-    const flicker = 0.15 + 0.85 * (0.5 + 0.5 * Math.sin(flickerPhase))
-
-    // Outer glow (pulsing)
-    ctx.beginPath()
-    ctx.arc(ex, ey, sz * 3, 0, Math.PI * 2)
-    ctx.fillStyle = branch.isSubCategory
-      ? `rgba(76, 187, 108, ${alpha * flicker * 0.18})`
-      : `rgba(212, 160, 23, ${alpha * flicker * 0.18})`
-    ctx.fill()
-
-    // Fruit dot
-    ctx.beginPath()
-    ctx.arc(ex, ey, sz * flicker, 0, Math.PI * 2)
-    const fruitColor = branch.isSubCategory
-      ? `rgba(76, 187, 108, ${alpha * flicker * 0.9})`
-      : `rgba(240, 192, 64, ${alpha * flicker * 0.95})`
-    ctx.fillStyle = fruitColor
-    ctx.fill()
-
-    // Fruit highlight
-    ctx.beginPath()
-    ctx.arc(ex - sz * 0.2, ey - sz * 0.2, sz * 0.4 * flicker, 0, Math.PI * 2)
-    ctx.fillStyle = `rgba(255, 255, 220, ${alpha * flicker * 0.3})`
-    ctx.fill()
-
-    // Label text: fades in/out slowly with flicker
-    if (progress > 0.85 && flicker > 0.45) {
-      const textAlpha = alpha * (flicker - 0.45) / 0.55 * 0.9
-      if (textAlpha > 0.05) {
-        ctx.save()
-        ctx.font = '11px Avenir, Helvetica, Arial, sans-serif'
-        ctx.textAlign = 'center'
-        ctx.textBaseline = 'bottom'
-        ctx.shadowColor = `rgba(0, 0, 0, ${textAlpha * 0.8})`
-        ctx.shadowBlur = 4
-        ctx.fillStyle = branch.isSubCategory
-          ? `rgba(160, 230, 180, ${textAlpha})`
-          : `rgba(255, 220, 120, ${textAlpha})`
-        ctx.fillText(branch.label, ex, ey - sz - 4)
-        ctx.shadowBlur = 0
-        ctx.restore()
-      }
+  // If leaf (level 4, no children) → draw fruit + label
+  if (branch.children.length === 0) {
+    if (myProgress > 0.5) {
+      drawFruit(ex, ey, branch, myProgress, time, rng)
     }
+    return
+  }
 
-    // Hit area
-    if (progress > 0.85) {
-      branchHitAreas.push({
-        x: ex, y: ey, radius: Math.max(14, sz * 3),
-        label: branch.label, desc: branch.desc, route: branch.route,
-      })
+  // Recurse into children
+  if (myProgress > 0.3) {
+    const childMaxLen = maxLen * branch.lenRatio * 0.85
+    const childCount = branch.children.length
+    const childSpread = Math.PI * (0.35 + rng() * 0.3)
+
+    for (let i = 0; i < childCount; i++) {
+      const child = branch.children[i]
+      // Spread children around parent direction
+      const childAngleOffset = -childSpread / 2 + (i / (childCount - 1 || 1)) * childSpread
+      child.angleOffset = angle + childAngleOffset + (rng() - 0.5) * 0.12
+      child.thicknessBase = Math.max(1, thickness - 1.5)
+
+      drawBranch(ex, ey, child, myProgress, childMaxLen, child.angleOffset, time, rng)
     }
   }
 }
 
-function drawLeafClusters(cx, baseY, categories, progress, rng) {
-  for (const cat of categories) {
-    const a = cat.angle
-    const len = cat.len
-    const bx = cx + Math.sin(a) * len
-    const by = baseY - Math.cos(a) * len
-    const n = 10 + Math.floor(rng() * 8)
-    for (let i = 0; i < n; i++) {
-      const oa = rng() * Math.PI * 2
-      const od = 12 + rng() * 40
-      const lx = bx + Math.cos(oa) * od * progress
-      const ly = by + Math.sin(oa) * od * progress - 5
-      const sz = 2 + rng() * 4
-      const isG = rng() > 0.3
-      ctx.beginPath()
-      ctx.arc(lx, ly, sz, 0, Math.PI * 2)
-      ctx.fillStyle = isG
-        ? `rgba(76, 187, 108, ${0.3 * progress})`
-        : `rgba(240, 192, 64, ${0.25 * progress})`
-      ctx.fill()
+function drawFruit(x, y, branch, progress, time, rng) {
+  const alpha = (progress - 0.5) / 0.5
+  const sz = branch.leafSize
+  const hasPage = !!branch.page
+
+  // Slow flicker
+  const flickerSpeed = 0.2 + (branch.branchId % 7) * 0.07
+  const flickerPhase = time * flickerSpeed + branch.branchId * 1.7
+  const flicker = 0.2 + 0.8 * (0.5 + 0.5 * Math.sin(flickerPhase))
+
+  // Outer glow
+  ctx.beginPath()
+  ctx.arc(x, y, sz * 3 * flicker, 0, Math.PI * 2)
+  ctx.fillStyle = hasPage
+    ? `rgba(240, 192, 64, ${alpha * flicker * 0.22})`
+    : `rgba(76, 187, 108, ${alpha * flicker * 0.15})`
+  ctx.fill()
+
+  // Fruit
+  ctx.beginPath()
+  ctx.arc(x, y, sz * flicker, 0, Math.PI * 2)
+  ctx.fillStyle = hasPage
+    ? `rgba(240, 192, 64, ${alpha * flicker * 0.95})`
+    : `rgba(76, 187, 108, ${alpha * flicker * 0.75})`
+  ctx.fill()
+
+  // Highlight
+  ctx.beginPath()
+  ctx.arc(x - sz * 0.2, y - sz * 0.2, sz * 0.35 * flicker, 0, Math.PI * 2)
+  ctx.fillStyle = `rgba(255, 255, 220, ${alpha * flicker * 0.25})`
+  ctx.fill()
+
+  // Label text — only for branches with pages, slow fade in/out
+  if (hasPage && flicker > 0.4) {
+    const textAlpha = alpha * (flicker - 0.4) / 0.6 * 0.95
+    if (textAlpha > 0.05) {
+      ctx.save()
+      ctx.font = 'bold 12px Avenir, Helvetica, Arial, sans-serif'
+      ctx.textAlign = 'center'
+      ctx.textBaseline = 'bottom'
+      ctx.shadowColor = `rgba(0, 0, 0, ${textAlpha * 0.8})`
+      ctx.shadowBlur = 4
+      ctx.fillStyle = `rgba(255, 220, 120, ${textAlpha})`
+      ctx.fillText(branch.page.label, x, y - sz - 5)
+      ctx.shadowBlur = 0
+      ctx.restore()
     }
   }
-}
 
-function drawDecoBranches(cx, baseY, categories, count, progress, rng) {
-  for (let i = 0; i < count; i++) {
-    let sx, sy, ba
-    if (rng() < 0.35) {
-      // From trunk
-      sy = baseY + canvasH * 0.28 - rng() * canvasH * 0.18
-      sx = cx + (rng() - 0.5) * 12
-      ba = (rng() - 0.5) * 1.4
-    } else {
-      // From a random category limb
-      const cat = categories[Math.floor(rng() * categories.length)]
-      const a = cat.angle
-      const len = cat.len * rng() * 0.75
-      sx = cx + Math.sin(a) * len
-      sy = baseY - Math.cos(a) * len
-      ba = a + (rng() - 0.5) * 1.0
-    }
-    const bLen = (18 + rng() * 30) * progress
-    const ex = sx + Math.sin(ba) * bLen
-    const ey = sy - Math.cos(ba) * bLen
-
-    ctx.beginPath()
-    ctx.moveTo(sx, sy)
-    ctx.lineTo(ex, ey)
-    ctx.strokeStyle = `rgba(212, 160, 23, ${0.25 + rng() * 0.35})`
-    ctx.lineWidth = 0.8 + rng() * 1.2
-    ctx.lineCap = 'round'
-    ctx.stroke()
-
-    // Tiny leaf
-    if (progress > 0.4) {
-      const sz = 1.5 + rng() * 2.5
-      const isG = rng() > 0.35
-      ctx.beginPath()
-      ctx.arc(ex, ey, sz, 0, Math.PI * 2)
-      ctx.fillStyle = isG
-        ? `rgba(76, 187, 108, ${0.4 * progress})`
-        : `rgba(240, 192, 64, ${0.35 * progress})`
-      ctx.fill()
-    }
+  // Hit area — only for branches with real pages
+  if (hasPage && progress > 0.7) {
+    branchHitAreas.push({
+      x, y,
+      radius: Math.max(16, sz * 3),
+      label: branch.page.label,
+      desc: branch.page.desc,
+      route: branch.page.route,
+    })
   }
 }
 
 function drawFireflies(progress, rng) {
-  const n = 12
+  const n = 15
   for (let i = 0; i < n; i++) {
-    const fx = canvasW * 0.15 + rng() * canvasW * 0.7
-    const fy = canvasH * 0.1 + rng() * canvasH * 0.55
+    const fx = canvasW * 0.1 + rng() * canvasW * 0.8
+    const fy = canvasH * 0.08 + rng() * canvasH * 0.6
     const sz = 1.5 + rng() * 2
     const alpha = (0.3 + rng() * 0.5) * progress
 
-    // Outer glow
     ctx.beginPath()
     ctx.arc(fx, fy, sz * 4, 0, Math.PI * 2)
     ctx.fillStyle = `rgba(240, 192, 64, ${alpha * 0.08})`
     ctx.fill()
 
-    // Core
     ctx.beginPath()
     ctx.arc(fx, fy, sz, 0, Math.PI * 2)
     ctx.fillStyle = `rgba(255, 240, 180, ${alpha})`
@@ -558,13 +441,15 @@ function drawFireflies(progress, rng) {
 const GROWTH_MS = 4200
 let startTime = null
 let fullyGrown = false
-let currentSeed = Math.floor(Math.random() * 2147483646) + 1
+
+function newSeed() {
+  currentSeed = Math.floor(Math.random() * 2147483646) + 1
+}
 
 function animate(ts) {
   if (!startTime) startTime = ts
   const elapsed = ts - startTime
   let t = Math.min(1, elapsed / GROWTH_MS)
-  // Ease-out cubic
   growthProgress = 1 - Math.pow(1 - t, 3)
   drawTree(growthProgress, ts * 0.001)
   if (t < 1) {
@@ -576,11 +461,9 @@ function animate(ts) {
   }
 }
 
-// Idle: subtle sway + firefly shimmer
 let idleTime = 0
 function idleLoop(ts) {
   idleTime += 0.01
-  // Redraw with slight animated shimmer on fireflies
   drawTree(1, idleTime)
   animId = requestAnimationFrame(idleLoop)
 }
@@ -622,6 +505,7 @@ function onMouseLeave() {
 }
 
 onMounted(() => {
+  newSeed()
   resize()
   window.addEventListener('resize', resize)
   animId = requestAnimationFrame(animate)
