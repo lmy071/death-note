@@ -12,11 +12,11 @@
           ref="cvs"
           class="main-canvas"
           @mousemove="onMove"
-          @mouseenter="mouseInside = true"
-          @mouseleave="mouseInside = false"
+          @mouseenter="handleMouseEnter"
+          @mouseleave="handleMouseLeave"
           @touchmove.prevent="onTouchMove"
-          @touchstart.prevent="mouseInside = true"
-          @touchend="mouseInside = false"
+          @touchstart.prevent="handleTouchStart"
+          @touchend="handleTouchEnd"
         ></canvas>
       </section>
 
@@ -47,27 +47,57 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 
-const cvs = ref(null)
-let ctx = null
-let animId = null
+const cvs = ref<HTMLCanvasElement | null>(null)
+let ctx: CanvasRenderingContext2D | null = null
+let animId: number | null = null
 let w = 0, h = 0
 let dpr = 1
 
 let mx = -100, my = -100
-let mouseInside = false
-const particles = []
+let mouseInside: boolean = false
+
+function handleMouseEnter(): void { mouseInside = true }
+function handleMouseLeave(): void { mouseInside = false }
+function handleTouchStart(): void { mouseInside = true }
+function handleTouchEnd(): void { mouseInside = false }
+
+interface Particle {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  radius: number
+  life: number
+  decay: number
+  color: string
+  gravity: number
+  update: () => void
+  draw: () => void
+}
+
+const particles: Particle[] = []
 const MAX_PARTICLES = 180
 
-const PALETTE = [
+const PALETTE: string[] = [
   '#82b1ff', '#b388ff', '#8c9eff',
   '#84ffff', '#ff80ab', '#ffd740', '#69f0ae',
 ]
 
-class Particle {
-  constructor(x, y) {
+class ParticleImpl implements Particle {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  radius: number
+  life: number
+  decay: number
+  color: string
+  gravity: number
+
+  constructor(x: number, y: number) {
     this.x = x; this.y = y
     const ang = Math.random() * Math.PI * 2
     const spd = Math.random() * 3.5
@@ -79,14 +109,17 @@ class Particle {
     this.color = PALETTE[Math.floor(Math.random() * PALETTE.length)]
     this.gravity = 0.018
   }
-  update() {
+
+  update(): void {
     this.x += this.vx; this.y += this.vy
     this.vy += this.gravity
     this.vx *= 0.99
     this.life -= this.decay
     this.radius *= 0.994
   }
-  draw() {
+
+  draw(): void {
+    if (!ctx) return
     const a = Math.max(0, this.life)
     ctx.globalAlpha = a
     ctx.beginPath()
@@ -102,27 +135,27 @@ class Particle {
   }
 }
 
-function spawn(x, y, n) {
+function spawn(x: number, y: number, n: number): void {
   for (let i = 0; i < n; i++) {
     if (particles.length >= MAX_PARTICLES) particles.shift()
-    particles.push(new Particle(x, y))
+    particles.push(new ParticleImpl(x, y))
   }
 }
 
-function resize() {
+function resize(): void {
   const el = cvs.value
   if (!el) return
-  const rect = el.parentElement.getBoundingClientRect()
+  const rect = el.parentElement!.getBoundingClientRect()
   dpr = window.devicePixelRatio || 1
   w = rect.width
   h = 480
   el.width = w * dpr
   el.height = h * dpr
   ctx = el.getContext('2d')
-  ctx.scale(dpr, dpr)
+  if (ctx) ctx.scale(dpr, dpr)
 }
 
-function render() {
+function render(): void {
   if (!ctx) return
   ctx.clearRect(0, 0, w, h)
 
@@ -139,12 +172,17 @@ function render() {
   animId = requestAnimationFrame(render)
 }
 
-function onMove(e) {
-  const r = cvs.value.getBoundingClientRect()
+function onMove(e: MouseEvent): void {
+  const el = cvs.value
+  if (!el) return
+  const r = el.getBoundingClientRect()
   mx = e.clientX - r.left; my = e.clientY - r.top
 }
-function onTouchMove(e) {
-  const r = cvs.value.getBoundingClientRect()
+
+function onTouchMove(e: TouchEvent): void {
+  const el = cvs.value
+  if (!el) return
+  const r = el.getBoundingClientRect()
   mx = e.touches[0].clientX - r.left; my = e.touches[0].clientY - r.top
 }
 
@@ -153,6 +191,7 @@ onMounted(() => {
   window.addEventListener('resize', resize)
   animId = requestAnimationFrame(render)
 })
+
 onUnmounted(() => {
   window.removeEventListener('resize', resize)
   if (animId) cancelAnimationFrame(animId)

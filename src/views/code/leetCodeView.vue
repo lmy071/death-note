@@ -59,7 +59,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, ref } from 'vue'
 import hljs from 'highlight.js/lib/core'
 import javascript from 'highlight.js/lib/languages/javascript'
@@ -67,29 +67,39 @@ import 'highlight.js/styles/github-dark.css'
 
 hljs.registerLanguage('javascript', javascript)
 
-const rawGlob = import.meta.glob('../../leetCode/*.js', { query: '?raw', eager: true })
-const rawModules = Object.fromEntries(
+interface LeetCodeItem {
+  key: string
+  name: string
+  path: string
+  order: number
+  bytes: number
+  lines: number
+  code: string
+}
+
+const rawGlob = import.meta.glob<{ default: string }>('../../leetCode/*.js', { query: '?raw', eager: true })
+const rawModules: Record<string, string> = Object.fromEntries(
   Object.entries(rawGlob).map(([k, mod]) => [k, mod.default])
 )
 
-function baseName(p) {
+function baseName(p: string): string {
   const idx = p.lastIndexOf('/')
   return idx >= 0 ? p.slice(idx + 1) : p
 }
 
-function extractLeadingNumber(name) {
+function extractLeadingNumber(name: string): number {
   const m = String(name).match(/^\s*(\d+)\s*\./)
   return m ? Number(m[1]) : Number.POSITIVE_INFINITY
 }
 
-function toBytes(s) { return String(s).length }
-function countLines(s) {
+function toBytes(s: string): number { return String(s).length }
+function countLines(s: string | undefined): number {
   const str = String(s ?? '')
   if (!str) return 0
   return str.endsWith('\n') ? str.split('\n').length - 1 : str.split('\n').length
 }
 
-const items = computed(() => {
+const items = computed<LeetCodeItem[]>(() => {
   const list = Object.entries(rawModules).map(([key, code]) => {
     const name = baseName(key)
     const text = String(code ?? '')
@@ -112,16 +122,16 @@ const items = computed(() => {
 const query = ref('')
 const activeKey = ref(items.value[0]?.key ?? '')
 
-const filteredItems = computed(() => {
+const filteredItems = computed<LeetCodeItem[]>(() => {
   const q = query.value.toLowerCase()
   if (!q) return items.value
   return items.value.filter((x) => x.name.toLowerCase().includes(q))
 })
 
-const activeItem = computed(() => items.value.find((x) => x.key === activeKey.value))
-const activeCode = computed(() => activeItem.value?.code ?? '')
+const activeItem = computed<LeetCodeItem | undefined>(() => items.value.find((x) => x.key === activeKey.value))
+const activeCode = computed<string>(() => activeItem.value?.code ?? '')
 
-const highlightedHtml = computed(() => {
+const highlightedHtml = computed<string>(() => {
   const code = activeCode.value
   if (!code) return ''
   try {
@@ -131,9 +141,9 @@ const highlightedHtml = computed(() => {
   }
 })
 
-function select(key) { activeKey.value = key }
+function select(key: string): void { activeKey.value = key }
 
-function formatBytes(bytes) {
+function formatBytes(bytes: number): string {
   const b = Number(bytes || 0)
   if (b < 1024) return `${b} B`
   const kb = b / 1024
@@ -141,7 +151,7 @@ function formatBytes(bytes) {
   return `${(kb / 1024).toFixed(1)} MB`
 }
 
-async function copyActive() {
+async function copyActive(): Promise<void> {
   const text = activeCode.value
   if (!text) return
   try { await navigator.clipboard.writeText(text) } catch {

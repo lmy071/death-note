@@ -1,24 +1,22 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'
+import type { Component } from 'vue'
 
 // 自动扫描 src/views 下所有 .vue 文件，根据文件结构生成路由
-const viewModules = import.meta.glob('../views/**/*.vue', { eager: true })
+const viewModules = import.meta.glob<{ default: Component }>('../views/**/*.vue', { eager: true })
 
 /**
  * 文件路径 -> 路由 path（项目约定）
  * ../views/HomeView.vue          -> /
  * ../views/code/leetCodeView.vue -> /code/leet-code
  */
-function toRoutePath(filePath) {
-  // 去掉 "../views" 前缀和 ".vue" 后缀
+function toRoutePath(filePath: string): string {
   const relative = filePath
     .replace('../views', '')
     .replace('.vue', '')
 
-  // 去掉末尾的 "View" 后缀（项目命名约定）
   const withoutView = relative.replace(/View$/, '')
 
-  // 按目录分隔符分段，每段转 kebab-case
-  const segments = withoutView.split('/').map((seg) =>
+  const segments = withoutView.split('/').map((seg: string) =>
     seg
       .replace(/([A-Z])/g, '-$1')
       .toLowerCase()
@@ -27,7 +25,6 @@ function toRoutePath(filePath) {
 
   const routePath = '/' + segments.filter(Boolean).join('/')
 
-  // Home 特殊处理
   if (routePath === '/' || routePath === '/home') {
     return '/'
   }
@@ -35,7 +32,7 @@ function toRoutePath(filePath) {
   return routePath
 }
 
-function toRouteName(filePath) {
+function toRouteName(filePath: string): string {
   const relative = filePath
     .replace('../views', '')
     .replace('.vue', '')
@@ -44,7 +41,7 @@ function toRouteName(filePath) {
 }
 
 // 生成路由配置
-const autoRoutes = Object.entries(viewModules).map(([key, mod]) => {
+const autoRoutes: RouteRecordRaw[] = Object.entries(viewModules).map(([key, mod]) => {
   return {
     path: toRoutePath(key),
     name: toRouteName(key),

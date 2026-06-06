@@ -11,37 +11,57 @@
   ></canvas>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 
-const cvs = ref(null)
-let ctx = null
-let animId = null
+const cvs = ref<HTMLCanvasElement | null>(null)
+let ctx: CanvasRenderingContext2D | null = null
+let animId: number | null = null
 let w = 0, h = 0
 let dpr = 1
 
-// Mouse state
 let mx = -100, my = -100
 let mouseInside = false
 
-// Particles array
-const particles = []
+interface Particle {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  radius: number
+  life: number
+  decay: number
+  color: string
+  gravity: number
+  update: () => void
+  draw: () => void
+}
+
+const particles: Particle[] = []
 const MAX_PARTICLES = 120
 
-// Color palette — match dark theme
-const PALETTE = [
-  '#82b1ff', // blue
-  '#b388ff', // purple
-  '#8c9eff', // indigo
-  '#84ffff', // cyan
-  '#ff80ab', // pink
-  '#ffd740', // amber
-  '#69f0ae', // green
+const PALETTE: string[] = [
+  '#82b1ff',
+  '#b388ff',
+  '#8c9eff',
+  '#84ffff',
+  '#ff80ab',
+  '#ffd740',
+  '#69f0ae',
 ]
 
-// Particle class
-class Particle {
-  constructor(x, y) {
+class ParticleImpl implements Particle {
+  x: number
+  y: number
+  vx: number
+  vy: number
+  radius: number
+  life: number
+  decay: number
+  color: string
+  gravity: number
+
+  constructor(x: number, y: number) {
     this.x = x
     this.y = y
     this.vx = (Math.random() - 0.5) * 3
@@ -53,23 +73,23 @@ class Particle {
     this.gravity = 0.02
   }
 
-  update() {
+  update(): void {
     this.x += this.vx
     this.y += this.vy
     this.vy += this.gravity
-    this.vx *= 0.99 // slight friction
+    this.vx *= 0.99
     this.life -= this.decay
-    this.radius *= 0.995 // slight shrink
+    this.radius *= 0.995
   }
 
-  draw() {
+  draw(): void {
+    if (!ctx) return
     const alpha = this.life
     ctx.globalAlpha = alpha
     ctx.beginPath()
     ctx.arc(this.x, this.y, Math.max(0.3, this.radius), 0, Math.PI * 2)
     ctx.fillStyle = this.color
     ctx.fill()
-    // Glow
     ctx.beginPath()
     ctx.arc(this.x, this.y, Math.max(0.3, this.radius * 1.8), 0, Math.PI * 2)
     ctx.fillStyle = this.color
@@ -79,14 +99,14 @@ class Particle {
   }
 }
 
-function spawnBurst(x, y, count) {
+function spawnBurst(x: number, y: number, count: number): void {
   for (let i = 0; i < count; i++) {
     if (particles.length >= MAX_PARTICLES) particles.shift()
-    particles.push(new Particle(x, y))
+    particles.push(new ParticleImpl(x, y))
   }
 }
 
-function resize() {
+function resize(): void {
   const el = cvs.value
   if (!el) return
   const rect = el.getBoundingClientRect()
@@ -96,19 +116,17 @@ function resize() {
   el.width = w * dpr
   el.height = h * dpr
   ctx = el.getContext('2d')
-  ctx.scale(dpr, dpr)
+  if (ctx) ctx.scale(dpr, dpr)
 }
 
-function render() {
+function render(): void {
   if (!ctx) return
   ctx.clearRect(0, 0, w, h)
 
-  // Spawn particles when mouse is inside
   if (mouseInside && mx > 0 && my > 0 && mx < w && my < h) {
     spawnBurst(mx, my, 2)
   }
 
-  // Update + draw
   for (let i = particles.length - 1; i >= 0; i--) {
     const p = particles[i]
     p.update()
@@ -119,20 +137,31 @@ function render() {
   animId = requestAnimationFrame(render)
 }
 
-function onMove(e) {
-  const rect = cvs.value.getBoundingClientRect()
+function onMove(e: MouseEvent): void {
+  const el = cvs.value
+  if (!el) return
+  const rect = el.getBoundingClientRect()
   mx = e.clientX - rect.left
   my = e.clientY - rect.top
 }
-function onEnter(e) {
+
+function onEnter(e: MouseEvent | TouchEvent): void {
   mouseInside = true
-  const rect = cvs.value.getBoundingClientRect()
-  mx = e.clientX - rect.left
-  my = e.clientY - rect.top
+  const el = cvs.value
+  if (!el) return
+  const rect = el.getBoundingClientRect()
+  if (e instanceof MouseEvent) {
+    mx = e.clientX - rect.left
+    my = e.clientY - rect.top
+  }
 }
-function onLeave() { mouseInside = false }
-function onTouchMove(e) {
-  const rect = cvs.value.getBoundingClientRect()
+
+function onLeave(): void { mouseInside = false }
+
+function onTouchMove(e: TouchEvent): void {
+  const el = cvs.value
+  if (!el) return
+  const rect = el.getBoundingClientRect()
   mx = e.touches[0].clientX - rect.left
   my = e.touches[0].clientY - rect.top
   mouseInside = true
@@ -143,6 +172,7 @@ onMounted(() => {
   window.addEventListener('resize', resize)
   animId = requestAnimationFrame(render)
 })
+
 onUnmounted(() => {
   window.removeEventListener('resize', resize)
   if (animId) cancelAnimationFrame(animId)

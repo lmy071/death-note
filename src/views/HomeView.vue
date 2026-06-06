@@ -10,7 +10,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import WorldTree from '../components/WorldTree.vue'
 </script>
 

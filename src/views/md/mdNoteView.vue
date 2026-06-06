@@ -60,7 +60,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { computed, ref } from 'vue'
 import { Marked } from 'marked'
 import { markedHighlight } from 'marked-highlight'
@@ -82,7 +82,7 @@ hljs.registerLanguage('json', json)
 const marked = new Marked(
   markedHighlight({
     langPrefix: 'hljs language-',
-    highlight(code, lang) {
+    highlight(code: string, lang: string): string {
       if (lang && hljs.getLanguage(lang)) {
         try { return hljs.highlight(code, { language: lang, ignoreIllegals: true }).value } catch {}
       }
@@ -94,29 +94,42 @@ const marked = new Marked(
 
 marked.setOptions({ gfm: true, breaks: false })
 
+// ---- Types ----
+interface MdItem {
+  key: string
+  name: string
+  group: string
+  path: string
+  bytes: number
+  code: string
+}
+
+interface MdGroup {
+  name: string
+  children: MdItem[]
+}
+
 // ---- Scan md files ----
-const rawGlob = import.meta.glob('../../md/**/*.md', { query: '?raw', eager: true })
-const rawModules = Object.fromEntries(
+const rawGlob = import.meta.glob<{ default: string }>('../../md/**/*.md', { query: '?raw', eager: true })
+const rawModules: Record<string, string> = Object.fromEntries(
   Object.entries(rawGlob).map(([k, mod]) => [k, mod.default])
 )
 
-function baseName(p) {
+function baseName(p: string): string {
   const idx = p.lastIndexOf('/')
   return idx >= 0 ? p.slice(idx + 1) : p
 }
 
-function extractGroup(key) {
-  // ../../md/vue3解析/v-model的实现.md → vue3解析
+function extractGroup(key: string): string {
   const parts = key.split('/')
-  // find 'md' segment, next is the group
   const mdIdx = parts.indexOf('md')
   if (mdIdx >= 0 && parts[mdIdx + 1]) return parts[mdIdx + 1]
   return '未分类'
 }
 
-function toBytes(s) { return new Blob([s]).size }
+function toBytes(s: string): number { return new Blob([s]).size }
 
-const items = computed(() => {
+const items = computed<MdItem[]>(() => {
   return Object.entries(rawModules).map(([key, code]) => {
     const name = baseName(key).replace(/\.md$/, '')
     const text = String(code ?? '')
@@ -131,11 +144,11 @@ const items = computed(() => {
 })
 
 // ---- Tree structure ----
-const tree = computed(() => {
-  const map = new Map()
+const tree = computed<MdGroup[]>(() => {
+  const map = new Map<string, MdItem[]>()
   for (const item of items.value) {
     if (!map.has(item.group)) map.set(item.group, [])
-    map.get(item.group).push(item)
+    map.get(item.group)!.push(item)
   }
   return Array.from(map.entries())
     .sort(([a], [b]) => a.localeCompare(b, 'zh-Hans-CN-u-co-pinyin'))
@@ -146,7 +159,7 @@ const query = ref('')
 const openGroups = ref(new Set(tree.value.map(g => g.name)))
 const activeKey = ref('')
 
-const filteredTree = computed(() => {
+const filteredTree = computed<MdGroup[]>(() => {
   const q = query.value.toLowerCase()
   if (!q) return tree.value
   return tree.value
@@ -157,23 +170,23 @@ const filteredTree = computed(() => {
     .filter(g => g.children.length > 0)
 })
 
-const activeItem = computed(() => items.value.find(x => x.key === activeKey.value))
+const activeItem = computed<MdItem | undefined>(() => items.value.find(x => x.key === activeKey.value))
 
-const renderedHtml = computed(() => {
+const renderedHtml = computed<string>(() => {
   const code = activeItem.value?.code
   if (!code) return ''
-  try { return marked.parse(code) } catch { return '' }
+  try { return marked.parse(code) as string } catch { return '' }
 })
 
-function toggleGroup(name) {
+function toggleGroup(name: string): void {
   const s = new Set(openGroups.value)
   if (s.has(name)) s.delete(name); else s.add(name)
   openGroups.value = s
 }
 
-function select(key) { activeKey.value = key }
+function select(key: string): void { activeKey.value = key }
 
-function formatBytes(bytes) {
+function formatBytes(bytes: number): string {
   const b = Number(bytes || 0)
   if (b < 1024) return `${b} B`
   const kb = b / 1024
