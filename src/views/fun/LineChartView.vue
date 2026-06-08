@@ -28,10 +28,24 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import LineChart from '../../components/LineChart.vue'
 
-const chart1 = {
+interface ChartConfig {
+  xAxis: { data: string[] }
+  yAxis: { splitNumber?: number }
+  series: Array<{
+    name?: string
+    data: number[]
+    area?: boolean
+    color?: string
+    areaOpacity?: number
+    smooth?: boolean
+    lineWidth?: number
+  }>
+}
+
+const chart1: ChartConfig = {
   xAxis: { data: ['1月', '2月', '3月', '4月', '5月', '6月', '7月'] },
   yAxis: { splitNumber: 6 },
   series: [
@@ -41,7 +55,7 @@ const chart1 = {
   ]
 }
 
-const chart2 = {
+const chart2: ChartConfig = {
   xAxis: { data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
   yAxis: { splitNumber: 5 },
   series: [
@@ -61,7 +75,7 @@ const chart2 = {
   ]
 }
 
-const chart3 = {
+const chart3: ChartConfig = {
   xAxis: {
     data: Array.from({ length: 24 }, (_, i) => `${i}:00`)
   },

@@ -33,43 +33,101 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, computed, onMounted, onUnmounted, watch } from 'vue'
 
-const props = defineProps({
-  options: { type: Object, default: () => ({}) },
-  height: { type: Number, default: 360 }
-})
+// ---- Types ----
+interface ChartSeries {
+  name?: string
+  data: number[]
+  color?: string
+  smooth?: boolean
+  area?: boolean
+  lineWidth?: number
+  areaOpacity?: number
+  _color: string
+  _hidden: boolean
+  _smooth: boolean
+  _area: boolean
+  _lineWidth: number
+  _areaOpacity: number
+}
 
-const cvs = ref(null)
-const wrap = ref(null)
-let ctx = null
+interface TooltipItem {
+  name: string
+  color: string
+  value: number
+}
+
+interface TooltipState {
+  visible: boolean
+  x: number
+  y: number
+  title: string
+  items: TooltipItem[]
+}
+
+interface Point {
+  x: number
+  y: number
+  value: number
+}
+
+interface ChartOptions {
+  xAxis?: { data?: string[] }
+  yAxis?: {
+    min?: number
+    max?: number
+    splitNumber?: number
+    formatter?: (v: number) => string
+  }
+  series?: Array<{
+    name?: string
+    data: number[]
+    color?: string
+    smooth?: boolean
+    area?: boolean
+    lineWidth?: number
+    areaOpacity?: number
+  }>
+  legend?: boolean
+}
+
+// ---- Props ----
+const props = defineProps<{
+  options: ChartOptions
+  height?: number
+}>()
+
+const cvs = ref<HTMLCanvasElement | null>(null)
+const wrap = ref<HTMLDivElement | null>(null)
+let ctx: CanvasRenderingContext2D | null = null
 let w = 0
 let h = 0
 let dpr = 1
-let animId = null
-let animProgress = 0  // 0 → 1
+let animId: number | null = null
+let animProgress = 0
 let animStart = 0
-const ANIM_DURATION = 800 // ms
+const ANIM_DURATION = 800
 
 // Padding for chart area
 const PAD = { top: 20, right: 20, bottom: 40, left: 50 }
 
 // Tooltip state
-const tooltip = reactive({ visible: false, x: 0, y: 0, title: '', items: [] })
+const tooltip = reactive<TooltipState>({ visible: false, x: 0, y: 0, title: '', items: [] })
 
-// Derive normalized series with colors
+// Color palette
 const palette = [
   '#82b1ff', '#ff80ab', '#69f0ae', '#ffd740', '#b388ff',
   '#84ffff', '#ff6e40', '#40c4ff', '#ea80fc', '#b2ff59'
 ]
 
-const series = computed(() => {
+const series = computed<ChartSeries[]>(() => {
   const raw = props.options.series || []
   return raw.map((s, i) => ({
     ...s,
     _color: s.color || palette[i % palette.length],
-    _hidden: s._hidden || false,
+    _hidden: false,
     _smooth: s.smooth !== false,
     _area: s.area || false,
     _lineWidth: s.lineWidth || 2,
@@ -77,37 +135,34 @@ const series = computed(() => {
   }))
 })
 
-const xData = computed(() => props.options.xAxis?.data || [])
-const yMin = computed(() => props.options.yAxis?.min ?? 0)
-const yMax = computed(() => props.options.yAxis?.max ?? autoYMax())
-const yLabelFormatter = computed(() => props.options.yAxis?.formatter || (v => v))
+const xData = computed<string[]>(() => props.options.xAxis?.data || [])
+const yMin = computed<number>(() => props.options.yAxis?.min ?? 0)
+const yMax = computed<number>(() => props.options.yAxis?.max ?? autoYMax())
+const yLabelFormatter = computed<(v: number) => string>(() => props.options.yAxis?.formatter || ((v: number) => String(v)))
 
-function autoYMax() {
+function autoYMax(): number {
   if (!series.value.length) return 100
   let max = -Infinity
   series.value.forEach(s => {
     if (!s._hidden && s.data) s.data.forEach(v => { if (v > max) max = v })
   })
   if (max <= 0) return 100
-  // Round up to nice number
   const mag = Math.pow(10, Math.floor(Math.log10(max)))
   return Math.ceil(max / mag) * mag
 }
 
-// Grid lines
-const yTicks = computed(() => {
+const yTicks = computed<number[]>(() => {
   const count = props.options.yAxis?.splitNumber || 5
   const min = yMin.value
   const max = yMax.value
   const step = (max - min) / (count - 1)
-  const ticks = []
+  const ticks: number[] = []
   for (let i = 0; i < count; i++) {
     ticks.push(min + step * i)
   }
   return ticks
 })
 
-// Axis text styling
 const AXIS_STYLE = {
   font: '11px -apple-system, BlinkMacSystemFont, sans-serif',
   color: 'rgba(230,232,239,0.55)',
@@ -116,89 +171,85 @@ const AXIS_STYLE = {
 }
 
 /* ===== Drawing ===== */
-function resize() {
+function resize(): void {
   const el = wrap.value
   if (!el) return
   const rect = el.getBoundingClientRect()
   dpr = Math.min(window.devicePixelRatio || 1, 2)
   w = rect.width
-  h = props.height
-  cvs.value.width = w * dpr
-  cvs.value.height = h * dpr
-  cvs.value.style.width = w + 'px'
-  cvs.value.style.height = h + 'px'
-  ctx = cvs.value.getContext('2d')
-  ctx.scale(dpr, dpr)
+  h = props.height ?? 360
+  if (cvs.value) {
+    cvs.value.width = w * dpr
+    cvs.value.height = h * dpr
+    cvs.value.style.width = w + 'px'
+    cvs.value.style.height = h + 'px'
+    ctx = cvs.value.getContext('2d')
+    if (ctx) ctx.scale(dpr, dpr)
+  }
   draw()
 }
 
-function chartW() { return w - PAD.left - PAD.right }
-function chartH() { return h - PAD.top - PAD.bottom }
-function xToPixel(index) {
+function chartW(): number { return w - PAD.left - PAD.right }
+function chartH(): number { return h - PAD.top - PAD.bottom }
+function xToPixel(index: number): number {
   const len = Math.max(1, xData.value.length - 1)
   return PAD.left + (index / len) * chartW()
 }
-function yToPixel(val) {
+function yToPixel(val: number): number {
   const range = yMax.value - yMin.value || 1
   return PAD.top + chartH() * (1 - (val - yMin.value) / range)
 }
 
-function drawGrid() {
+function drawGrid(): void {
   if (!ctx || w === 0) return
   ctx.clearRect(0, 0, w, h)
 
   const cw = chartW()
   const ch = chartH()
 
-  // Y axis grid lines + labels
   ctx.textAlign = 'right'
   ctx.textBaseline = 'middle'
   yTicks.value.forEach(tick => {
     const y = yToPixel(tick)
-    // Grid line
-    ctx.beginPath()
-    ctx.strokeStyle = AXIS_STYLE.gridColor
-    ctx.lineWidth = 1
-    ctx.moveTo(PAD.left, y)
-    ctx.lineTo(PAD.left + cw, y)
-    ctx.stroke()
+    ctx!.beginPath()
+    ctx!.strokeStyle = AXIS_STYLE.gridColor
+    ctx!.lineWidth = 1
+    ctx!.moveTo(PAD.left, y)
+    ctx!.lineTo(PAD.left + cw, y)
+    ctx!.stroke()
 
-    // Label
-    ctx.fillStyle = AXIS_STYLE.color
-    ctx.font = AXIS_STYLE.font
-    ctx.fillText(yLabelFormatter.value(tick), PAD.left - 8, y)
+    ctx!.fillStyle = AXIS_STYLE.color
+    ctx!.font = AXIS_STYLE.font
+    ctx!.fillText(yLabelFormatter.value(tick), PAD.left - 8, y)
   })
 
-  // X axis labels
   ctx.textAlign = 'center'
   ctx.textBaseline = 'top'
   xData.value.forEach((label, i) => {
     const x = xToPixel(i)
-    ctx.fillStyle = AXIS_STYLE.color
-    ctx.font = AXIS_STYLE.font
-    ctx.fillText(label, x, PAD.top + ch + 8)
+    ctx!.fillStyle = AXIS_STYLE.color
+    ctx!.font = AXIS_STYLE.font
+    ctx!.fillText(label, x, PAD.top + ch + 8)
   })
 
-  // Axis lines
   ctx.beginPath()
   ctx.strokeStyle = AXIS_STYLE.axisColor
   ctx.lineWidth = 1
-  // Y axis
   ctx.moveTo(PAD.left, PAD.top)
   ctx.lineTo(PAD.left, PAD.top + ch)
-  // X axis
   ctx.moveTo(PAD.left, PAD.top + ch)
   ctx.lineTo(PAD.left + cw, PAD.top + ch)
   ctx.stroke()
 }
 
-function drawSeries(progress = 1) {
+function drawSeries(progress = 1): void {
   if (!ctx) return
+  const c = ctx
 
   series.value.forEach(s => {
     if (s._hidden || !s.data?.length) return
 
-    const points = s.data.map((v, i) => ({
+    const points: Point[] = s.data.map((v, i) => ({
       x: xToPixel(i),
       y: yToPixel(v),
       value: v
@@ -210,7 +261,6 @@ function drawSeries(progress = 1) {
     // Area fill
     if (s._area && visible.length > 1) {
       const areaPath = new Path2D()
-      // Top line
       if (s._smooth) {
         areaPath.moveTo(visible[0].x, visible[0].y)
         for (let i = 0; i < visible.length - 1; i++) {
@@ -221,80 +271,78 @@ function drawSeries(progress = 1) {
         areaPath.moveTo(visible[0].x, visible[0].y)
         for (let i = 1; i < visible.length; i++) areaPath.lineTo(visible[i].x, visible[i].y)
       }
-      // Down to baseline
       areaPath.lineTo(visible[visible.length - 1].x, PAD.top + chartH())
       areaPath.lineTo(visible[0].x, PAD.top + chartH())
       areaPath.closePath()
 
-      // Gradient fill
-      const grad = ctx.createLinearGradient(0, PAD.top, 0, PAD.top + chartH())
+      const grad = c.createLinearGradient(0, PAD.top, 0, PAD.top + chartH())
       grad.addColorStop(0, withAlpha(s._color, s._areaOpacity * 2.5))
       grad.addColorStop(1, withAlpha(s._color, 0))
-      ctx.fillStyle = grad
-      ctx.fill(areaPath)
+      c.fillStyle = grad
+      c.fill(areaPath)
     }
 
     // Line
     if (visible.length > 1) {
-      ctx.beginPath()
-      ctx.strokeStyle = s._color
-      ctx.lineWidth = s._lineWidth
-      ctx.lineJoin = 'round'
-      ctx.lineCap = 'round'
+      c.beginPath()
+      c.strokeStyle = s._color
+      c.lineWidth = s._lineWidth
+      c.lineJoin = 'round'
+      c.lineCap = 'round'
 
       if (s._smooth) {
-        ctx.moveTo(visible[0].x, visible[0].y)
+        c.moveTo(visible[0].x, visible[0].y)
         for (let i = 0; i < visible.length - 1; i++) {
           const [cp1, cp2] = controlPoints(visible, i)
-          ctx.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, visible[i + 1].x, visible[i + 1].y)
+          c.bezierCurveTo(cp1.x, cp1.y, cp2.x, cp2.y, visible[i + 1].x, visible[i + 1].y)
         }
       } else {
-        ctx.moveTo(visible[0].x, visible[0].y)
-        for (let i = 1; i < visible.length; i++) ctx.lineTo(visible[i].x, visible[i].y)
+        c.moveTo(visible[0].x, visible[0].y)
+        for (let i = 1; i < visible.length; i++) c.lineTo(visible[i].x, visible[i].y)
       }
-      ctx.stroke()
+      c.stroke()
     }
 
     // Dots
     visible.forEach(({ x, y }) => {
-      ctx.beginPath()
-      ctx.fillStyle = s._color
-      ctx.arc(x, y, 3.5, 0, Math.PI * 2)
-      ctx.fill()
+      c!.beginPath()
+      c!.fillStyle = s._color
+      c!.arc(x, y, 3.5, 0, Math.PI * 2)
+      c!.fill()
 
-      // Outer glow ring
-      ctx.beginPath()
-      ctx.fillStyle = withAlpha(s._color, 0.2)
-      ctx.arc(x, y, 6, 0, Math.PI * 2)
-      ctx.fill()
+      c!.beginPath()
+      c!.fillStyle = withAlpha(s._color, 0.2)
+      c!.arc(x, y, 6, 0, Math.PI * 2)
+      c!.fill()
     })
   })
 }
 
-function draw() {
+function draw(): void {
   drawGrid()
   drawSeries(animProgress)
 }
 
-// Catmull-Rom → Bezier control points
-function controlPoints(points, i) {
+function controlPoints(points: Point[], i: number): [Point, Point] {
   const p0 = points[i - 1] || points[i]
   const p1 = points[i]
   const p2 = points[i + 1]
   const p3 = points[i + 2] || p2
   const tension = 0.4
-  const cp1 = {
+  const cp1: Point = {
     x: p1.x + (p2.x - p0.x) * tension,
-    y: p1.y + (p2.y - p0.y) * tension
+    y: p1.y + (p2.y - p0.y) * tension,
+    value: 0
   }
-  const cp2 = {
+  const cp2: Point = {
     x: p2.x - (p3.x - p1.x) * tension,
-    y: p2.y - (p3.y - p1.y) * tension
+    y: p2.y - (p3.y - p1.y) * tension,
+    value: 0
   }
   return [cp1, cp2]
 }
 
-function withAlpha(hex, alpha) {
+function withAlpha(hex: string, alpha: number): string {
   const r = parseInt(hex.slice(1, 3), 16)
   const g = parseInt(hex.slice(3, 5), 16)
   const b = parseInt(hex.slice(5, 7), 16)
@@ -302,14 +350,13 @@ function withAlpha(hex, alpha) {
 }
 
 /* ===== Animation ===== */
-function startAnim() {
+function startAnim(): void {
   animStart = performance.now()
   animProgress = 0
-  cancelAnimationFrame(animId)
-  function step(now) {
+  if (animId !== null) cancelAnimationFrame(animId)
+  function step(now: number): void {
     const elapsed = now - animStart
     animProgress = Math.min(1, elapsed / ANIM_DURATION)
-    // Ease out cubic
     const eased = 1 - Math.pow(1 - animProgress, 3)
     drawGrid()
     drawSeries(eased)
@@ -321,13 +368,12 @@ function startAnim() {
 }
 
 /* ===== Interaction ===== */
-function onMove(e) {
+function onMove(e: MouseEvent): void {
   if (!cvs.value) return
   const rect = cvs.value.getBoundingClientRect()
-  const mx = (e.clientX - rect.left) * (w / rect.width)  // account for CSS scale
+  const mx = (e.clientX - rect.left) * (w / rect.width)
   const my = (e.clientY - rect.top) * (h / rect.height)
 
-  // Find nearest data point
   const xIdx = findNearestX(mx)
   if (xIdx < 0) {
     tooltip.visible = false
@@ -337,7 +383,7 @@ function onMove(e) {
   const px = xToPixel(xIdx)
   const title = xData.value[xIdx] || ''
 
-  const items = series.value
+  const items: TooltipItem[] = series.value
     .filter(s => !s._hidden && s.data && s.data[xIdx] !== undefined)
     .map(s => ({
       name: s.name || '',
@@ -350,7 +396,6 @@ function onMove(e) {
     return
   }
 
-  // Position tooltip
   const tipX = px + 12
   const tipY = Math.max(0, my - 40)
 
@@ -360,47 +405,46 @@ function onMove(e) {
   tooltip.title = title
   tooltip.items = items
 
-  // Draw crosshair
   draw()
   drawCrosshair(px)
 }
 
-function onLeave() {
+function onLeave(): void {
   tooltip.visible = false
   draw()
 }
 
-function drawCrosshair(x) {
+function drawCrosshair(x: number): void {
   if (!ctx) return
-  ctx.save()
-  ctx.beginPath()
-  ctx.strokeStyle = 'rgba(255,255,255,0.15)'
-  ctx.lineWidth = 1
-  ctx.setLineDash([4, 4])
-  ctx.moveTo(x, PAD.top)
-  ctx.lineTo(x, PAD.top + chartH())
+  const c = ctx
+  c.save()
+  c.beginPath()
+  c.strokeStyle = 'rgba(255,255,255,0.15)'
+  c.lineWidth = 1
+  c.setLineDash([4, 4])
+  c.moveTo(x, PAD.top)
+  c.lineTo(x, PAD.top + chartH())
 
-  // Highlight dot on each series
   series.value.forEach(s => {
     if (s._hidden || !s.data) return
     const xIdx = findNearestX(x)
     if (xIdx >= 0 && s.data[xIdx] !== undefined) {
       const dotY = yToPixel(s.data[xIdx])
-      ctx.beginPath()
-      ctx.setLineDash([])
-      ctx.fillStyle = s._color
-      ctx.strokeStyle = '#fff'
-      ctx.lineWidth = 2
-      ctx.arc(x, dotY, 5, 0, Math.PI * 2)
-      ctx.fill()
-      ctx.stroke()
+      c.beginPath()
+      c.setLineDash([])
+      c.fillStyle = s._color
+      c.strokeStyle = '#fff'
+      c.lineWidth = 2
+      c.arc(x, dotY, 5, 0, Math.PI * 2)
+      c.fill()
+      c.stroke()
     }
   })
-  ctx.stroke()
-  ctx.restore()
+  c.stroke()
+  c.restore()
 }
 
-function findNearestX(mx) {
+function findNearestX(mx: number): number {
   if (!xData.value.length) return -1
   let nearest = 0
   let minDist = Infinity
@@ -408,12 +452,11 @@ function findNearestX(mx) {
     const dist = Math.abs(xToPixel(i) - mx)
     if (dist < minDist) { minDist = dist; nearest = i }
   }
-  // Only snap if within reasonable distance
   if (minDist > chartW() / (xData.value.length - 1 || 1) * 1.5) return -1
   return nearest
 }
 
-function toggleSeries(i) {
+function toggleSeries(i: number): void {
   series.value[i]._hidden = !series.value[i]._hidden
   draw()
 }
@@ -425,7 +468,9 @@ onMounted(() => {
   const ro = new ResizeObserver(() => {
     resize()
   })
-  ro.observe(wrap.value)
+  if (wrap.value) {
+    ro.observe(wrap.value)
+  }
   onUnmounted(() => ro.disconnect())
 })
 
