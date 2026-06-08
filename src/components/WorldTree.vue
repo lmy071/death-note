@@ -200,6 +200,7 @@ function drawTree(progress: number, time: number): void {
 
   drawGround(cx, groundY, progress)
 
+  // Grass is drawn inside drawGround()
   if (progress > 0.05) drawRoots(cx, groundY, Math.min(1, progress * 3), decoRng)
   if (progress > 0) drawTrunk(cx, groundY, trunkH, Math.min(1, progress * 2.5), decoRng)
 
@@ -222,7 +223,115 @@ function drawGround(cx: number, groundY: number, progress: number): void {
   grad.addColorStop(1, 'rgba(0,0,0,0)')
   ctx!.fillStyle = grad
   ctx!.fillRect(0, groundY - 20, canvasW, canvasH - groundY + 20)
+
+  // Grass tufts at bottom
+  if (progress > 0.1) {
+    drawGrass(groundY, Math.min(1, (progress - 0.1) / 0.5))
+  }
 }
+
+// ---- Grass system ----
+interface GrassBlade {
+  x: number
+  height: number
+  width: number
+  hue: number        // HSL hue: 80–140 (green–yellow)
+  sat: number        // saturation 40–70
+  light: number      // lightness 15–35
+  phase: number      // sway phase offset
+  swaySpeed: number  // individual sway frequency
+  swayAmp: number    // max sway offset in px
+}
+
+let grassBlades: GrassBlade[] = []
+
+function initGrass(): void {
+  grassBlades = []
+  const rng = createRng(currentSeed + 9999)
+  // Foreground layer: dense, tall, brighter
+  const fgCount = Math.max(80, Math.floor(canvasW / 5))
+  for (let i = 0; i < fgCount; i++) {
+    grassBlades.push({
+      x: (i / fgCount) * canvasW + (rng() - 0.5) * (canvasW / fgCount),
+      height: 22 + rng() * 32,
+      width: 1.8 + rng() * 2.8,
+      hue: 85 + rng() * 55,
+      sat: 40 + rng() * 30,
+      light: 18 + rng() * 17,
+      phase: rng() * Math.PI * 2,
+      swaySpeed: 0.6 + rng() * 0.8,
+      swayAmp: 2 + rng() * 5,
+    })
+  }
+  // Background layer: sparser, shorter, darker — adds depth
+  const bgCount = Math.max(40, Math.floor(canvasW / 10))
+  for (let i = 0; i < bgCount; i++) {
+    grassBlades.push({
+      x: (i / bgCount) * canvasW + (rng() - 0.5) * (canvasW / bgCount),
+      height: 10 + rng() * 16,
+      width: 1 + rng() * 1.5,
+      hue: 90 + rng() * 40,
+      sat: 30 + rng() * 20,
+      light: 10 + rng() * 10,
+      phase: rng() * Math.PI * 2,
+      swaySpeed: 0.4 + rng() * 0.5,
+      swayAmp: 1 + rng() * 3,
+    })
+  }
+}
+
+function drawGrass(groundY: number, progress: number): void {
+  // Use idleTime when tree is fully grown, otherwise fall back to performance.now
+  const time = fullyGrown ? idleTime : performance.now() * 0.001
+
+  // Draw background layer first (shorter, darker blades), then foreground
+  // Background blades are stored after foreground blades in the array
+  const fgCount = grassBlades.length && grassBlades[0].height > 20
+    ? grassBlades.findIndex((b, i) => i > 0 && b.height <= 20)
+    : grassBlades.length
+
+  // Draw background layer
+  for (let i = fgCount >= 0 ? fgCount : grassBlades.length; i < grassBlades.length; i++) {
+    const blade = grassBlades[i]
+    drawSingleBlade(blade, groundY - 4, progress, time, true)
+  }
+  // Draw foreground layer
+  for (let i = 0; i < (fgCount >= 0 ? fgCount : grassBlades.length); i++) {
+    const blade = grassBlades[i]
+    drawSingleBlade(blade, groundY + 2, progress, time, false)
+  }
+}
+
+function drawSingleBlade(blade: GrassBlade, baseY: number, progress: number, time: number, isBg: boolean): void {
+  const h = blade.height * progress
+  if (h < 2) return
+
+  // Sway
+  const sway = Math.sin(time * blade.swaySpeed + blade.phase) * blade.swayAmp * progress
+
+  // Quadratic bezier: base → control point → tip
+  const baseX = blade.x
+  const cpX = baseX + sway * 0.5
+  const cpY = baseY - h * 0.6
+  const tipX = baseX + sway
+  const tipY = baseY - h
+
+  ctx!.beginPath()
+  ctx!.moveTo(baseX - blade.width * 0.5, baseY)
+  ctx!.quadraticCurveTo(cpX - blade.width * 0.3, cpY, tipX, tipY)
+  ctx!.quadraticCurveTo(cpX + blade.width * 0.3, cpY, baseX + blade.width * 0.5, baseY)
+  ctx!.closePath()
+
+  // Gradient from dark base to lighter tip
+  const grad = ctx!.createLinearGradient(baseX, baseY, tipX, tipY)
+  const alpha = isBg ? 0.6 : 0.85
+  grad.addColorStop(0, `hsla(${blade.hue}, ${blade.sat}%, ${blade.light - 4}%, ${alpha * progress})`)
+  grad.addColorStop(0.6, `hsla(${blade.hue}, ${blade.sat + 5}%, ${blade.light}%, ${(alpha - 0.1) * progress})`)
+  grad.addColorStop(1, `hsla(${blade.hue + 10}, ${blade.sat + 10}%, ${blade.light + 8}%, ${(alpha - 0.3) * progress})`)
+  ctx!.fillStyle = grad
+  ctx!.fill()
+}
+
 
 function drawRoots(cx: number, groundY: number, progress: number, rng: () => number): void {
   const roots: { angle: number; len: number; thick: number }[] = [
@@ -420,6 +529,7 @@ let fullyGrown: boolean = false
 function newSeed(): void {
   currentSeed = Math.floor(Math.random() * 2147483646) + 1
   initTreeVisuals()
+  initGrass()
 }
 
 function animate(ts: number): void {
@@ -484,7 +594,10 @@ function onMouseLeave(): void {
 const origResize: () => void = resize
 resize = function (): void {
   origResize()
-  if (currentSeed) initTreeVisuals()
+  if (currentSeed) {
+    initTreeVisuals()
+    initGrass()
+  }
 }
 
 onMounted(() => {
