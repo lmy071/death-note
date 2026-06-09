@@ -81,6 +81,13 @@ export default defineConfig({
   assetsInclude: ['**/*.md'],
   build: {
     outDir: 'death-note',
-    assetsDir: 'assets'
+    assetsDir: 'assets',
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          three: ['three'],
+        },
+      },
+    },
   }
 })
