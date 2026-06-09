@@ -53,7 +53,7 @@ const ISO_BASE = new THREE.Vector3(
 
 // ---- Tree objects ----
 let treeGroup: THREE.Group
-let dollMeshes: THREE.Object3D[] = []  // clickable dolls
+let dollMeshes: THREE.Object3D[] = []  // clickable data crystals
 let dollData: HitArea[] = []
 let materials: TreeMaterials
 let grassUniforms: { uTime: { value: number }; uGrowth: { value: number } }
@@ -61,15 +61,18 @@ let grassUniforms: { uTime: { value: number }; uGrowth: { value: number } }
 const raycaster = new THREE.Raycaster()
 const pointer = new THREE.Vector2(-999, -999)
 
+// ---- Hover glow tracking ----
+let hoveredCrystal: THREE.Object3D | null = null
+
 // ---- Init ----
 
 function init(): void {
   const el = container.value!
   const w = el.clientWidth, h = el.clientHeight
 
-  // Scene
+  // Scene — deep space navy fog
   scene = new THREE.Scene()
-  scene.fog = new THREE.FogExp2(0x0a1020, 0.008)
+  scene.fog = new THREE.FogExp2(0x050816, 0.008)
 
   // 2.5D Isometric Camera (Orthographic)
   const frustumSize = 30
@@ -93,14 +96,16 @@ function init(): void {
   renderer.shadowMap.enabled = true
   renderer.shadowMap.type = THREE.PCFSoftShadowMap
   renderer.toneMapping = THREE.ACESFilmicToneMapping
-  renderer.toneMappingExposure = 1.2
+  renderer.toneMappingExposure = 1.4
   el.appendChild(renderer.domElement)
 
-  // Lights
-  const ambient = new THREE.AmbientLight(0x1a1a3a, 0.6)
+  // ---- Sci-fi Lighting ----
+  // Dim ambient — deep space
+  const ambient = new THREE.AmbientLight(0x0a0a2e, 0.4)
   scene.add(ambient)
 
-  const dirLight = new THREE.DirectionalLight(0xffeedd, 1.2)
+  // Main directional: cold white
+  const dirLight = new THREE.DirectionalLight(0xc8d8ff, 1.0)
   dirLight.position.set(8, 20, 10)
   dirLight.castShadow = true
   dirLight.shadow.mapSize.set(1024, 1024)
@@ -112,11 +117,13 @@ function init(): void {
   dirLight.shadow.camera.bottom = -5
   scene.add(dirLight)
 
-  const pointLight = new THREE.PointLight(0xd4a017, 1.5, 30)
+  // Point light: cyan
+  const pointLight = new THREE.PointLight(0x00d4ff, 2.0, 30)
   pointLight.position.set(0, 12, 2)
   scene.add(pointLight)
 
-  const rimLight = new THREE.DirectionalLight(0x4488ff, 0.3)
+  // Rim light: magenta
+  const rimLight = new THREE.DirectionalLight(0xff00ff, 0.4)
   rimLight.position.set(-5, 10, -8)
   scene.add(rimLight)
 
@@ -134,7 +141,7 @@ function init(): void {
   scene.add(treeGroup)
 
   // Growth: start all meshes at scale 0
-  treeGroup.traverse((child) => {
+  treeGroup.traverse((child: THREE.Object3D) => {
     if (child.userData.growthOrder !== undefined) {
       child.scale.set(0, 0, 0)
     }
@@ -199,11 +206,35 @@ function onMouseMove(e: MouseEvent): void {
     if (idx >= 0 && idx < dollData.length) {
       hoveredBranch.value = dollData[idx]
       renderer.domElement.style.cursor = 'pointer'
+
+      // Glow the hovered crystal
+      if (hoveredCrystal !== obj) {
+        unhoverCrystal()
+        hoveredCrystal = obj
+        const mat = (obj as THREE.Mesh).material as THREE.MeshStandardMaterial
+        if (mat) {
+          mat.emissiveIntensity = 2.0
+          mat.emissive = new THREE.Color(0x00d4ff)
+        }
+      }
       return
     }
   }
+
+  unhoverCrystal()
   hoveredBranch.value = null
   renderer.domElement.style.cursor = 'default'
+}
+
+function unhoverCrystal(): void {
+  if (hoveredCrystal) {
+    const mat = (hoveredCrystal as THREE.Mesh).material as THREE.MeshStandardMaterial
+    if (mat) {
+      mat.emissiveIntensity = 0.6
+      mat.emissive = new THREE.Color(0x00d4ff)
+    }
+    hoveredCrystal = null
+  }
 }
 
 function onClick(e: MouseEvent): void {
@@ -214,6 +245,7 @@ function onClick(e: MouseEvent): void {
 }
 
 function onMouseLeave(): void {
+  unhoverCrystal()
   hoveredBranch.value = null
   mouseX = 0
   mouseY = 0
@@ -264,22 +296,28 @@ onUnmounted(() => {
   position: fixed;
   pointer-events: none;
   z-index: 100;
-  padding: 6px 12px;
-  border-radius: 8px;
-  background: rgba(10, 16, 32, 0.95);
-  border: 1px solid rgba(212, 160, 23, 0.4);
-  backdrop-filter: blur(8px);
+  padding: 8px 14px;
+  border-radius: 2px;
+  background: rgba(5, 8, 22, 0.88);
+  border: 1px solid rgba(0, 212, 255, 0.6);
+  box-shadow:
+    0 0 12px rgba(0, 212, 255, 0.15),
+    inset 0 0 20px rgba(0, 212, 255, 0.03);
+  backdrop-filter: blur(10px);
   text-align: left;
   white-space: nowrap;
 }
 .branch-tooltip__name {
   font-size: 13px;
   font-weight: 650;
-  color: #f0c040;
+  color: #00d4ff;
+  font-family: 'Consolas', 'SF Mono', 'Fira Code', monospace;
+  letter-spacing: 0.5px;
 }
 .branch-tooltip__desc {
   font-size: 11px;
-  color: rgba(230, 232, 239, 0.65);
-  margin-top: 2px;
+  color: rgba(180, 200, 220, 0.7);
+  margin-top: 3px;
+  font-family: 'Consolas', 'SF Mono', 'Fira Code', monospace;
 }
 </style>

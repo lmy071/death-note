@@ -1,5 +1,5 @@
 /**
- * 3D Tree animation — growth, sway, spirit ring rotation, fireflies
+ * 3D Tree animation — growth, crystal hover/rotation, data ring spin, data particles
  */
 import * as THREE from 'three'
 
@@ -9,12 +9,12 @@ export function animateTree3D(
   time: number,
   grassUniforms: { uTime: { value: number }; uGrowth: { value: number } },
 ): void {
-  // Update grass
+  // Update grid particles (replaces grass uniforms)
   grassUniforms.uTime.value = time
   grassUniforms.uGrowth.value = growthProgress
 
-  // Update fireflies
-  treeGroup.traverse((child) => {
+  // Update data particles
+  treeGroup.traverse((child: THREE.Object3D) => {
     // Growth animation
     if (child.userData.growthOrder !== undefined) {
       const order = child.userData.growthOrder
@@ -23,28 +23,37 @@ export function animateTree3D(
       child.scale.set(scale, scale, scale)
     }
 
-    // Doll sway
+    // Crystal hover and slow rotation (replaces doll sway)
     if (child.userData.isDoll) {
       const freq = child.userData.swayFreq as number
       const phase = child.userData.swayPhase as number
-      child.rotation.z = Math.sin(time * freq + phase) * 0.08
-      child.rotation.x = Math.sin(time * freq * 0.7 + phase + 1) * 0.04
+      const floatPhase = child.userData.floatPhase as number || 0
+
+      // Gentle hover float
+      child.position.y += Math.sin(time * freq * 0.5 + floatPhase) * 0.001
+
+      // Slow rotation of entire crystal group
+      child.rotation.y = time * 0.3 + phase * 0.1
+
+      // Subtle tilt
+      child.rotation.z = Math.sin(time * freq * 0.3 + phase) * 0.04
+      child.rotation.x = Math.sin(time * freq * 0.2 + phase + 1) * 0.02
     }
 
-    // Spirit ring rotation
+    // Data ring rotation (replaces spirit ring rotation)
     if (child.name === 'spiritRing') {
       const speed = child.userData.spinSpeed as number
       const axis = child.userData.spinAxis as THREE.Vector3
-      child.rotateOnAxis(axis, speed * 0.016) // ~60fps
+      child.rotateOnAxis(axis, speed * 0.016)
 
-      // Pulsing emissive
+      // Pulsing emissive — cyan/magenta pulse
       const mat = (child as THREE.Mesh).material as THREE.MeshStandardMaterial
       if (mat && mat.emissiveIntensity !== undefined) {
-        mat.emissiveIntensity = 0.4 + 0.4 * Math.sin(time * 1.5 + child.id)
+        mat.emissiveIntensity = 0.4 + 0.5 * Math.sin(time * 1.5 + child.id)
       }
     }
 
-    // Firefly time uniform
+    // Data particle time uniform
     if (child.userData.fireflyMat) {
       const mat = child.userData.fireflyMat as THREE.ShaderMaterial
       mat.uniforms.uTime.value = time
