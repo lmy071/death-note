@@ -426,9 +426,9 @@ function drawBranch(sx: number, sy: number, branch: BranchNode, parentProgress: 
   ctx!.lineCap = 'round'
   ctx!.stroke()
 
-  // Leaf (level 4) → fruit
+  // Leaf (level 4) → teru teru bozu (晴天娃娃)
   if (branch.children.length === 0) {
-    if (myProgress > 0.5) drawFruit(ex, ey, branch, myProgress, time)
+    if (myProgress > 0.5) drawTeruTeruBozu(ex, ey, branch, myProgress, time)
     return
   }
 
@@ -440,60 +440,178 @@ function drawBranch(sx: number, sy: number, branch: BranchNode, parentProgress: 
   }
 }
 
-function drawFruit(x: number, y: number, branch: BranchNode, progress: number, time: number): void {
+function drawTeruTeruBozu(x: number, y: number, branch: BranchNode, progress: number, time: number): void {
   const alpha: number = (progress - 0.5) / 0.5
-  const sz: number = branch.leafSize
+  if (alpha < 0.05) return
+
+  const sz: number = branch.leafSize * 1.2  // base scale unit
   const hasPage: boolean = !!branch.page
 
-  // Slow flicker
-  const flickerSpeed: number = 0.2 + (branch.branchId % 7) * 0.07
-  const flickerPhase: number = time * flickerSpeed + branch.branchId * 1.7
-  const flicker: number = 0.2 + 0.8 * (0.5 + 0.5 * Math.sin(flickerPhase))
+  // ---- Sway animation ----
+  const swayFreq: number = 0.8 + (branch.branchId % 5) * 0.15
+  const swayPhase: number = branch.branchId * 2.3
+  const swayAngle: number = Math.sin(time * swayFreq + swayPhase) * 0.12
+  const swayX: number = Math.sin(time * swayFreq + swayPhase) * 3
 
-  // Outer glow
+  // ---- Geometry ----
+  const stringLen: number = sz * 3.5
+  const headR: number = sz * 1.8
+  const bodyW: number = sz * 2.8
+  const bodyH: number = sz * 3.5
+
+  // Attachment point (branch tip)
+  const attachX: number = x
+  const attachY: number = y
+
+  // Head center (below string)
+  const headCX: number = attachX + swayX
+  const headCY: number = attachY + stringLen + headR
+
+  // ---- Draw string ----
   ctx!.beginPath()
-  ctx!.arc(x, y, sz * 3 * flicker, 0, Math.PI * 2)
+  ctx!.moveTo(attachX, attachY)
+  ctx!.quadraticCurveTo(
+    attachX + swayX * 0.5, attachY + stringLen * 0.5,
+    headCX, headCY - headR
+  )
+  ctx!.strokeStyle = `rgba(200, 180, 140, ${alpha * 0.6})`
+  ctx!.lineWidth = 0.8
+  ctx!.stroke()
+
+  // ---- Outer glow ----
+  const glowFlicker: number = 0.7 + 0.3 * Math.sin(time * 0.4 + branch.branchId)
+  ctx!.beginPath()
+  ctx!.arc(headCX, headCY, headR * 2.2 * glowFlicker, 0, Math.PI * 2)
   ctx!.fillStyle = hasPage
-    ? `rgba(240, 192, 64, ${alpha * flicker * 0.22})`
-    : `rgba(76, 187, 108, ${alpha * flicker * 0.15})`
+    ? `rgba(240, 192, 64, ${alpha * glowFlicker * 0.12})`
+    : `rgba(180, 210, 255, ${alpha * glowFlicker * 0.06})`
   ctx!.fill()
 
-  // Fruit
+  // ---- Body (triangular cloth) ----
+  ctx!.save()
+  ctx!.translate(headCX, headCY + headR * 0.6)
+  ctx!.rotate(swayAngle * 0.5)
+
+  const bodyGrad = ctx!.createLinearGradient(0, 0, 0, bodyH)
+  bodyGrad.addColorStop(0, `rgba(240, 235, 220, ${alpha * 0.92})`)
+  bodyGrad.addColorStop(0.5, `rgba(225, 218, 200, ${alpha * 0.85})`)
+  bodyGrad.addColorStop(1, `rgba(210, 200, 180, ${alpha * 0.7})`)
+
   ctx!.beginPath()
-  ctx!.arc(x, y, sz * flicker, 0, Math.PI * 2)
+  ctx!.moveTo(-bodyW * 0.5, 0)
+  // Left curve
+  ctx!.quadraticCurveTo(-bodyW * 0.55, bodyH * 0.5, -bodyW * 0.35, bodyH)
+  // Bottom edge
+  ctx!.quadraticCurveTo(0, bodyH + sz * 0.4, bodyW * 0.35, bodyH)
+  // Right curve
+  ctx!.quadraticCurveTo(bodyW * 0.55, bodyH * 0.5, bodyW * 0.5, 0)
+  ctx!.closePath()
+  ctx!.fillStyle = bodyGrad
+  ctx!.fill()
+
+  // Body fold lines
+  ctx!.strokeStyle = `rgba(180, 170, 150, ${alpha * 0.2})`
+  ctx!.lineWidth = 0.5
+  ctx!.beginPath()
+  ctx!.moveTo(-bodyW * 0.15, bodyH * 0.3)
+  ctx!.quadraticCurveTo(0, bodyH * 0.6, bodyW * 0.1, bodyH * 0.35)
+  ctx!.stroke()
+
+  ctx!.restore()
+
+  // ---- Neck tie ----
+  ctx!.beginPath()
+  const neckY: number = headCY + headR * 0.6
+  ctx!.moveTo(headCX - bodyW * 0.5, neckY)
+  ctx!.quadraticCurveTo(headCX, neckY + sz * 0.5, headCX + bodyW * 0.5, neckY)
+  ctx!.strokeStyle = `rgba(180, 160, 120, ${alpha * 0.7})`
+  ctx!.lineWidth = 1.2
+  ctx!.stroke()
+
+  // ---- Head (cloth ball) ----
+  const headGrad = ctx!.createRadialGradient(
+    headCX - headR * 0.25, headCY - headR * 0.25, headR * 0.1,
+    headCX, headCY, headR
+  )
+  headGrad.addColorStop(0, `rgba(255, 252, 245, ${alpha * 0.95})`)
+  headGrad.addColorStop(0.6, `rgba(240, 235, 220, ${alpha * 0.9})`)
+  headGrad.addColorStop(1, `rgba(215, 205, 185, ${alpha * 0.8})`)
+
+  ctx!.beginPath()
+  ctx!.arc(headCX, headCY, headR, 0, Math.PI * 2)
+  ctx!.fillStyle = headGrad
+  ctx!.fill()
+
+  // Head outline (subtle)
+  ctx!.strokeStyle = `rgba(180, 170, 150, ${alpha * 0.25})`
+  ctx!.lineWidth = 0.6
+  ctx!.stroke()
+
+  // ---- Face ----
+  const eyeOffX: number = headR * 0.3
+  const eyeY: number = headCY - headR * 0.1
+  const eyeR: number = sz * 0.25
+
+  // Eyes — small dots
   ctx!.fillStyle = hasPage
-    ? `rgba(240, 192, 64, ${alpha * flicker * 0.95})`
-    : `rgba(76, 187, 108, ${alpha * flicker * 0.75})`
-  ctx!.fill()
+    ? `rgba(60, 40, 20, ${alpha * 0.85})`
+    : `rgba(80, 60, 40, ${alpha * 0.6})`
 
-  // Highlight
+  // Left eye
   ctx!.beginPath()
-  ctx!.arc(x - sz * 0.2, y - sz * 0.2, sz * 0.35 * flicker, 0, Math.PI * 2)
-  ctx!.fillStyle = `rgba(255, 255, 220, ${alpha * flicker * 0.25})`
+  ctx!.arc(headCX - eyeOffX, eyeY, eyeR, 0, Math.PI * 2)
   ctx!.fill()
 
-  // Label — only for real pages, slow fade
-  if (hasPage && flicker > 0.4) {
-    const textAlpha: number = alpha * (flicker - 0.4) / 0.6 * 0.95
-    if (textAlpha > 0.05) {
+  // Right eye
+  ctx!.beginPath()
+  ctx!.arc(headCX + eyeOffX, eyeY, eyeR, 0, Math.PI * 2)
+  ctx!.fill()
+
+  // Mouth — small curved line
+  const mouthY: number = headCY + headR * 0.25
+  ctx!.beginPath()
+  ctx!.arc(headCX, mouthY - sz * 0.3, sz * 0.4, 0.15 * Math.PI, 0.85 * Math.PI, false)
+  ctx!.strokeStyle = hasPage
+    ? `rgba(60, 40, 20, ${alpha * 0.7})`
+    : `rgba(80, 60, 40, ${alpha * 0.45})`
+  ctx!.lineWidth = 0.7
+  ctx!.stroke()
+
+  // Cheek blush (for real-page dolls)
+  if (hasPage) {
+    ctx!.beginPath()
+    ctx!.arc(headCX - eyeOffX - sz * 0.1, eyeY + sz * 0.5, sz * 0.3, 0, Math.PI * 2)
+    ctx!.fillStyle = `rgba(240, 160, 140, ${alpha * 0.2})`
+    ctx!.fill()
+    ctx!.beginPath()
+    ctx!.arc(headCX + eyeOffX + sz * 0.1, eyeY + sz * 0.5, sz * 0.3, 0, Math.PI * 2)
+    ctx!.fillStyle = `rgba(240, 160, 140, ${alpha * 0.2})`
+    ctx!.fill()
+  }
+
+  // ---- Label — only for real pages ----
+  if (hasPage) {
+    const labelAlpha: number = alpha * 0.9
+    if (labelAlpha > 0.05) {
       ctx!.save()
-      ctx!.font = 'bold 12px Avenir, Helvetica, Arial, sans-serif'
+      ctx!.font = 'bold 11px Avenir, Helvetica, Arial, sans-serif'
       ctx!.textAlign = 'center'
       ctx!.textBaseline = 'bottom'
-      ctx!.shadowColor = `rgba(0, 0, 0, ${textAlpha * 0.8})`
+      ctx!.shadowColor = `rgba(0, 0, 0, ${labelAlpha * 0.8})`
       ctx!.shadowBlur = 4
-      ctx!.fillStyle = `rgba(255, 220, 120, ${textAlpha})`
-      ctx!.fillText(branch.page!.label, x, y - sz - 5)
+      ctx!.fillStyle = `rgba(255, 220, 120, ${labelAlpha})`
+      ctx!.fillText(branch.page!.label, headCX, headCY - headR - 4)
       ctx!.shadowBlur = 0
       ctx!.restore()
     }
   }
 
-  // Hit area — only for real pages
+  // ---- Hit area — only for real pages ----
   if (hasPage && progress > 0.7) {
     branchHitAreas.push({
-      x, y,
-      radius: Math.max(16, sz * 3),
+      x: headCX,
+      y: headCY,
+      radius: Math.max(20, headR * 2),
       label: branch.page!.label,
       desc: branch.page!.desc,
       route: branch.page!.route,
