@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import WorldTree from '../components/world-tree/WorldTree.vue'
+import WorldTree from '../components/WorldTree.vue'
 </script>
 
 <style scoped>
