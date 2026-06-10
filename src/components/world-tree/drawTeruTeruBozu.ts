@@ -157,9 +157,9 @@ export function drawTeruTeruBozu(
   const dollCY = y
 
   // Head center (for spirit rings / hit area targeting)
-  // In SVG: head center is at (100, 115) in 200×300 → relative to dollW/dollH
+  // In SVG: head center is at (100, 118) in 200×300 → relative to dollW/dollH
   const headRelX = 100 / DOLL_NATURAL_W
-  const headRelY = 115 / DOLL_NATURAL_H
+  const headRelY = 118 / DOLL_NATURAL_H
   const headCX = dollCX
   const headCY = dollCY + dollH * headRelY
 
@@ -214,15 +214,24 @@ export function drawTeruTeruBozu(
       ctx.globalAlpha = 1
     }
   } else {
-    // Fallback: simple silhouette while image loads
+    // Fallback: simple silhouette while image loads (skirt shape)
     ctx.fillStyle = `rgba(240, 235, 220, ${alpha * 0.6})`
     ctx.beginPath()
     ctx.arc(0, dollH * headRelY, dollW * 0.28, 0, Math.PI * 2)
     ctx.fill()
+    // Upper body
     ctx.beginPath()
-    ctx.moveTo(-dollW * 0.2, dollH * 0.55)
-    ctx.quadraticCurveTo(0, dollH * 0.95, dollW * 0.2, dollH * 0.55)
+    ctx.rect(-dollW * 0.08, dollH * 0.58, dollW * 0.16, dollH * 0.08)
     ctx.fillStyle = `rgba(220, 210, 190, ${alpha * 0.5})`
+    ctx.fill()
+    // Skirt trapezoid
+    ctx.beginPath()
+    ctx.moveTo(-dollW * 0.1, dollH * 0.66)
+    ctx.lineTo(dollW * 0.1, dollH * 0.66)
+    ctx.lineTo(dollW * 0.22, dollH * 0.96)
+    ctx.quadraticCurveTo(0, dollH * 1.02, -dollW * 0.22, dollH * 0.96)
+    ctx.closePath()
+    ctx.fillStyle = `rgba(200, 190, 170, ${alpha * 0.45})`
     ctx.fill()
   }
 

@@ -14,7 +14,15 @@
       <stop offset="100%" stop-color="#DCD0BA"/>
     </linearGradient>
 
-    <!-- Ribbon/bow gradient -->
+    <!-- Skirt gradient -->
+    <linearGradient id="skirtGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F5F0E6"/>
+      <stop offset="30%" stop-color="#EDE3D0"/>
+      <stop offset="70%" stop-color="#E5D8C0"/>
+      <stop offset="100%" stop-color="#D8C8A8"/>
+    </linearGradient>
+
+    <!-- Ribbon gradient -->
     <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#FF7EB3"/>
       <stop offset="50%" stop-color="#FF5599"/>
@@ -31,95 +39,125 @@
     <filter id="softShadow" x="-10%" y="-5%" width="120%" height="110%">
       <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#00000020"/>
     </filter>
-
-    <!-- Glow for awakened dolls -->
-    <filter id="awakeGlow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="4" result="blur"/>
-      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-    </filter>
   </defs>
 
   <!-- ===== Hanging string ===== -->
   <path d="M100 0 Q98 25 100 50 Q102 60 100 65"
         stroke="#C8B898" stroke-width="1.2" fill="none" opacity="0.7"/>
 
-  <!-- ===== Awakened glow ring (behind head) ===== -->
-  <ellipse cx="100" cy="115" rx="65" ry="62" fill="none"
-           stroke="#F0C040" stroke-width="1" opacity="0.15"/>
-  <ellipse cx="100" cy="115" rx="58" ry="55" fill="none"
-           stroke="#F0C040" stroke-width="0.6" opacity="0.08"/>
+  <!-- ===== Subtle back glow ring ===== -->
+  <ellipse cx="100" cy="118" rx="66" ry="63" fill="none"
+           stroke="#F0C040" stroke-width="1" opacity="0.1"/>
+  <ellipse cx="100" cy="118" rx="60" ry="57" fill="none"
+           stroke="#F0C040" stroke-width="0.6" opacity="0.06"/>
 
   <!-- ===== Head (cloth ball) ===== -->
-  <circle cx="100" cy="115" r="52" fill="url(#headGrad)" filter="url(#softShadow)"/>
+  <circle cx="100" cy="118" r="52" fill="url(#headGrad)" filter="url(#softShadow)"/>
 
   <!-- Head highlight -->
-  <ellipse cx="85" cy="95" rx="22" ry="18" fill="white" opacity="0.25"/>
+  <ellipse cx="85" cy="98" rx="22" ry="18" fill="white" opacity="0.25"/>
 
   <!-- Head top gather wrinkles -->
-  <path d="M85 66 Q100 72 115 66" stroke="#D5CBB5" stroke-width="0.6" fill="none" opacity="0.4"/>
-  <path d="M78 68 Q100 75 122 68" stroke="#D5CBB5" stroke-width="0.5" fill="none" opacity="0.3"/>
-  <path d="M80 70 Q100 78 120 70" stroke="#D5CBB5" stroke-width="0.5" fill="none" opacity="0.25"/>
+  <path d="M85 69 Q100 75 115 69" stroke="#D5CBB5" stroke-width="0.6" fill="none" opacity="0.4"/>
+  <path d="M78 71 Q100 78 122 71" stroke="#D5CBB5" stroke-width="0.5" fill="none" opacity="0.3"/>
+  <path d="M80 73 Q100 81 120 73" stroke="#D5CBB5" stroke-width="0.5" fill="none" opacity="0.25"/>
 
   <!-- ===== Face ===== -->
-  <!-- Left eye (anime style - big with sparkle) -->
-  <ellipse cx="80" cy="112" rx="7.5" ry="9" fill="#4A3520"/>
-  <ellipse cx="78" cy="108" rx="3" ry="3.5" fill="white"/>
-  <circle cx="82" cy="115" r="1.5" fill="white" opacity="0.6"/>
+  <!-- Left eye (anime - big with sparkle) -->
+  <ellipse cx="80" cy="115" rx="7.5" ry="9" fill="#4A3520"/>
+  <ellipse cx="78" cy="111" rx="3" ry="3.5" fill="white"/>
+  <circle cx="82" cy="118" r="1.5" fill="white" opacity="0.6"/>
 
   <!-- Right eye -->
-  <ellipse cx="120" cy="112" rx="7.5" ry="9" fill="#4A3520"/>
-  <ellipse cx="118" cy="108" rx="3" ry="3.5" fill="white"/>
-  <circle cx="122" cy="115" r="1.5" fill="white" opacity="0.6"/>
+  <ellipse cx="120" cy="115" rx="7.5" ry="9" fill="#4A3520"/>
+  <ellipse cx="118" cy="111" rx="3" ry="3.5" fill="white"/>
+  <circle cx="122" cy="118" r="1.5" fill="white" opacity="0.6"/>
 
-  <!-- Eyebrows (gentle arc) -->
-  <path d="M72 101 Q80 98 88 101" stroke="#8B7355" stroke-width="1" fill="none" opacity="0.5"/>
-  <path d="M112 101 Q120 98 128 101" stroke="#8B7355" stroke-width="1" fill="none" opacity="0.5"/>
+  <!-- Eyebrows -->
+  <path d="M72 104 Q80 101 88 104" stroke="#8B7355" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M112 104 Q120 101 128 104" stroke="#8B7355" stroke-width="1" fill="none" opacity="0.5"/>
 
-  <!-- Mouth (anime-style small smile) -->
-  <path d="M94 128 Q100 133 106 128" stroke="#D4877A" stroke-width="1.2"
+  <!-- Mouth -->
+  <path d="M94 131 Q100 136 106 131" stroke="#D4877A" stroke-width="1.2"
         fill="none" stroke-linecap="round"/>
 
   <!-- Cheek blush -->
-  <circle cx="68" cy="122" r="9" fill="url(#blushGrad)"/>
-  <circle cx="132" cy="122" r="9" fill="url(#blushGrad)"/>
+  <circle cx="67" cy="125" r="9" fill="url(#blushGrad)"/>
+  <circle cx="133" cy="125" r="9" fill="url(#blushGrad)"/>
 
   <!-- ===== Neck tie ribbon ===== -->
-  <path d="M75 162 Q100 170 125 162"
+  <path d="M74 165 Q100 174 126 165"
         stroke="url(#ribbonGrad)" stroke-width="3" fill="none" stroke-linecap="round"/>
 
   <!-- Ribbon bow center -->
-  <ellipse cx="100" cy="166" rx="4" ry="3.5" fill="#FF4488"/>
+  <ellipse cx="100" cy="170" rx="4" ry="3.5" fill="#FF4488"/>
 
   <!-- Ribbon bow left wing -->
-  <path d="M96 166 Q78 160 72 168 Q76 170 96 169" fill="url(#ribbonGrad)"/>
+  <path d="M96 170 Q78 163 72 171 Q76 174 96 173" fill="url(#ribbonGrad)"/>
   <!-- Ribbon bow right wing -->
-  <path d="M104 166 Q122 160 128 168 Q124 170 104 169" fill="url(#ribbonGrad)"/>
+  <path d="M104 170 Q122 163 128 171 Q124 174 104 173" fill="url(#ribbonGrad)"/>
 
-  <!-- ===== Body (triangular cloth dress) ===== -->
-  <path d="M73 165
-           Q70 210 75 258
-           Q90 275 100 278
-           Q110 275 125 258
-           Q130 210 127 165 Z"
+  <!-- ===== Upper body (bodice / 上身) ===== -->
+  <path d="M77 170 Q78 185 76 198 L124 198 Q122 185 123 170 Z"
         fill="url(#bodyGrad)" filter="url(#softShadow)"/>
 
-  <!-- Body shadow on bottom -->
-  <path d="M80 240 Q100 260 120 240 Q100 278 80 240"
-        fill="#C8BAA0" opacity="0.15"/>
+  <!-- Bodice center seam -->
+  <line x1="100" y1="175" x2="100" y2="198" stroke="#D5CBB5" stroke-width="0.5" opacity="0.3"/>
 
-  <!-- Body fold lines -->
-  <path d="M85 185 Q95 215 90 250"
-        stroke="#D5CBB5" stroke-width="0.6" fill="none" opacity="0.35"/>
-  <path d="M115 185 Q105 215 110 250"
-        stroke="#D5CBB5" stroke-width="0.6" fill="none" opacity="0.35"/>
-  <path d="M100 170 L100 275"
-        stroke="#D5CBB5" stroke-width="0.5" fill="none" opacity="0.2"/>
+  <!-- ===== Skirt (裙摆) ===== -->
+  <!-- Back layer (darker, visible at sides) -->
+  <path d="M66 198
+           Q58 220 55 252
+           Q52 268 65 278
+           Q80 288 100 290
+           Q120 288 135 278
+           Q148 268 145 252
+           Q142 220 134 198 Z"
+        fill="#D5C5A8" opacity="0.7"/>
 
-  <!-- Hem decoration (bottom trim) -->
-  <path d="M76 260 Q88 268 100 270 Q112 268 124 260"
-        stroke="#C8B898" stroke-width="1.2" fill="none" opacity="0.4"/>
+  <!-- Front skirt panel -->
+  <path d="M72 196
+           Q65 215 62 245
+           Q60 265 70 276
+           Q85 286 100 288
+           Q115 286 130 276
+           Q140 265 138 245
+           Q135 215 128 196 Z"
+        fill="url(#skirtGrad)" filter="url(#softShadow)"/>
 
-  <!-- Body highlight -->
-  <path d="M80 175 Q85 200 82 230"
-        stroke="white" stroke-width="2" fill="none" opacity="0.15"/>
+  <!-- Skirt pleat / fold lines -->
+  <path d="M85 200 Q83 230 80 260 Q78 272 82 280"
+        stroke="#D5CBB5" stroke-width="0.7" fill="none" opacity="0.35"/>
+  <path d="M100 198 L100 286"
+        stroke="#D5CBB5" stroke-width="0.6" fill="none" opacity="0.25"/>
+  <path d="M115 200 Q117 230 120 260 Q122 272 118 280"
+        stroke="#D5CBB5" stroke-width="0.7" fill="none" opacity="0.35"/>
+
+  <!-- Skirt hem ruffle decoration -->
+  <path d="M65 275 Q70 272 75 275 Q80 272 85 275
+           Q90 272 95 275 Q100 272 105 275
+           Q110 272 115 275 Q120 272 125 275
+           Q130 272 135 275"
+        stroke="#C8B090" stroke-width="1.2" fill="none" opacity="0.4"/>
+
+  <!-- Second ruffle line (upper) -->
+  <path d="M68 270 Q73 267 78 270 Q83 267 88 270
+           Q93 267 98 270 Q103 267 108 270
+           Q113 267 118 270 Q123 267 128 270
+           Q133 267 136 270"
+        stroke="#C8B090" stroke-width="0.8" fill="none" opacity="0.3"/>
+
+  <!-- Skirt waistband -->
+  <path d="M72 195 Q86 192 100 190 Q114 192 128 195"
+        stroke="#C8B090" stroke-width="1.5" fill="none" opacity="0.35"/>
+
+  <!-- Side ruffle accents -->
+  <path d="M58 240 Q52 248 56 258 Q58 248 62 242"
+        stroke="#D0C0A0" stroke-width="0.8" fill="none" opacity="0.3"/>
+  <path d="M142 240 Q148 248 144 258 Q142 248 138 242"
+        stroke="#D0C0A0" stroke-width="0.8" fill="none" opacity="0.3"/>
+
+  <!-- Skirt highlight -->
+  <path d="M90 210 Q88 240 86 260"
+        stroke="white" stroke-width="3" fill="none" opacity="0.12"/>
 </svg>
