@@ -135,6 +135,8 @@ export function drawTreeScene(
   progress: number,
   time: number,
   hitAreas: HitArea[],
+  mouseX?: number,
+  mouseY?: number,
 ): void {
   ctx.clearRect(0, 0, canvasW, canvasH)
   hitAreas.length = 0
@@ -144,7 +146,7 @@ export function drawTreeScene(
   const trunkH: number = canvasH * 0.25
   const decoRng: () => number = createRng(seed + 7777)
 
-  drawGround(ctx, cx, groundY, canvasW, canvasH, grassState, progress, time)
+  drawGround(ctx, cx, groundY, canvasW, canvasH, grassState, progress, time, mouseX, mouseY)
 
   if (progress > 0.05) drawRoots(ctx, cx, groundY, Math.min(1, progress * 3), decoRng)
   if (progress > 0) drawTrunk(ctx, cx, groundY, trunkH, Math.min(1, progress * 2.5), decoRng)
@@ -172,6 +174,8 @@ function drawGround(
   grassState: GrassState,
   progress: number,
   time: number,
+  mouseX?: number,
+  mouseY?: number,
 ): void {
   const grad = ctx.createRadialGradient(cx, groundY + 10, 0, cx, groundY + 10, canvasW * 0.45)
   grad.addColorStop(0, `rgba(212, 160, 23, ${0.08 * progress})`)
@@ -182,7 +186,7 @@ function drawGround(
 
   // Grass tufts
   if (progress > 0.1) {
-    drawGrass(ctx, grassState, groundY, Math.min(1, (progress - 0.1) / 0.5), time)
+    drawGrass(ctx, grassState, groundY, Math.min(1, (progress - 0.1) / 0.5), time, mouseX, mouseY)
   }
 }
 

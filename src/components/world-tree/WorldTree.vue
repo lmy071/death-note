@@ -48,6 +48,7 @@ let animId: number | null = null
 let canvasW: number = 0, canvasH: number = 0, dpr: number = 1
 let growthProgress: number = 0
 let currentSeed: number = 0
+let hoverPos: { x: number; y: number } | null = null  // mouse for grass wind
 
 // ---- Sub-system state ----
 let treeState: TreeState = { data: null, globalBranchIdx: 0 }
@@ -88,7 +89,8 @@ function animate(ts: number): void {
   const elapsed: number = ts - startTime
   let t: number = Math.min(1, elapsed / GROWTH_MS)
   growthProgress = 1 - Math.pow(1 - t, 3)
-  drawTreeScene(ctx!, canvasW, canvasH, currentSeed, treeState, grassState, growthProgress, ts * 0.001, branchHitAreas)
+  drawTreeScene(ctx!, canvasW, canvasH, currentSeed, treeState, grassState, growthProgress, ts * 0.001, branchHitAreas,
+    hoverPos?.x, hoverPos?.y)
   if (t < 1) {
     animId = requestAnimationFrame(animate)
   } else {
@@ -100,7 +102,8 @@ function animate(ts: number): void {
 
 function idleLoop(ts: number): void {
   idleTime += 0.01
-  drawTreeScene(ctx!, canvasW, canvasH, currentSeed, treeState, grassState, 1, idleTime, branchHitAreas)
+  drawTreeScene(ctx!, canvasW, canvasH, currentSeed, treeState, grassState, 1, idleTime, branchHitAreas,
+    hoverPos?.x, hoverPos?.y)
   animId = requestAnimationFrame(idleLoop)
 }
 
@@ -120,10 +123,14 @@ function onClick(e: MouseEvent): void {
 }
 
 function onMouseMove(e: MouseEvent): void {
-  if (!fullyGrown) return
   const rect = cvs.value!.getBoundingClientRect()
   const mx: number = e.clientX - rect.left
   const my: number = e.clientY - rect.top
+
+  // Track for grass wind effect (logical coords)
+  hoverPos = { x: mx, y: my }
+
+  if (!fullyGrown) return
   tooltipPos.value = { x: e.clientX, y: e.clientY }
 
   let found: HitArea | null = null
@@ -136,6 +143,7 @@ function onMouseMove(e: MouseEvent): void {
 }
 
 function onMouseLeave(): void {
+  hoverPos = null
   hoveredBranch.value = null
   if (cvs.value) cvs.value.style.cursor = 'default'
 }

@@ -72,18 +72,23 @@ export function drawGrass(
   groundY: number,
   progress: number,
   time: number,
+  mouseX?: number,
+  mouseY?: number,
 ): void {
   const { blades, fgCount } = state
 
   // Draw background layer first (shorter, darker blades)
   for (let i = fgCount; i < blades.length; i++) {
-    drawSingleBlade(ctx, blades[i], groundY - 4, progress, time, true)
+    drawSingleBlade(ctx, blades[i], groundY - 4, progress, time, true, mouseX, mouseY)
   }
   // Draw foreground layer
   for (let i = 0; i < fgCount; i++) {
-    drawSingleBlade(ctx, blades[i], groundY + 2, progress, time, false)
+    drawSingleBlade(ctx, blades[i], groundY + 2, progress, time, false, mouseX, mouseY)
   }
 }
+
+const WIND_RADIUS = 80   // mouse influence radius (px)
+const WIND_FORCE = 22    // max extra sway at mouse center (px)
 
 function drawSingleBlade(
   ctx: CanvasRenderingContext2D,
@@ -92,12 +97,27 @@ function drawSingleBlade(
   progress: number,
   time: number,
   isBg: boolean,
+  mouseX?: number,
+  mouseY?: number,
 ): void {
   const h = blade.height * progress
   if (h < 2) return
 
-  // Sway
-  const sway = Math.sin(time * blade.swaySpeed + blade.phase) * blade.swayAmp * progress
+  // Natural sway
+  let sway = Math.sin(time * blade.swaySpeed + blade.phase) * blade.swayAmp * progress
+
+  // Mouse wind: blades bend away from cursor, strongest at tip
+  if (mouseX !== undefined && mouseY !== undefined) {
+    const dx = blade.x - mouseX
+    const dy = baseY - mouseY
+    const dist = Math.hypot(dx, dy)
+    if (dist < WIND_RADIUS) {
+      const t = 1 - dist / WIND_RADIUS             // 1 at centre → 0 at edge
+      const force = t * t * WIND_FORCE              // quadratic fall-off
+      const dir = dx > 0 ? 1 : -1                    // push away from mouse
+      sway += force * dir * (1 + blade.height / 50)  // taller blades bend more
+    }
+  }
 
   // Quadratic bezier: base → control point → tip
   const baseX = blade.x
