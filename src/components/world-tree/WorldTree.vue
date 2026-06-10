@@ -19,6 +19,7 @@ import type { PageInfo, HitArea } from './types'
 import { createRng } from './canvasUtils'
 import { buildTree, initTreeVisuals, drawTreeScene, type TreeState } from './drawTree'
 import { initGrass, type GrassState } from './drawGrass'
+import { initDollAsset } from './drawTeruTeruBozu'
 
 const emit = defineEmits<{
   (e: 'ready'): void
@@ -150,6 +151,7 @@ resize = function (): void {
 }
 
 onMounted(() => {
+  initDollAsset()
   newSeed()
   resize()
   window.addEventListener('resize', resize)

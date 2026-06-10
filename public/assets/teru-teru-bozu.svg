@@ -1,0 +1,125 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 300">
+  <defs>
+    <!-- Head radial gradient -->
+    <radialGradient id="headGrad" cx="45%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#FFFEF9"/>
+      <stop offset="55%" stop-color="#F5F0E6"/>
+      <stop offset="100%" stop-color="#E0D8C8"/>
+    </radialGradient>
+
+    <!-- Body gradient -->
+    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#F8F3EA"/>
+      <stop offset="40%" stop-color="#EDE5D5"/>
+      <stop offset="100%" stop-color="#DCD0BA"/>
+    </linearGradient>
+
+    <!-- Ribbon/bow gradient -->
+    <linearGradient id="ribbonGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF7EB3"/>
+      <stop offset="50%" stop-color="#FF5599"/>
+      <stop offset="100%" stop-color="#E84070"/>
+    </linearGradient>
+
+    <!-- Cheek blush -->
+    <radialGradient id="blushGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFB8C6" stop-opacity="0.7"/>
+      <stop offset="100%" stop-color="#FFB8C6" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Shadow filter -->
+    <filter id="softShadow" x="-10%" y="-5%" width="120%" height="110%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#00000020"/>
+    </filter>
+
+    <!-- Glow for awakened dolls -->
+    <filter id="awakeGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- ===== Hanging string ===== -->
+  <path d="M100 0 Q98 25 100 50 Q102 60 100 65"
+        stroke="#C8B898" stroke-width="1.2" fill="none" opacity="0.7"/>
+
+  <!-- ===== Awakened glow ring (behind head) ===== -->
+  <ellipse cx="100" cy="115" rx="65" ry="62" fill="none"
+           stroke="#F0C040" stroke-width="1" opacity="0.15"/>
+  <ellipse cx="100" cy="115" rx="58" ry="55" fill="none"
+           stroke="#F0C040" stroke-width="0.6" opacity="0.08"/>
+
+  <!-- ===== Head (cloth ball) ===== -->
+  <circle cx="100" cy="115" r="52" fill="url(#headGrad)" filter="url(#softShadow)"/>
+
+  <!-- Head highlight -->
+  <ellipse cx="85" cy="95" rx="22" ry="18" fill="white" opacity="0.25"/>
+
+  <!-- Head top gather wrinkles -->
+  <path d="M85 66 Q100 72 115 66" stroke="#D5CBB5" stroke-width="0.6" fill="none" opacity="0.4"/>
+  <path d="M78 68 Q100 75 122 68" stroke="#D5CBB5" stroke-width="0.5" fill="none" opacity="0.3"/>
+  <path d="M80 70 Q100 78 120 70" stroke="#D5CBB5" stroke-width="0.5" fill="none" opacity="0.25"/>
+
+  <!-- ===== Face ===== -->
+  <!-- Left eye (anime style - big with sparkle) -->
+  <ellipse cx="80" cy="112" rx="7.5" ry="9" fill="#4A3520"/>
+  <ellipse cx="78" cy="108" rx="3" ry="3.5" fill="white"/>
+  <circle cx="82" cy="115" r="1.5" fill="white" opacity="0.6"/>
+
+  <!-- Right eye -->
+  <ellipse cx="120" cy="112" rx="7.5" ry="9" fill="#4A3520"/>
+  <ellipse cx="118" cy="108" rx="3" ry="3.5" fill="white"/>
+  <circle cx="122" cy="115" r="1.5" fill="white" opacity="0.6"/>
+
+  <!-- Eyebrows (gentle arc) -->
+  <path d="M72 101 Q80 98 88 101" stroke="#8B7355" stroke-width="1" fill="none" opacity="0.5"/>
+  <path d="M112 101 Q120 98 128 101" stroke="#8B7355" stroke-width="1" fill="none" opacity="0.5"/>
+
+  <!-- Mouth (anime-style small smile) -->
+  <path d="M94 128 Q100 133 106 128" stroke="#D4877A" stroke-width="1.2"
+        fill="none" stroke-linecap="round"/>
+
+  <!-- Cheek blush -->
+  <circle cx="68" cy="122" r="9" fill="url(#blushGrad)"/>
+  <circle cx="132" cy="122" r="9" fill="url(#blushGrad)"/>
+
+  <!-- ===== Neck tie ribbon ===== -->
+  <path d="M75 162 Q100 170 125 162"
+        stroke="url(#ribbonGrad)" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+  <!-- Ribbon bow center -->
+  <ellipse cx="100" cy="166" rx="4" ry="3.5" fill="#FF4488"/>
+
+  <!-- Ribbon bow left wing -->
+  <path d="M96 166 Q78 160 72 168 Q76 170 96 169" fill="url(#ribbonGrad)"/>
+  <!-- Ribbon bow right wing -->
+  <path d="M104 166 Q122 160 128 168 Q124 170 104 169" fill="url(#ribbonGrad)"/>
+
+  <!-- ===== Body (triangular cloth dress) ===== -->
+  <path d="M73 165
+           Q70 210 75 258
+           Q90 275 100 278
+           Q110 275 125 258
+           Q130 210 127 165 Z"
+        fill="url(#bodyGrad)" filter="url(#softShadow)"/>
+
+  <!-- Body shadow on bottom -->
+  <path d="M80 240 Q100 260 120 240 Q100 278 80 240"
+        fill="#C8BAA0" opacity="0.15"/>
+
+  <!-- Body fold lines -->
+  <path d="M85 185 Q95 215 90 250"
+        stroke="#D5CBB5" stroke-width="0.6" fill="none" opacity="0.35"/>
+  <path d="M115 185 Q105 215 110 250"
+        stroke="#D5CBB5" stroke-width="0.6" fill="none" opacity="0.35"/>
+  <path d="M100 170 L100 275"
+        stroke="#D5CBB5" stroke-width="0.5" fill="none" opacity="0.2"/>
+
+  <!-- Hem decoration (bottom trim) -->
+  <path d="M76 260 Q88 268 100 270 Q112 268 124 260"
+        stroke="#C8B898" stroke-width="1.2" fill="none" opacity="0.4"/>
+
+  <!-- Body highlight -->
+  <path d="M80 175 Q85 200 82 230"
+        stroke="white" stroke-width="2" fill="none" opacity="0.15"/>
+</svg>
