@@ -4,42 +4,45 @@
     <aside class="pdf-sidebar">
       <div class="pdf-sidebar__header">
         <div class="text-16px font-700 tracking-[0.2px] text-left">文档</div>
+        <div class="text-11px text-dim-3 mt-4px text-left">双击在新标签页中打开</div>
       </div>
       <div class="pdf-list md-scroll">
-        <button
+        <div
           v-for="pdf in pdfList"
           :key="pdf.name"
           class="pdf-list__item"
           :class="{ 'pdf-list__item--active': pdf.name === activeName }"
-          type="button"
-          @click="selectPdf(pdf)"
+          @dblclick="openPdf(pdf)"
         >
           <span class="pdf-list__icon">📄</span>
-          <div class="pdf-list__info">
+          <div class="pdf-list__info" @click="activeName = pdf.name">
             <div class="pdf-list__name">{{ pdf.label }}</div>
             <div class="pdf-list__size">{{ pdf.size }}</div>
           </div>
-        </button>
+          <a
+            class="pdf-list__dl"
+            :href="pdf.url"
+            download
+            title="下载"
+            @click.stop
+          >⬇</a>
+        </div>
+        <div v-if="pdfList.length === 0" class="pdf-list__empty">
+          暂无文档
+        </div>
       </div>
     </aside>
 
-    <!-- Main — PDF viewer -->
+    <!-- Main — info area -->
     <main class="pdf-main">
-      <template v-if="activePdf">
-        <div class="pdf-main__header">
-          <div class="pdf-main__title">{{ activePdf.label }}</div>
-          <a class="pdf-main__download" :href="activePdf.url" download>⬇ 下载</a>
+      <div class="pdf-placeholder">
+        <div class="pdf-placeholder__inner">
+          <div class="pdf-placeholder__icon">📄</div>
+          <div class="pdf-placeholder__title">PDF 手册</div>
+          <div class="pdf-placeholder__hint">双击左侧文档在新标签页中查看</div>
+          <div class="pdf-placeholder__hint">点击 ⬇ 图标下载文件</div>
         </div>
-        <div class="pdf-viewer">
-          <iframe
-            class="pdf-viewer__frame"
-            :src="activePdf.url"
-            frameborder="0"
-            title="PDF Viewer"
-          />
-        </div>
-      </template>
-      <div v-else class="pdf-placeholder">从左侧选择文档查看</div>
+      </div>
     </main>
   </div>
 </template>
@@ -67,14 +70,6 @@ function niceLabel(raw: string): string {
     .trim()
 }
 
-function formatSize(bytes: number): string {
-  if (!bytes) return ''
-  if (bytes < 1024) return `${bytes} B`
-  const kb = bytes / 1024
-  if (kb < 1024) return `${kb.toFixed(0)} KB`
-  return `${(kb / 1024).toFixed(1)} MB`
-}
-
 const pdfList = computed<PdfItem[]>(() =>
   PUBLIC_PDFS.map(name => ({
     name,
@@ -85,12 +80,10 @@ const pdfList = computed<PdfItem[]>(() =>
 )
 
 const activeName = ref('')
-const activePdf = computed<PdfItem | undefined>(() =>
-  pdfList.value.find(p => p.name === activeName.value),
-)
 
-function selectPdf(pdf: PdfItem): void {
+function openPdf(pdf: PdfItem): void {
   activeName.value = pdf.name
+  window.open(pdf.url, '_blank')
 }
 </script>
 
@@ -116,6 +109,12 @@ function selectPdf(pdf: PdfItem): void {
   overflow: auto;
   padding: 6px;
 }
+.pdf-list__empty {
+  padding: 24px 12px;
+  text-align: center;
+  color: rgba(230, 232, 239, 0.45);
+  font-size: 13px;
+}
 .pdf-list__item {
   display: flex;
   align-items: center;
@@ -123,9 +122,6 @@ function selectPdf(pdf: PdfItem): void {
   width: 100%;
   padding: 10px 12px;
   border-radius: 10px;
-  border: none;
-  background: transparent;
-  color: var(--text);
   cursor: pointer;
   text-align: left;
   font-family: inherit;
@@ -142,6 +138,7 @@ function selectPdf(pdf: PdfItem): void {
   font-size: 18px;
   line-height: 1;
   flex-shrink: 0;
+  user-select: none;
 }
 .pdf-list__info {
   min-width: 0;
@@ -154,11 +151,32 @@ function selectPdf(pdf: PdfItem): void {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  user-select: none;
 }
 .pdf-list__size {
   font-size: 11px;
   color: rgba(230, 232, 239, 0.45);
   margin-top: 2px;
+}
+.pdf-list__dl {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  font-size: 14px;
+  color: rgba(240, 192, 64, 0.7);
+  text-decoration: none;
+  transition: all 0.15s;
+  opacity: 0;
+}
+.pdf-list__item:hover .pdf-list__dl {
+  opacity: 1;
+}
+.pdf-list__dl:hover {
+  background: rgba(240, 192, 64, 0.12);
+  color: #f0c040;
 }
 
 /* ---- Main ---- */
@@ -168,66 +186,36 @@ function selectPdf(pdf: PdfItem): void {
   display: flex;
   flex-direction: column;
 }
-.pdf-main__header {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 14px 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-  background: rgba(0, 0, 0, 0.15);
-  flex-shrink: 0;
-}
-.pdf-main__title {
-  flex: 1;
-  min-width: 0;
-  font-size: 14px;
-  font-weight: 700;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  text-align: left;
-}
-.pdf-main__download {
-  background: rgba(212, 160, 23, 0.15);
-  border: 1px solid rgba(212, 160, 23, 0.3);
-  color: #f0c040;
-  padding: 6px 14px;
-  border-radius: 8px;
-  font-size: 13px;
-  text-decoration: none;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background 0.15s;
-  flex-shrink: 0;
-}
-.pdf-main__download:hover {
-  background: rgba(212, 160, 23, 0.25);
-}
-
-/* ---- Viewer ---- */
-.pdf-viewer {
-  flex: 1;
-  min-height: 0;
-  background: rgba(0, 0, 0, 0.2);
-}
-.pdf-viewer__frame {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
 
 /* Placeholder */
 .pdf-placeholder {
   height: 100%;
   display: grid;
   place-items: center;
-  color: rgba(230, 232, 239, 0.65);
-  border: 1px dashed rgba(255, 255, 255, 0.16);
-  border-radius: 14px;
   background: rgba(0, 0, 0, 0.18);
 }
+.pdf-placeholder__inner {
+  text-align: center;
+  user-select: none;
+}
+.pdf-placeholder__icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+.pdf-placeholder__title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 16px;
+  color: rgba(230, 232, 239, 0.7);
+}
+.pdf-placeholder__hint {
+  font-size: 13px;
+  color: rgba(230, 232, 239, 0.4);
+  line-height: 1.7;
+}
 
-/* ---- Scrollbar (mirrors md-scroll) ---- */
+/* ---- Scrollbar ---- */
 .md-scroll {
   scrollbar-width: thin;
   scrollbar-color: rgba(130, 177, 255, 0.5) rgba(255, 255, 255, 0.06);
@@ -242,6 +230,4 @@ function selectPdf(pdf: PdfItem): void {
 }
 .md-scroll::-webkit-scrollbar-thumb:hover { background-color: rgba(130, 177, 255, 0.58); }
 .md-scroll::-webkit-scrollbar-corner { background: transparent; }
-
-
 </style>
