@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import WorldTree from '../components/WorldTree.vue'
+import WorldTree from '../components/world-tree/WorldTree.vue'
 </script>
 
 <style scoped>
