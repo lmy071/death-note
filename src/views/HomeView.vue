@@ -39,6 +39,7 @@
     <div class="hud-bottom-bar">
       <span class="hud-data">SYS.STATUS: <em class="cyan">ONLINE</em></span>
       <span class="hud-data">SECTOR: <em class="gold">WORLD_TREE</em></span>
+      <router-link to="/md/pdf-help" class="hud-data hud-link">帮助手册</router-link>
       <span class="hud-data">LINK: <em class="magenta">STABLE</em></span>
     </div>
   </div>
@@ -589,6 +590,17 @@ import WorldTree from '../components/world-tree/WorldTree.vue'
 .hud-data em {
   font-style: normal;
   font-weight: 700;
+}
+
+.hud-link {
+  text-decoration: none;
+  color: var(--text-dim);
+  transition: color 0.2s, text-shadow 0.2s;
+  cursor: pointer;
+}
+.hud-link:hover {
+  color: var(--gold);
+  text-shadow: 0 0 8px rgba(240, 192, 64, 0.4);
 }
 
 .hud-data .cyan {
