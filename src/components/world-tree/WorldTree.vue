@@ -40,7 +40,21 @@ const realPages: PageInfo[] = [
   { label: '笔记', route: '/md/md-note', desc: '技术笔记' },
   { label: '粒子特效', route: '/fun/particle-canvas', desc: 'Canvas 粒子动画' },
   { label: '折线图', route: '/fun/line-chart', desc: '数据可视化' },
+  // PDFs — open in new tab
+  ...getPdfPages(),
 ]
+
+function getPdfPages(): PageInfo[] {
+  const pdfs: { name: string; label: string }[] = [
+    { name: 'zonebox开缸教程（人工石，死石，人造滤材篇） 2.pdf', label: '鱼缸开缸教程' },
+  ]
+  return pdfs.map(p => ({
+    label: p.label,
+    route: '',
+    desc: 'PDF 手册',
+    url: encodeURI(`/${p.name}`),
+  }))
+}
 
 // ---- Canvas state ----
 let ctx: CanvasRenderingContext2D | null = null
@@ -116,7 +130,11 @@ function onClick(e: MouseEvent): void {
   for (const a of branchHitAreas) {
     const dx: number = mx - a.x, dy: number = my - a.y
     if (dx * dx + dy * dy <= a.radius * a.radius) {
-      router.push(a.route)
+      if (a.url) {
+        window.open(a.url, '_blank')
+      } else {
+        router.push(a.route)
+      }
       return
     }
   }

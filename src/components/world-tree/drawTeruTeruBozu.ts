@@ -263,6 +263,7 @@ export function drawTeruTeruBozu(
       label: branch.page!.label,
       desc: branch.page!.desc,
       route: branch.page!.route,
+      ...(branch.page!.url ? { url: branch.page!.url } : {}),
     })
   }
 }

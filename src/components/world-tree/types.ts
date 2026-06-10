@@ -4,6 +4,8 @@ export interface PageInfo {
   label: string
   route: string
   desc: string
+  /** Direct URL to open in new tab (e.g. PDF). Overrides route when present. */
+  url?: string
 }
 
 export interface BranchNode {
@@ -28,4 +30,6 @@ export interface HitArea {
   label: string
   desc: string
   route: string
+  /** Direct URL to open in new tab (e.g. PDF). Overrides route when present. */
+  url?: string
 }
