@@ -224,12 +224,12 @@ export function drawTeruTeruBozu(
     ctx.rect(-dollW * 0.08, dollH * 0.58, dollW * 0.16, dollH * 0.08)
     ctx.fillStyle = `rgba(220, 210, 190, ${alpha * 0.5})`
     ctx.fill()
-    // Skirt trapezoid
+    // Skirt trapezoid (wider flare)
     ctx.beginPath()
     ctx.moveTo(-dollW * 0.1, dollH * 0.66)
     ctx.lineTo(dollW * 0.1, dollH * 0.66)
-    ctx.lineTo(dollW * 0.22, dollH * 0.96)
-    ctx.quadraticCurveTo(0, dollH * 1.02, -dollW * 0.22, dollH * 0.96)
+    ctx.lineTo(dollW * 0.3, dollH * 0.96)
+    ctx.quadraticCurveTo(0, dollH * 1.04, -dollW * 0.3, dollH * 0.96)
     ctx.closePath()
     ctx.fillStyle = `rgba(200, 190, 170, ${alpha * 0.45})`
     ctx.fill()

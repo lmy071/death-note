@@ -107,44 +107,45 @@
   <!-- ===== Skirt (裙摆) ===== -->
   <!-- Back layer (darker, visible at sides) -->
   <path d="M66 198
-           Q58 220 55 252
-           Q52 268 65 278
-           Q80 288 100 290
-           Q120 288 135 278
-           Q148 268 145 252
-           Q142 220 134 198 Z"
+           Q50 218 42 250
+           Q36 272 52 282
+           Q72 294 100 296
+           Q128 294 148 282
+           Q164 272 158 250
+           Q150 218 134 198 Z"
         fill="#D5C5A8" opacity="0.7"/>
 
   <!-- Front skirt panel -->
   <path d="M72 196
-           Q65 215 62 245
-           Q60 265 70 276
-           Q85 286 100 288
-           Q115 286 130 276
-           Q140 265 138 245
-           Q135 215 128 196 Z"
+           Q58 215 52 245
+           Q46 268 56 278
+           Q76 290 100 292
+           Q124 290 144 278
+           Q154 268 148 245
+           Q142 215 128 196 Z"
         fill="url(#skirtGrad)" filter="url(#softShadow)"/>
 
   <!-- Skirt pleat / fold lines -->
-  <path d="M85 200 Q83 230 80 260 Q78 272 82 280"
+  <path d="M85 200 Q80 230 74 260 Q70 274 76 283"
         stroke="#D5CBB5" stroke-width="0.7" fill="none" opacity="0.35"/>
-  <path d="M100 198 L100 286"
+  <path d="M100 198 L100 288"
         stroke="#D5CBB5" stroke-width="0.6" fill="none" opacity="0.25"/>
-  <path d="M115 200 Q117 230 120 260 Q122 272 118 280"
+  <path d="M115 200 Q120 230 126 260 Q130 274 124 283"
         stroke="#D5CBB5" stroke-width="0.7" fill="none" opacity="0.35"/>
 
   <!-- Skirt hem ruffle decoration -->
-  <path d="M65 275 Q70 272 75 275 Q80 272 85 275
-           Q90 272 95 275 Q100 272 105 275
-           Q110 272 115 275 Q120 272 125 275
-           Q130 272 135 275"
+  <path d="M50 278 Q56 274 62 278 Q68 274 74 278
+           Q80 274 86 278 Q92 274 98 278
+           Q104 274 110 278 Q116 274 122 278
+           Q128 274 134 278 Q140 274 146 278
+           Q152 274 156 278"
         stroke="#C8B090" stroke-width="1.2" fill="none" opacity="0.4"/>
 
   <!-- Second ruffle line (upper) -->
-  <path d="M68 270 Q73 267 78 270 Q83 267 88 270
-           Q93 267 98 270 Q103 267 108 270
-           Q113 267 118 270 Q123 267 128 270
-           Q133 267 136 270"
+  <path d="M54 273 Q60 270 66 273 Q72 270 78 273
+           Q84 270 90 273 Q96 270 102 273
+           Q108 270 114 273 Q120 270 126 273
+           Q132 270 138 273 Q144 270 150 273"
         stroke="#C8B090" stroke-width="0.8" fill="none" opacity="0.3"/>
 
   <!-- Skirt waistband -->
@@ -152,12 +153,12 @@
         stroke="#C8B090" stroke-width="1.5" fill="none" opacity="0.35"/>
 
   <!-- Side ruffle accents -->
-  <path d="M58 240 Q52 248 56 258 Q58 248 62 242"
+  <path d="M42 242 Q34 250 40 260 Q44 250 48 244"
         stroke="#D0C0A0" stroke-width="0.8" fill="none" opacity="0.3"/>
-  <path d="M142 240 Q148 248 144 258 Q142 248 138 242"
+  <path d="M158 242 Q166 250 160 260 Q156 250 152 244"
         stroke="#D0C0A0" stroke-width="0.8" fill="none" opacity="0.3"/>
 
   <!-- Skirt highlight -->
-  <path d="M90 210 Q88 240 86 260"
-        stroke="white" stroke-width="3" fill="none" opacity="0.12"/>
+  <path d="M100 210 L100 260"
+        stroke="white" stroke-width="4" fill="none" opacity="0.1"/>
 </svg>
