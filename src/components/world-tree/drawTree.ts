@@ -271,10 +271,32 @@ function drawBranch(
   const myProgress: number = Math.min(1, Math.max(0, (parentProgress - startThreshold) / (1 - startThreshold + 0.01)))
   if (myProgress <= 0) return
 
+  const margin = 20
   const len: number = branch._maxLen * myProgress
   const angle: number = branch.angleOffset
-  const ex: number = sx + Math.sin(angle) * len
-  const ey: number = sy - Math.cos(angle) * len
+  let ex: number = sx + Math.sin(angle) * len
+  let ey: number = sy - Math.cos(angle) * len
+
+  // Clamp branch endpoint to canvas bounds with margin
+  const cw: number = ctx.canvas.width
+  const ch: number = ctx.canvas.height
+  if (ex < margin || ex > cw - margin || ey < margin || ey > ch - margin) {
+    const dx: number = ex - sx
+    const dy: number = ey - sy
+    const segLen: number = Math.hypot(dx, dy)
+    if (segLen > 1e-6) {
+      // Shrink until endpoint fits within the margin box
+      let t = 1
+      for (let step = 0; step < 8; step++) {
+        const tx: number = sx + dx * t
+        const ty: number = sy + dy * t
+        if (tx >= margin && tx <= cw - margin && ty >= margin && ty <= ch - margin) break
+        t *= 0.75
+      }
+      ex = sx + dx * t
+      ey = sy + dy * t
+    }
+  }
 
   const thickness: number = Math.max(1, branch.thicknessBase - branch.depth * 1.2)
   const depthRatio: number = Math.min(1, branch.depth / 4)
@@ -294,7 +316,13 @@ function drawBranch(
 
   // Leaf node → teru teru bozu (晴天娃娃)
   if (branch.children.length === 0) {
-    if (myProgress > 0.5) drawTeruTeruBozu(ctx, ex, ey, branch, myProgress, time, hitAreas)
+    if (myProgress > 0.5) {
+      // Ensure the doll (which hangs below the endpoint) doesn't overflow the canvas bottom
+      const dollH = branch.leafSize * 9.75 // dollW * (300/200) = leafSize * 6.5 * 1.5
+      if (ey + dollH <= ch - margin && ex >= margin && ex <= cw - margin) {
+        drawTeruTeruBozu(ctx, ex, ey, branch, myProgress, time, hitAreas)
+      }
+    }
     return
   }
 
