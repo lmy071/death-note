@@ -60,6 +60,10 @@
   </div>
 </template>
 
+<script lang="ts">
+export default { name: 'mdNoteView' }
+</script>
+
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { Marked } from 'marked'

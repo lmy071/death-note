@@ -40,6 +40,7 @@ const realPages: PageInfo[] = [
   { label: '笔记', route: '/md/md-note', desc: '技术笔记' },
   { label: '粒子特效', route: '/fun/particle-canvas', desc: 'Canvas 粒子动画' },
   { label: '折线图', route: '/fun/line-chart', desc: '数据可视化' },
+  { label: '缓存管理', route: '/dev/cache-inspector', desc: 'KeepAlive 缓存检查器' },
 ]
 
 // ---- Canvas state ----

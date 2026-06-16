@@ -28,6 +28,10 @@
   </div>
 </template>
 
+<script lang="ts">
+export default { name: 'LineChartView' }
+</script>
+
 <script setup lang="ts">
 import LineChart from '../../components/LineChart.vue'
 

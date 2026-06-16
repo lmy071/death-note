@@ -47,6 +47,10 @@
   </div>
 </template>
 
+<script lang="ts">
+export default { name: 'particleCanvasView' }
+</script>
+
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
 
