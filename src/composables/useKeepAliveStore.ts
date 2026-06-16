@@ -67,10 +67,32 @@ export function initKeepAliveStore() {
 export function registerKeepAliveInstance(instance: any) {
   keepAliveInstance = instance
 
-  // 开发环境暴露到 window，方便控制台调试
+  // 暴露到 window，方便控制台调试
   if (typeof window !== 'undefined') {
-    ;(window as any).__keepAlive = instance
-    ;(window as any).__keepAliveCache = () => instance.__v_cache
+    const win = window as any
+    win.__keepAlive = instance
+    win.__keepAliveCache = () => instance.__v_cache
+
+    // 工具函数：列出缓存组件名
+    win.__keepAliveNames = () => {
+      const cache: Map<any, any> | undefined = instance.__v_cache
+      if (!cache) return []
+      return [...cache.values()].map((v: any) => v.type?.name).filter(Boolean)
+    }
+
+    // 工具函数：格式化打印缓存详情
+    win.__keepAliveInfo = () => {
+      const cache: Map<any, any> | undefined = instance.__v_cache
+      if (!cache) return console.log('[KeepAlive] 未找到缓存实例')
+      console.group(`[KeepAlive] 缓存实例 (${cache.size}/7)`)
+      cache.forEach((vnode: any, key: any) => {
+        const name = vnode.type?.name ?? '(anonymous)'
+        const keyName = key?.name ?? String(key)
+        console.log(`  ${name}`, { key: keyName, vnode })
+      })
+      console.groupEnd()
+      return cache
+    }
   }
 }
 
