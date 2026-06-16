@@ -8,6 +8,17 @@
         <span class="badge">KeepAlive</span>
       </div>
       <div class="ci-header__right">
+        <!-- Sync status indicator -->
+        <button
+          class="ci-sync-btn"
+          :class="{ 'ci-sync-btn--ok': !isInconsistent, 'ci-sync-btn--warn': isInconsistent }"
+          type="button"
+          title="点击同步：将 Store 与 Vue 内部缓存对齐"
+          @click="handleSync"
+        >
+          <span class="ci-sync-dot" />
+          {{ isInconsistent ? '不一致' : '已同步' }}
+        </button>
         <!-- Auto-cache toggle -->
         <label class="ci-toggle" :title="isAutoCacheEnabled ? '自动缓存已开启' : '自动缓存已关闭'">
           <span class="ci-toggle__label">自动缓存</span>
@@ -31,16 +42,23 @@
     <div class="ci-stats">
       <div class="ci-stat-card">
         <div class="ci-stat-card__value">{{ cacheCount }}</div>
-        <div class="ci-stat-card__label">缓存实例</div>
+        <div class="ci-stat-card__label">Store 期望</div>
       </div>
-      <div class="ci-stat-card">
-        <div class="ci-stat-card__value">{{ activeCount }}</div>
-        <div class="ci-stat-card__label">活跃实例</div>
+      <div class="ci-stat-card" :class="{ 'ci-stat-card--highlight': isInconsistent }">
+        <div class="ci-stat-card__value">{{ vueInternalCount }}</div>
+        <div class="ci-stat-card__label">Vue 实际</div>
       </div>
       <div class="ci-stat-card">
         <div class="ci-stat-card__value">{{ removedCount }}</div>
         <div class="ci-stat-card__label">已禁缓存</div>
       </div>
+    </div>
+
+    <!-- Inconsistency warning -->
+    <div v-if="isInconsistent" class="ci-warning">
+      <span class="ci-warning__icon">⚠️</span>
+      Store 期望缓存数 ({{ cacheCount }}) 与 Vue 内部实际缓存数 ({{ vueInternalCount }}) 不一致
+      <button class="ci-warning__btn" type="button" @click="handleSync">立即同步</button>
     </div>
 
     <!-- Cache list -->
@@ -59,19 +77,36 @@
           v-for="instance in cacheInstances"
           :key="instance.name"
           class="ci-item"
-          :class="{ 'ci-item--active': instance.isActive }"
+          :class="{
+            'ci-item--active': instance.isActive,
+            'ci-item--ghost': instance.source === 'store-expected',
+          }"
         >
-          <div class="ci-item__indicator" :class="{ 'ci-item__indicator--active': instance.isActive }" />
+          <div
+            class="ci-item__indicator"
+            :class="{
+              'ci-item__indicator--active': instance.isActive,
+              'ci-item__indicator--ghost': instance.source === 'store-expected',
+            }"
+          />
 
           <div class="ci-item__body">
             <div class="ci-item__name-row">
               <span class="ci-item__name">{{ getLabel(instance.name) }}</span>
               <span class="ci-item__comp-name">{{ instance.name }}</span>
               <span v-if="instance.isActive" class="ci-item__active-tag">活跃</span>
+              <span
+                v-if="instance.source === 'store-expected'"
+                class="ci-item__ghost-tag"
+                title="Store 认为该组件在缓存中，但 Vue 内部未找到对应缓存。可能是组件 name 不匹配或 Vue 内部淘汰了该缓存。"
+              >
+                幽灵
+              </span>
             </div>
             <div class="ci-item__meta">
               <span v-if="instance.routePath" class="ci-item__path">{{ instance.routePath }}</span>
               <span class="ci-item__time">{{ formatTime(instance.cachedAt) }}</span>
+              <span class="ci-item__source">{{ instance.source === 'vue-internal' ? '✓ Vue' : '? Store' }}</span>
             </div>
           </div>
 
@@ -181,9 +216,9 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { computed, reactive } from 'vue'
+import { computed, onMounted, onUnmounted, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { useKeepAliveStore, nameLabelMap } from '../../composables/useKeepAliveStore'
+import { useKeepAliveStore, nameLabelMap, syncWithVueInternal } from '../../composables/useKeepAliveStore'
 
 const router = useRouter()
 const {
@@ -192,6 +227,8 @@ const {
   removedInstances,
   removedCount,
   isAutoCacheEnabled,
+  isInconsistent,
+  vueInternalCount,
   removeCache,
   restoreCache,
   clearAllCache,
@@ -203,6 +240,25 @@ const activeCount = computed(() => cacheInstances.value.filter((i) => i.isActive
 function getLabel(componentName: string): string {
   return nameLabelMap.value.get(componentName) ?? componentName
 }
+
+// ---- Periodic sync ----
+let syncTimer: ReturnType<typeof setInterval> | null = null
+
+onMounted(() => {
+  // 每 5 秒自动同步一次
+  syncTimer = setInterval(() => {
+    syncWithVueInternal()
+  }, 5000)
+  // 初始同步
+  syncWithVueInternal()
+})
+
+onUnmounted(() => {
+  if (syncTimer) {
+    clearInterval(syncTimer)
+    syncTimer = null
+  }
+})
 
 // ---- Confirm dialog ----
 const confirmDialog = reactive({
@@ -226,6 +282,17 @@ function handleRestore(name: string) {
 
 function handleClearAll() {
   clearAllCache()
+}
+
+function handleSync() {
+  const result = syncWithVueInternal()
+  if (result.added.length > 0 || result.removed.length > 0) {
+    console.log(
+      '[CacheInspector] 手动同步:',
+      result.added.length ? `补入 ${result.added.join(', ')}` : '',
+      result.removed.length ? `移除 ${result.removed.join(', ')}` : '',
+    )
+  }
 }
 
 function navigateTo(path: string) {
@@ -252,6 +319,7 @@ function formatTime(ts: number): string {
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(0, 0, 0, 0.15);
   flex-shrink: 0;
+  gap: 8px;
 }
 
 .ci-header__left {
@@ -263,7 +331,7 @@ function formatTime(ts: number): string {
 .ci-header__right {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
 }
 
 .ci-back {
@@ -278,6 +346,48 @@ function formatTime(ts: number): string {
   font-size: 16px;
   font-weight: 750;
   letter-spacing: 0.5px;
+}
+
+/* ========================================
+   Sync Status Button
+   ======================================== */
+.ci-sync-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
+  color: rgba(230, 232, 239, 0.7);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ci-sync-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.ci-sync-btn--ok .ci-sync-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00d4ff;
+  box-shadow: 0 0 6px rgba(0, 212, 255, 0.4);
+}
+
+.ci-sync-btn--warn .ci-sync-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ffaa00;
+  box-shadow: 0 0 6px rgba(255, 170, 0, 0.4);
+  animation: pulse-warn 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-warn {
+  0%, 100% { box-shadow: 0 0 4px rgba(255, 170, 0, 0.3); }
+  50% { box-shadow: 0 0 10px rgba(255, 170, 0, 0.6); }
 }
 
 /* ========================================
@@ -352,6 +462,12 @@ function formatTime(ts: number): string {
   border: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(10, 16, 32, 0.6);
   text-align: left;
+  transition: border-color 0.2s;
+}
+
+.ci-stat-card--highlight {
+  border-color: rgba(255, 170, 0, 0.4);
+  background: rgba(255, 170, 0, 0.06);
 }
 
 .ci-stat-card__value {
@@ -361,11 +477,51 @@ function formatTime(ts: number): string {
   line-height: 1.2;
 }
 
+.ci-stat-card--highlight .ci-stat-card__value {
+  color: #ffaa00;
+}
+
 .ci-stat-card__label {
   font-size: 11px;
   color: rgba(230, 232, 239, 0.5);
   margin-top: 4px;
   letter-spacing: 0.5px;
+}
+
+/* ========================================
+   Warning Banner
+   ======================================== */
+.ci-warning {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: rgba(255, 170, 0, 0.08);
+  border-bottom: 1px solid rgba(255, 170, 0, 0.2);
+  font-size: 12px;
+  color: rgba(255, 200, 100, 0.9);
+  flex-shrink: 0;
+}
+
+.ci-warning__icon {
+  flex-shrink: 0;
+}
+
+.ci-warning__btn {
+  margin-left: auto;
+  font-size: 11px;
+  padding: 2px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 170, 0, 0.3);
+  background: rgba(255, 170, 0, 0.12);
+  color: #ffcc66;
+  cursor: pointer;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.ci-warning__btn:hover {
+  background: rgba(255, 170, 0, 0.2);
+  border-color: rgba(255, 170, 0, 0.5);
 }
 
 /* ========================================
@@ -465,6 +621,10 @@ function formatTime(ts: number): string {
   border-color: rgba(130, 177, 255, 0.28);
   background: rgba(130, 177, 255, 0.08);
 }
+.ci-item--ghost {
+  border-color: rgba(255, 170, 0, 0.2);
+  background: rgba(255, 170, 0, 0.04);
+}
 .ci-item--removed {
   border-color: rgba(255, 100, 100, 0.12);
   background: rgba(255, 100, 100, 0.04);
@@ -486,6 +646,10 @@ function formatTime(ts: number): string {
   background: #00d4ff;
   box-shadow: 0 0 8px rgba(0, 212, 255, 0.5);
   animation: pulse 2s ease-in-out infinite;
+}
+.ci-item__indicator--ghost {
+  background: #ffaa00;
+  box-shadow: 0 0 6px rgba(255, 170, 0, 0.4);
 }
 .ci-item__indicator--removed {
   background: rgba(255, 100, 100, 0.5);
@@ -537,6 +701,18 @@ function formatTime(ts: number): string {
   border: 1px solid rgba(0, 212, 255, 0.3);
 }
 
+.ci-item__ghost-tag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(255, 170, 0, 0.15);
+  color: #ffaa00;
+  border: 1px solid rgba(255, 170, 0, 0.3);
+  cursor: help;
+}
+
 .ci-item__meta {
   display: flex;
   align-items: center;
@@ -549,6 +725,13 @@ function formatTime(ts: number): string {
 .ci-item__path {
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   font-size: 11px;
+}
+
+.ci-item__source {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .ci-item__actions {

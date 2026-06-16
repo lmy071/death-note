@@ -1,7 +1,7 @@
 <template>
   <div id="layout">
     <RouterView v-slot="{ Component }">
-      <KeepAlive :include="keepAliveInclude">
+      <KeepAlive :include="keepAliveInclude" @vnode-mounted="onKeepAliveMounted">
         <component :is="Component" />
       </KeepAlive>
     </RouterView>
@@ -15,9 +15,15 @@ export default {
 </script>
 
 <script setup lang="ts">
-import { watch } from 'vue'
+import { watch, type VNode } from 'vue'
 import { useRoute } from 'vue-router'
-import { useKeepAliveStore, initKeepAliveStore, registerRouteNameMapping } from './composables/useKeepAliveStore'
+import {
+  useKeepAliveStore,
+  initKeepAliveStore,
+  registerRouteNameMapping,
+  registerKeepAliveInstance,
+  syncWithVueInternal,
+} from './composables/useKeepAliveStore'
 
 const route = useRoute()
 
@@ -34,11 +40,39 @@ registerRouteNameMapping('/dev/cache-inspector', 'CacheInspectorView', '缓存�
 
 const { include: keepAliveInclude, onRouteChange } = useKeepAliveStore()
 
-// 路由切换时自动将目标组件加入缓存（内部会检查 removedSet 和 autoCache 开关）
+/**
+ * KeepAlive 组件挂载时，获取其组件实例
+ * 通过 instance.__v_cache 可以读取 Vue 内部的真实缓存 Map
+ */
+function onKeepAliveMounted(vnode: VNode) {
+  // vnode.component 就是 KeepAlive 的组件实例
+  const instance = (vnode as any).component
+  if (instance) {
+    registerKeepAliveInstance(instance)
+    // 初始同步一次
+    syncWithVueInternal()
+  }
+}
+
+// 路由切换时：
+// 1. 自动将目标组件加入缓存（内部会检查 removedSet 和 autoCache 开关）
+// 2. 同步 Vue 内部缓存状态，确保 Store 与 Vue 一致
 watch(
   () => route.path,
   (path) => {
     onRouteChange(path)
+    // 延迟同步，等 Vue KeepAlive 内部完成缓存操作后再读取
+    // 使用 queuePostRenderEffect 或 setTimeout 确保 DOM 更新后
+    setTimeout(() => {
+      const result = syncWithVueInternal()
+      if (result.added.length > 0 || result.removed.length > 0) {
+        console.log(
+          '[KeepAliveStore] 同步修正:',
+          result.added.length ? `补入 ${result.added.join(', ')}` : '',
+          result.removed.length ? `移除 ${result.removed.join(', ')}` : '',
+        )
+      }
+    }, 0)
   },
   { immediate: true }
 )
