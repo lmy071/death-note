@@ -66,6 +66,12 @@ export function initKeepAliveStore() {
  */
 export function registerKeepAliveInstance(instance: any) {
   keepAliveInstance = instance
+
+  // 开发环境暴露到 window，方便控制台调试
+  if (typeof window !== 'undefined') {
+    ;(window as any).__keepAlive = instance
+    ;(window as any).__keepAliveCache = () => instance.__v_cache
+  }
 }
 
 /**
