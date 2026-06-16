@@ -1,7 +1,7 @@
 <template>
   <div id="layout">
     <RouterView v-slot="{ Component }">
-      <KeepAlive :include="keepAliveInclude" @vnode-mounted="onKeepAliveMounted">
+      <KeepAlive :include="keepAliveInclude" @vue:mounted="onKeepAliveMounted">
         <component :is="Component" />
       </KeepAlive>
     </RouterView>
