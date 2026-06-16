@@ -4,12 +4,11 @@ import { useRouter } from 'vue-router'
 /**
  * KeepAlive 缓存管理 Store
  *
- * 策略：全部缓存 + max=7 LRU 淘汰
+ * 原则：展示数据只从 Vue KeepAlive 内部 __v_cache 获取，不额外存储
  * ──────────────────────────────────────────────
- * - 所有已注册页面默认加入 includeList
- * - <KeepAlive :max="7"> 实现 LRU 淘汰
- * - 通过 instance.__v_cache 读取 Vue 内部真实缓存状态
- * - 删除操作：从 include 移除 → Vue 自动销毁缓存实例
+ * - includeList 仅驱动 <KeepAlive :include>，控制哪些组件可被缓存
+ * - cacheInstances / cacheCount 等展示数据直接读取 __v_cache
+ * - 删除操作：从 include 移除 → Vue 自动销毁 → 重新读取 __v_cache 即为最新
  * ──────────────────────────────────────────────
  */
 
@@ -18,21 +17,14 @@ export interface CacheInstance {
   name: string
   /** 对应的路由 path */
   routePath: string
-  /** 缓存时间戳 */
-  cachedAt: number
   /** 是否为当前活跃实例 */
   isActive: boolean
-  /** 数据来源 */
-  source: 'vue-internal' | 'store-expected'
 }
 
 // ---- 全局单例状态 ----
 
-/** 缓存名单 —— 驱动 <KeepAlive :include> */
+/** 缓存名单 —— 仅驱动 <KeepAlive :include> */
 const includeList = ref<string[]>([])
-
-/** 缓存时间戳 */
-const cacheTimestamps = ref<Map<string, number>>(new Map())
 
 /** 路由 path → 组件 name */
 const routeNameMap = ref<Map<string, string>>(new Map())
@@ -43,11 +35,11 @@ const nameRouteMap = ref<Map<string, string>>(new Map())
 /** 组件 name → 显示标签 */
 const nameLabelMap = ref<Map<string, string>>(new Map())
 
-/** Vue KeepAlive 内部实际缓存 name 集合 */
-const vueInternalCacheNames = ref<Set<string>>(new Set())
-
 /** KeepAlive 组件实例引用 */
 let keepAliveInstance: any = null
+
+/** 上次读取的 __v_cache 快照（响应式，供 computed 消费） */
+const cacheSnapshot = ref<string[]>([])
 
 let routerInstance: ReturnType<typeof useRouter> | null = null
 
@@ -77,21 +69,22 @@ export function registerKeepAliveInstance(instance: any) {
 }
 
 /**
- * 从 Vue KeepAlive 内部 __v_cache 读取实际缓存状态
+ * 从 Vue KeepAlive 内部 __v_cache 读取实际缓存的组件 name 列表
+ * 返回按缓存顺序排列的数组（最旧在前，最新在后，与 Vue 内部 keys Set 顺序一致）
  */
-function readVueInternalCache(): Set<string> {
-  if (!keepAliveInstance) return new Set()
+function readVueCacheNames(): string[] {
+  if (!keepAliveInstance) return []
 
   const cache: Map<any, VNode> | undefined = keepAliveInstance.__v_cache
-  if (!cache) return new Set()
+  if (!cache) return []
 
-  const names = new Set<string>()
+  const names: string[] = []
   cache.forEach((vnode) => {
     const comp = vnode.type
     if (comp && typeof comp === 'object' && 'name' in comp) {
       const name = (comp as any).name
       if (typeof name === 'string') {
-        names.add(name)
+        names.push(name)
       }
     }
   })
@@ -99,40 +92,25 @@ function readVueInternalCache(): Set<string> {
 }
 
 /**
- * 同步 Store 的 includeList 与 Vue 内部缓存
+ * 刷新缓存快照（从 __v_cache 读取最新状态）
+ * 在路由切换后 / 手动操作后调用
  */
-export function syncWithVueInternal(): { added: string[]; removed: string[] } {
-  const actualNames = readVueInternalCache()
-  const expectedNames = new Set(includeList.value)
+export function refreshCacheSnapshot() {
+  cacheSnapshot.value = readVueCacheNames()
 
-  const added: string[] = []
-  const removed: string[] = []
-
-  // Vue 有但 Store 没有 → 补上
-  for (const name of actualNames) {
-    if (!expectedNames.has(name)) {
+  // 同步 includeList：将 Vue 内部已有但 include 没有的补上
+  for (const name of cacheSnapshot.value) {
+    if (!includeList.value.includes(name)) {
       includeList.value.push(name)
-      if (!cacheTimestamps.value.has(name)) {
-        cacheTimestamps.value.set(name, Date.now())
-      }
-      added.push(name)
     }
   }
-
-  // Store 有但 Vue 没有 → 移除（LRU 淘汰等）
-  for (const name of expectedNames) {
-    if (!actualNames.has(name)) {
-      const idx = includeList.value.indexOf(name)
-      if (idx !== -1) {
-        includeList.value.splice(idx, 1)
-      }
-      cacheTimestamps.value.delete(name)
-      removed.push(name)
+  // 将 Vue 内部已淘汰的从 include 移除
+  const cached = new Set(cacheSnapshot.value)
+  for (let i = includeList.value.length - 1; i >= 0; i--) {
+    if (!cached.has(includeList.value[i])) {
+      includeList.value.splice(i, 1)
     }
   }
-
-  vueInternalCacheNames.value = actualNames
-  return { added, removed }
 }
 
 // ---- 映射辅助 ----
@@ -156,10 +134,9 @@ export function registerRouteNameMapping(path: string, componentName: string, la
   if (label) {
     nameLabelMap.value.set(componentName, label)
   }
-  // 默认全部加入缓存名单
+  // 默认全部加入 include（允许被缓存）
   if (!includeList.value.includes(componentName)) {
     includeList.value.push(componentName)
-    cacheTimestamps.value.set(componentName, Date.now())
   }
 }
 
@@ -172,33 +149,38 @@ export function useKeepAliveStore() {
   const router = useRouter()
   routerInstance = router
 
+  /** 驱动 <KeepAlive :include> 的列表 */
   const include = computed(() => includeList.value)
 
   /**
-   * 将指定路由的组件加入缓存
+   * 缓存实例列表 —— 直接从 __v_cache 快照生成
    */
-  function addCache(routePath: string) {
-    const compName = getComponentNameByPath(routePath)
-    if (!compName) {
-      console.warn(`[KeepAliveStore] 无法找到路由 "${routePath}" 对应的组件 name`)
-      return
-    }
-    if (!includeList.value.includes(compName)) {
-      includeList.value.push(compName)
-      cacheTimestamps.value.set(compName, Date.now())
-    }
-  }
+  const cacheInstances = computed<CacheInstance[]>(() => {
+    const currentPath = router.currentRoute.value.path
+    return cacheSnapshot.value.map((name) => {
+      const routePath = nameRouteMap.value.get(name) ?? ''
+      return {
+        name,
+        routePath,
+        isActive: routePath === currentPath,
+      }
+    })
+  })
+
+  /** 缓存数量 —— 直接来自 __v_cache */
+  const cacheCount = computed(() => cacheSnapshot.value.length)
 
   /**
    * 删除指定组件缓存
-   * 从 include 列表移除 → Vue KeepAlive 自动销毁对应缓存实例
+   * 从 include 列表移除 → Vue KeepAlive 自动销毁对应缓存实例 → 刷新快照
    */
   function removeCache(componentName: string) {
     const idx = includeList.value.indexOf(componentName)
     if (idx !== -1) {
       includeList.value.splice(idx, 1)
-      cacheTimestamps.value.delete(componentName)
     }
+    // Vue 会在下一个渲染周期销毁缓存，延迟刷新快照
+    setTimeout(() => refreshCacheSnapshot(), 0)
   }
 
   function removeCacheByPath(routePath: string) {
@@ -211,57 +193,27 @@ export function useKeepAliveStore() {
    */
   function clearAllCache() {
     includeList.value.splice(0, includeList.value.length)
-    cacheTimestamps.value.clear()
+    setTimeout(() => refreshCacheSnapshot(), 0)
   }
 
-  /**
-   * 缓存实例列表
-   */
-  const cacheInstances = computed<CacheInstance[]>(() => {
-    const currentPath = router.currentRoute.value.path
-    const actualNames = vueInternalCacheNames.value
-
-    return includeList.value.map((name) => {
-      const routePath = nameRouteMap.value.get(name) ?? ''
-      return {
-        name,
-        routePath,
-        cachedAt: cacheTimestamps.value.get(name) ?? 0,
-        isActive: routePath === currentPath,
-        source: actualNames.has(name) ? 'vue-internal' as const : 'store-expected' as const,
-      }
-    })
-  })
-
-  const cacheCount = computed(() => includeList.value.length)
-  const vueInternalCount = computed(() => vueInternalCacheNames.value.size)
-
-  /**
-   * 是否存在不一致
-   */
-  const isInconsistent = computed(() => {
-    if (includeList.value.length !== vueInternalCacheNames.value.size) return true
-    for (const name of includeList.value) {
-      if (!vueInternalCacheNames.value.has(name)) return true
-    }
-    return false
-  })
-
   function onRouteChange(path: string) {
-    addCache(path)
+    // 确保目标组件在 include 中
+    const compName = getComponentNameByPath(path)
+    if (compName && !includeList.value.includes(compName)) {
+      includeList.value.push(compName)
+    }
+    // 延迟刷新快照，等 Vue 完成缓存操作
+    setTimeout(() => refreshCacheSnapshot(), 0)
   }
 
   return {
     include,
     cacheInstances,
     cacheCount,
-    isInconsistent,
-    vueInternalCount,
-    addCache,
     removeCache,
     removeCacheByPath,
     clearAllCache,
     onRouteChange,
-    syncWithVueInternal,
+    refreshCacheSnapshot,
   }
 }
