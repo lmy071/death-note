@@ -1,6 +1,7 @@
 allowBuilds:
   core-js: true
   esbuild: true
+  simple-git-hooks: true
   yorkie: true
 minimumReleaseAgeExclude:
   - vite@8.2.2
