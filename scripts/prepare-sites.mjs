@@ -1,5 +1,6 @@
 import { mkdir, readdir, readFile, writeFile } from 'node:fs/promises'
 import { relative, resolve } from 'node:path'
+import { URL } from 'node:url'
 
 const distDir = resolve(new URL('../dist/', import.meta.url).pathname.replace(/^\/(.:)/, '$1'))
 const serverDir = resolve(distDir, 'server')
