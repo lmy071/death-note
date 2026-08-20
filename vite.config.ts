@@ -4,9 +4,11 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import UnoCSS from '@unocss/vite'
 import { presetUno, presetAttributify } from 'unocss'
+import { sites } from '@openai/sites-vite-plugin'
 
 export default defineConfig({
   plugins: [
+    sites(),
     vue(),
     UnoCSS({
       presets: [

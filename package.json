@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/prepare-sites.mjs",
     "preview": "vite preview",
     "lint": "eslint . --max-warnings=0",
     "lint:fix": "eslint . --fix",
@@ -21,6 +21,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@openai/sites-vite-plugin": "^0.2.0",
     "@types/node": "^26.2.0",
     "@types/three": "^0.185.4",
     "@unocss/vite": "^66.8.0",
