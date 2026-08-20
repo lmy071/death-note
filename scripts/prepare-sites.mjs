@@ -11,7 +11,10 @@ async function collect(directory) {
     const path = resolve(directory, entry.name)
     if (path === serverDir) continue
     if (entry.isDirectory()) await collect(path)
-    else assets[`/${relative(distDir, path).replaceAll('\\', '/')}`] = (await readFile(path)).toString('base64')
+    else
+      assets[`/${relative(distDir, path).replaceAll('\\', '/')}`] = (await readFile(path)).toString(
+        'base64',
+      )
   }
 }
 
