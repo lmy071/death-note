@@ -1,9 +1,9 @@
+import { fileURLToPath, URL } from 'node:url'
+
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import UnoCSS from '@unocss/vite'
 import { presetUno, presetAttributify } from 'unocss'
-import path from 'path'
-import { fileURLToPath, URL } from 'node:url'
 
 export default defineConfig({
   plugins: [
@@ -11,7 +11,7 @@ export default defineConfig({
     UnoCSS({
       presets: [
         presetUno(),
-        presetAttributify()
+        presetAttributify(),
       ],
       shortcuts: {
         // 布局
@@ -71,23 +71,25 @@ export default defineConfig({
           `,
         },
       ],
-    })
+    }),
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
-    }
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
   },
   assetsInclude: ['**/*.md'],
   build: {
-    outDir: 'death-note',
+    outDir: 'dist',
     assetsDir: 'assets',
     rollupOptions: {
       output: {
-        manualChunks: {
-          three: ['three'],
+        manualChunks(id) {
+          if (id.includes('node_modules/three')) {
+            return 'three'
+          }
         },
       },
     },
-  }
+  },
 })

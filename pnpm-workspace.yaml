@@ -2,4 +2,8 @@ allowBuilds:
   core-js: true
   esbuild: true
   yorkie: true
-onlyBuiltDependencies: '[esbuild]'
+minimumReleaseAgeExclude:
+  - vite@8.2.2
+onlyBuiltDependencies:
+  - esbuild
+  - core-js

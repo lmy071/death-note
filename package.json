@@ -6,61 +6,32 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint . --max-warnings=0",
+    "lint:fix": "eslint . --fix",
+    "type-check": "vue-tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
-    "core-js": "^3.49.0",
-    "highlight.js": "^11.11.1",
-    "marked": "^18.0.5",
+    "core-js": "^3.50.0",
+    "highlight.js": "^11.12.0",
+    "marked": "^18.0.10",
     "marked-highlight": "^2.2.4",
-    "vue": "^3.5.34",
-    "vue-router": "^5.0.6"
+    "vue": "^3.5.41",
+    "vue-router": "^5.2.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.29.0",
-    "@babel/eslint-parser": "^7.28.6",
-    "@types/node": "^25.9.1",
-    "@types/three": "^0.184.1",
-    "@unocss/vite": "^66.6.8",
-    "@vitejs/plugin-vue": "^5.2.4",
-    "eslint": "^8.57.1",
-    "eslint-plugin-vue": "^9.33.0",
-    "typescript": "^6.0.3",
-    "vite": "^6.3.5",
-    "vue-eslint-parser": "^10.4.0",
-    "vue-tsc": "^3.3.3"
-  },
-  "eslintConfig": {
-    "root": true,
-    "env": {
-      "node": true
-    },
-    "extends": [
-      "plugin:vue/vue3-essential",
-      "eslint:recommended"
-    ],
-    "parserOptions": {
-      "parser": "@babel/eslint-parser"
-    },
-    "rules": {},
-    "overrides": [
-      {
-        "files": [
-          "src/leetCode/**/*.js"
-        ],
-        "rules": {
-          "no-unused-vars": "off",
-          "no-undef": "off",
-          "no-mixed-spaces-and-tabs": "off",
-          "no-constant-condition": "off"
-        }
-      }
-    ]
-  },
-  "browserslist": [
-    "> 1%",
-    "last 2 versions",
-    "not dead",
-    "not ie 11"
-  ]
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^26.2.0",
+    "@types/three": "^0.185.4",
+    "@unocss/vite": "^66.8.0",
+    "@vitejs/plugin-vue": "^6.0.8",
+    "eslint": "^10.8.1",
+    "eslint-plugin-vue": "^10.10.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.67.0",
+    "unocss": "^66.8.0",
+    "vite": "^8.2.2",
+    "vue-eslint-parser": "^10.4.1",
+    "vue-tsc": "^3.3.10"
+  }
 }
