@@ -1,0 +1,538 @@
+{
+  "sourcePage": "https://bh3.mihoyo.com/main",
+  "capturedAt": "2026-08-21T08:24:51Z",
+  "assets": [
+    {
+      "name": "favicon.ico",
+      "kind": "image",
+      "contentType": "image/x-icon",
+      "url": "https://bh3.mihoyo.com/favicon.ico",
+      "path": "images/favicon.ico"
+    },
+    {
+      "name": "ios-0.409b2fd.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://bh3.mihoyo.com/_nuxt/img/ios-0.409b2fd.png",
+      "path": "images/ios-0.409b2fd.png"
+    },
+    {
+      "name": "new_bg.e682450.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://bh3.mihoyo.com/_nuxt/img/new_bg.e682450.png",
+      "path": "images/new_bg.e682450.png"
+    },
+    {
+      "name": "682697c3b1b497925084789fa80679c9_6325482560671732756.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/mi18n/bh3_cn/m20230317hy14h0glc0/upload/682697c3b1b497925084789fa80679c9_6325482560671732756.png",
+      "path": "images/682697c3b1b497925084789fa80679c9_6325482560671732756.png"
+    },
+    {
+      "name": "pc-bg.25bf8ff.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://bh3.mihoyo.com/_nuxt/img/pc-bg.25bf8ff.jpg",
+      "path": "images/pc-bg.25bf8ff.jpg"
+    },
+    {
+      "name": "8f02ca5c3e2e93394b6834c24641efe2_6979556397869994021.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/mi18n/bh3_cn/m20230317hy14h0glc0/upload/8f02ca5c3e2e93394b6834c24641efe2_6979556397869994021.png",
+      "path": "images/8f02ca5c3e2e93394b6834c24641efe2_6979556397869994021.png"
+    },
+    {
+      "name": "be495c1433f36085029cfe7921769cc6_4786892871936002938.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/mi18n/bh3_cn/m20230317hy14h0glc0/upload/be495c1433f36085029cfe7921769cc6_4786892871936002938.png",
+      "path": "images/be495c1433f36085029cfe7921769cc6_4786892871936002938.png"
+    },
+    {
+      "name": "36c4008a87c245f5c057d7f91c4ee53c_1177225210624359601.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/mi18n/bh3_cn/m20230317hy14h0glc0/upload/36c4008a87c245f5c057d7f91c4ee53c_1177225210624359601.png",
+      "path": "images/36c4008a87c245f5c057d7f91c4ee53c_1177225210624359601.png"
+    },
+    {
+      "name": "4c8ff5cbc8f3325d0f450f69d0f8e4e6_224917438089271405.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/mi18n/bh3_cn/m20230317hy14h0glc0/upload/4c8ff5cbc8f3325d0f450f69d0f8e4e6_224917438089271405.png",
+      "path": "images/4c8ff5cbc8f3325d0f450f69d0f8e4e6_224917438089271405.png"
+    },
+    {
+      "name": "c2763cb0ae714ebd5f9fbd0adf0b7576_1303564221683115100.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/165336/c2763cb0ae714ebd5f9fbd0adf0b7576_1303564221683115100.png",
+      "path": "images/c2763cb0ae714ebd5f9fbd0adf0b7576_1303564221683115100.png"
+    },
+    {
+      "name": "1269640e25af8a06d1149e9094b5fc82_3331764760510756567.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/164388/1269640e25af8a06d1149e9094b5fc82_3331764760510756567.png",
+      "path": "images/1269640e25af8a06d1149e9094b5fc82_3331764760510756567.png"
+    },
+    {
+      "name": "2019111415040910416.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://uploadstatic.mihoyo.com/contentweb/20191114/2019111415040910416.png",
+      "path": "images/2019111415040910416.png"
+    },
+    {
+      "name": "ba09e3006d1cf6cb72ea24c6d76db78d_8449380240433494173.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/mi18n/bh3_cn/m20230317hy14h0glc0/upload/ba09e3006d1cf6cb72ea24c6d76db78d_8449380240433494173.png",
+      "path": "images/ba09e3006d1cf6cb72ea24c6d76db78d_8449380240433494173.png"
+    },
+    {
+      "name": "6ce44c098faf450a1a90c9e5385f33b6_3575145984392072417.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/164369/6ce44c098faf450a1a90c9e5385f33b6_3575145984392072417.png",
+      "path": "images/6ce44c098faf450a1a90c9e5385f33b6_3575145984392072417.png"
+    },
+    {
+      "name": "a4363d6492bc8f710ed48521e8f70e93_4604984676412447247.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/164369/a4363d6492bc8f710ed48521e8f70e93_4604984676412447247.png",
+      "path": "images/a4363d6492bc8f710ed48521e8f70e93_4604984676412447247.png"
+    },
+    {
+      "name": "54d2b8c4e0200337af5aab7a6b543aa5_2300458838137078416.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/164369/54d2b8c4e0200337af5aab7a6b543aa5_2300458838137078416.png",
+      "path": "images/54d2b8c4e0200337af5aab7a6b543aa5_2300458838137078416.png"
+    },
+    {
+      "name": "353267e3c6c36ebfc9b21cc5bc204567_4843170904747781376.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/162545/353267e3c6c36ebfc9b21cc5bc204567_4843170904747781376.png",
+      "path": "images/353267e3c6c36ebfc9b21cc5bc204567_4843170904747781376.png"
+    },
+    {
+      "name": "cf09ef2f733e19347694de422abfefc7_4531606405739642823.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/161269/cf09ef2f733e19347694de422abfefc7_4531606405739642823.png",
+      "path": "images/cf09ef2f733e19347694de422abfefc7_4531606405739642823.png"
+    },
+    {
+      "name": "f2d6a1b79ff4f950b844c5364854eef1_412918676594476470.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/159544/f2d6a1b79ff4f950b844c5364854eef1_412918676594476470.png",
+      "path": "images/f2d6a1b79ff4f950b844c5364854eef1_412918676594476470.png"
+    },
+    {
+      "name": "a55872951be9fd7312335da8a267a10c_6256450143190138100.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122055/a55872951be9fd7312335da8a267a10c_6256450143190138100.jpg",
+      "path": "images/a55872951be9fd7312335da8a267a10c_6256450143190138100.jpg"
+    },
+    {
+      "name": "4b4fd157974606bb70c38f9a851eb299_2878557925257950357.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/mi18n/bh3_cn/m20230317hy14h0glc0/upload/4b4fd157974606bb70c38f9a851eb299_2878557925257950357.png",
+      "path": "images/4b4fd157974606bb70c38f9a851eb299_2878557925257950357.png"
+    },
+    {
+      "name": "a55872951be9fd7312335da8a267a10c_7033586599693412679.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122055/a55872951be9fd7312335da8a267a10c_7033586599693412679.jpg",
+      "path": "images/a55872951be9fd7312335da8a267a10c_7033586599693412679.jpg"
+    },
+    {
+      "name": "c22fec52389366241a87bc2d1748de0a_4456626538822130360.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122054/c22fec52389366241a87bc2d1748de0a_4456626538822130360.jpg",
+      "path": "images/c22fec52389366241a87bc2d1748de0a_4456626538822130360.jpg"
+    },
+    {
+      "name": "c32fc4efa8067ef7aa73f333e426fa15_187825118276595752.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/126607/c32fc4efa8067ef7aa73f333e426fa15_187825118276595752.jpg",
+      "path": "images/c32fc4efa8067ef7aa73f333e426fa15_187825118276595752.jpg"
+    },
+    {
+      "name": "9242a94c71493aa0084b9ba61f9dd124_548297328826314004.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/126609/9242a94c71493aa0084b9ba61f9dd124_548297328826314004.png",
+      "path": "images/9242a94c71493aa0084b9ba61f9dd124_548297328826314004.png"
+    },
+    {
+      "name": "f7f9bd424ac6759543935848ff7a143c_3453124403720105183.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/156249/f7f9bd424ac6759543935848ff7a143c_3453124403720105183.jpg",
+      "path": "images/f7f9bd424ac6759543935848ff7a143c_3453124403720105183.jpg"
+    },
+    {
+      "name": "1ce6e80b64de85326a371620c43537b4_6612227177593995737.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/159535/1ce6e80b64de85326a371620c43537b4_6612227177593995737.jpg",
+      "path": "images/1ce6e80b64de85326a371620c43537b4_6612227177593995737.jpg"
+    },
+    {
+      "name": "1db841f91edc87afcb7c1d0543e8248e_9094001975470599764.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/165572/1db841f91edc87afcb7c1d0543e8248e_9094001975470599764.png",
+      "path": "images/1db841f91edc87afcb7c1d0543e8248e_9094001975470599764.png"
+    },
+    {
+      "name": "fa04b7462dcee3e717720a0f22485dd6_8521031719796373241.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/mi18n/bh3_cn/m20230317hy14h0glc0/upload/fa04b7462dcee3e717720a0f22485dd6_8521031719796373241.png",
+      "path": "images/fa04b7462dcee3e717720a0f22485dd6_8521031719796373241.png"
+    },
+    {
+      "name": "abca147375bfac61e4aa0d3c1716eed8_5600691938448581937.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/mi18n/bh3_cn/m20230317hy14h0glc0/upload/abca147375bfac61e4aa0d3c1716eed8_5600691938448581937.png",
+      "path": "images/abca147375bfac61e4aa0d3c1716eed8_5600691938448581937.png"
+    },
+    {
+      "name": "4762b040b8e2f3c0cb60475ed704649f_2823486183285915746.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/mi18n/bh3_cn/m20230317hy14h0glc0/upload/4762b040b8e2f3c0cb60475ed704649f_2823486183285915746.png",
+      "path": "images/4762b040b8e2f3c0cb60475ed704649f_2823486183285915746.png"
+    },
+    {
+      "name": "27333ac479f01900808103e2684432dc_8922562695926404614.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/mi18n/bh3_cn/m20230317hy14h0glc0/upload/27333ac479f01900808103e2684432dc_8922562695926404614.png",
+      "path": "images/27333ac479f01900808103e2684432dc_8922562695926404614.png"
+    },
+    {
+      "name": "fb9fb8e171957fc3a06322e5f19c772f_6978451248621653135.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/mi18n/plat_cn/m202004281054311/upload/fb9fb8e171957fc3a06322e5f19c772f_6978451248621653135.png",
+      "path": "images/fb9fb8e171957fc3a06322e5f19c772f_6978451248621653135.png"
+    },
+    {
+      "name": "game-tion-2-logo_1568108157_3779.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://uploadstatic.mihoyo.com/bh3/upload/officialsites/201909/game-tion-2-logo_1568108157_3779.png",
+      "path": "images/game-tion-2-logo_1568108157_3779.png"
+    },
+    {
+      "name": "jubao_1575020039_5071.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://uploadstatic.mihoyo.com/bh3/upload/officialsites/201911/jubao_1575020039_5071.png",
+      "path": "images/jubao_1575020039_5071.png"
+    },
+    {
+      "name": "youhai_1589857356_1416.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://uploadstatic.mihoyo.com/bh3/upload/officialsites/202005/youhai_1589857356_1416.png",
+      "path": "images/youhai_1589857356_1416.png"
+    },
+    {
+      "name": "culture_1575020039_5478.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://uploadstatic.mihoyo.com/bh3/upload/officialsites/201911/culture_1575020039_5478.png",
+      "path": "images/culture_1575020039_5478.png"
+    },
+    {
+      "name": "e110_1575020039_7486.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://uploadstatic.mihoyo.com/bh3/upload/officialsites/201911/e110_1575020039_7486.png",
+      "path": "images/e110_1575020039_7486.png"
+    },
+    {
+      "name": "zhizhao_1575020039_4362.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://uploadstatic.mihoyo.com/bh3/upload/officialsites/201911/zhizhao_1575020039_4362.png",
+      "path": "images/zhizhao_1575020039_4362.png"
+    },
+    {
+      "name": "50320da3c3e1c805919d67e442d12ea6_4400593326023651005.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122055/50320da3c3e1c805919d67e442d12ea6_4400593326023651005.jpg",
+      "path": "images/50320da3c3e1c805919d67e442d12ea6_4400593326023651005.jpg"
+    },
+    {
+      "name": "88ee570ef23c56c9c7fbbd2c445406d3_354853053849418259.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122055/88ee570ef23c56c9c7fbbd2c445406d3_354853053849418259.jpg",
+      "path": "images/88ee570ef23c56c9c7fbbd2c445406d3_354853053849418259.jpg"
+    },
+    {
+      "name": "7998a558197631b0d4db3ecf71d6d578_3092415518577911493.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122055/7998a558197631b0d4db3ecf71d6d578_3092415518577911493.jpg",
+      "path": "images/7998a558197631b0d4db3ecf71d6d578_3092415518577911493.jpg"
+    },
+    {
+      "name": "e9a2fe3f043059a5f6fb318db7d222f1_6605468747021263413.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122055/e9a2fe3f043059a5f6fb318db7d222f1_6605468747021263413.jpg",
+      "path": "images/e9a2fe3f043059a5f6fb318db7d222f1_6605468747021263413.jpg"
+    },
+    {
+      "name": "745d3fa7a25a44c4d7723b134908e1ae_1799823958064412491.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122055/745d3fa7a25a44c4d7723b134908e1ae_1799823958064412491.jpg",
+      "path": "images/745d3fa7a25a44c4d7723b134908e1ae_1799823958064412491.jpg"
+    },
+    {
+      "name": "a55872951be9fd7312335da8a267a10c_6683907451403492715.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122055/a55872951be9fd7312335da8a267a10c_6683907451403492715.jpg",
+      "path": "images/a55872951be9fd7312335da8a267a10c_6683907451403492715.jpg"
+    },
+    {
+      "name": "ff564a3b0075e74c25ae98f0c9cb6bf3_2109160519982706212.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122055/ff564a3b0075e74c25ae98f0c9cb6bf3_2109160519982706212.jpg",
+      "path": "images/ff564a3b0075e74c25ae98f0c9cb6bf3_2109160519982706212.jpg"
+    },
+    {
+      "name": "c22fec52389366241a87bc2d1748de0a_3557324555978046407.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122054/c22fec52389366241a87bc2d1748de0a_3557324555978046407.jpg",
+      "path": "images/c22fec52389366241a87bc2d1748de0a_3557324555978046407.jpg"
+    },
+    {
+      "name": "51b22d4cddc047f1162214a58148c230_5523036743194221338.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122054/51b22d4cddc047f1162214a58148c230_5523036743194221338.jpg",
+      "path": "images/51b22d4cddc047f1162214a58148c230_5523036743194221338.jpg"
+    },
+    {
+      "name": "28c01aa7d64d3f850bb5a0a511c5fe73_4685896647143648351.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122054/28c01aa7d64d3f850bb5a0a511c5fe73_4685896647143648351.png",
+      "path": "images/28c01aa7d64d3f850bb5a0a511c5fe73_4685896647143648351.png"
+    },
+    {
+      "name": "818793e9e992cab80e5336a599084d11_6951840202624681758.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122054/818793e9e992cab80e5336a599084d11_6951840202624681758.png",
+      "path": "images/818793e9e992cab80e5336a599084d11_6951840202624681758.png"
+    },
+    {
+      "name": "adb656a671ba744728aac37c493cdbe0_442647343182469640.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122054/adb656a671ba744728aac37c493cdbe0_442647343182469640.png",
+      "path": "images/adb656a671ba744728aac37c493cdbe0_442647343182469640.png"
+    },
+    {
+      "name": "c547432ca8dcb0fdf16dbfdaf359ce9f_2748312870372810901.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122054/c547432ca8dcb0fdf16dbfdaf359ce9f_2748312870372810901.png",
+      "path": "images/c547432ca8dcb0fdf16dbfdaf359ce9f_2748312870372810901.png"
+    },
+    {
+      "name": "bd04769142948da44615fa088325d236_4979205812684727614.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122054/bd04769142948da44615fa088325d236_4979205812684727614.png",
+      "path": "images/bd04769142948da44615fa088325d236_4979205812684727614.png"
+    },
+    {
+      "name": "91f56296e83e01e49a30cd0e557bb2af_485757661792918357.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122054/91f56296e83e01e49a30cd0e557bb2af_485757661792918357.png",
+      "path": "images/91f56296e83e01e49a30cd0e557bb2af_485757661792918357.png"
+    },
+    {
+      "name": "f22ce14d22c327f84130cb108d83047f_1197608302327996957.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122054/f22ce14d22c327f84130cb108d83047f_1197608302327996957.png",
+      "path": "images/f22ce14d22c327f84130cb108d83047f_1197608302327996957.png"
+    },
+    {
+      "name": "9abecd04761ce018eab20c9194abfd5e_8005484387286595462.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122054/9abecd04761ce018eab20c9194abfd5e_8005484387286595462.png",
+      "path": "images/9abecd04761ce018eab20c9194abfd5e_8005484387286595462.png"
+    },
+    {
+      "name": "4012d3a9280b8c766fce1957e265a83a_7082514277361463380.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/122054/4012d3a9280b8c766fce1957e265a83a_7082514277361463380.jpg",
+      "path": "images/4012d3a9280b8c766fce1957e265a83a_7082514277361463380.jpg"
+    },
+    {
+      "name": "c32fc4efa8067ef7aa73f333e426fa15_8018395457116022046.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/126607/c32fc4efa8067ef7aa73f333e426fa15_8018395457116022046.jpg",
+      "path": "images/c32fc4efa8067ef7aa73f333e426fa15_8018395457116022046.jpg"
+    },
+    {
+      "name": "9242a94c71493aa0084b9ba61f9dd124_6754427171137713328.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/126609/9242a94c71493aa0084b9ba61f9dd124_6754427171137713328.png",
+      "path": "images/9242a94c71493aa0084b9ba61f9dd124_6754427171137713328.png"
+    },
+    {
+      "name": "c0e47645f4c61adad6fb9c15e9099cab_2889552418556136535.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/126609/c0e47645f4c61adad6fb9c15e9099cab_2889552418556136535.jpg",
+      "path": "images/c0e47645f4c61adad6fb9c15e9099cab_2889552418556136535.jpg"
+    },
+    {
+      "name": "d89c4b4cc8496299e08bf34d60a89999_6897665385143093957.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/126609/d89c4b4cc8496299e08bf34d60a89999_6897665385143093957.jpg",
+      "path": "images/d89c4b4cc8496299e08bf34d60a89999_6897665385143093957.jpg"
+    },
+    {
+      "name": "6ed2d5103f5579b48cf2d05333ca95e8_8332951536103871287.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/126609/6ed2d5103f5579b48cf2d05333ca95e8_8332951536103871287.jpg",
+      "path": "images/6ed2d5103f5579b48cf2d05333ca95e8_8332951536103871287.jpg"
+    },
+    {
+      "name": "cadcc551003a6a9e41bc74b2633c81a5_7735894504025134160.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/126609/cadcc551003a6a9e41bc74b2633c81a5_7735894504025134160.jpg",
+      "path": "images/cadcc551003a6a9e41bc74b2633c81a5_7735894504025134160.jpg"
+    },
+    {
+      "name": "fc2767a1d25b01116e7cb72932fabe44_2616773086068707771.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/126609/fc2767a1d25b01116e7cb72932fabe44_2616773086068707771.jpg",
+      "path": "images/fc2767a1d25b01116e7cb72932fabe44_2616773086068707771.jpg"
+    },
+    {
+      "name": "a84aa522b58f2fb5f23ba2c1c2555c20_8862655490859318472.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/156249/a84aa522b58f2fb5f23ba2c1c2555c20_8862655490859318472.jpg",
+      "path": "images/a84aa522b58f2fb5f23ba2c1c2555c20_8862655490859318472.jpg"
+    },
+    {
+      "name": "f7f9bd424ac6759543935848ff7a143c_8969170970033699400.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/156249/f7f9bd424ac6759543935848ff7a143c_8969170970033699400.jpg",
+      "path": "images/f7f9bd424ac6759543935848ff7a143c_8969170970033699400.jpg"
+    },
+    {
+      "name": "76e453ec0416ac4eeb60cf94e625a385_5533801032381641850.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/159535/76e453ec0416ac4eeb60cf94e625a385_5533801032381641850.png",
+      "path": "images/76e453ec0416ac4eeb60cf94e625a385_5533801032381641850.png"
+    },
+    {
+      "name": "f6d1f91334b4733c61daeb743bd86527_5411373118644509829.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/159535/f6d1f91334b4733c61daeb743bd86527_5411373118644509829.jpg",
+      "path": "images/f6d1f91334b4733c61daeb743bd86527_5411373118644509829.jpg"
+    },
+    {
+      "name": "6327766fc8f25c7a1161942f5fae4c90_5982102373831067739.jpg",
+      "kind": "image",
+      "contentType": "image/jpeg",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/159535/6327766fc8f25c7a1161942f5fae4c90_5982102373831067739.jpg",
+      "path": "images/6327766fc8f25c7a1161942f5fae4c90_5982102373831067739.jpg"
+    },
+    {
+      "name": "06aa405f90562ebbae3136c7ba12bbb7_7521385933609789128.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/159535/06aa405f90562ebbae3136c7ba12bbb7_7521385933609789128.png",
+      "path": "images/06aa405f90562ebbae3136c7ba12bbb7_7521385933609789128.png"
+    },
+    {
+      "name": "1db841f91edc87afcb7c1d0543e8248e_7140237718661287719.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/165572/1db841f91edc87afcb7c1d0543e8248e_7140237718661287719.png",
+      "path": "images/1db841f91edc87afcb7c1d0543e8248e_7140237718661287719.png"
+    },
+    {
+      "name": "9a7bf1442f19461c46b1d94b2d9dd7e2_1913006948771367020.png",
+      "kind": "image",
+      "contentType": "image/png",
+      "url": "https://fastcdn.mihoyo.com/content-v2/bh3/165572/9a7bf1442f19461c46b1d94b2d9dd7e2_1913006948771367020.png",
+      "path": "images/9a7bf1442f19461c46b1d94b2d9dd7e2_1913006948771367020.png"
+    },
+    {
+      "name": "svg-1.svg",
+      "kind": "image",
+      "contentType": "image/svg+xml",
+      "url": "inline-svg:e86760eef5f26d38",
+      "path": "images/svg-1.svg"
+    },
+    {
+      "name": "svg-2.svg",
+      "kind": "image",
+      "contentType": "image/svg+xml",
+      "url": "inline-svg:0d3554adcf4e3cfc",
+      "path": "images/svg-2.svg"
+    },
+    {
+      "name": "svg-3.svg",
+      "kind": "image",
+      "contentType": "image/svg+xml",
+      "url": "inline-svg:9d04289d84ea67a8",
+      "path": "images/svg-3.svg"
+    },
+    {
+      "name": "svg-4.svg",
+      "kind": "image",
+      "contentType": "image/svg+xml",
+      "url": "inline-svg:7fa18296b1345513",
+      "path": "images/svg-4.svg"
+    }
+  ]
+}
