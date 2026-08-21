@@ -7,3 +7,8 @@ declare module '*.vue' {
 }
 
 declare module 'three'
+
+declare module 'virtual:markdown-files' {
+  const markdownFiles: readonly string[]
+  export default markdownFiles
+}

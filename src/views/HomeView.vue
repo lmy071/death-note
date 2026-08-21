@@ -1,7 +1,11 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import ActionMenu from '@/components/ActionMenu.vue'
 import type { ActionMenuItem } from '@/components/action-menu'
+import MarkdownTree from '@/components/MarkdownTree.vue'
 import MarkdownViewer from '@/components/MarkdownViewer.vue'
+
+const selectedMarkdown = ref('')
 
 const actionMenuItems = [
   {
@@ -36,7 +40,7 @@ const actionMenuItems = [
 </script>
 
 <template>
-  <div class="relative h-full w-full overflow-y-auto px-6 py-10 pl-22 sm:pl-28">
+  <div class="home-view">
     <!-- prettier-ignore -->
     <aside
       class="fixed left-3 top-1/2 z-20 -translate-y-1/2 sm:left-5"
@@ -45,10 +49,57 @@ const actionMenuItems = [
       <ActionMenu :items="actionMenuItems" />
     </aside>
 
-    <!-- prettier-ignore -->
-    <MarkdownViewer
-      class="mx-auto"
-      source="/md/vue3/vue3为什么要使用 value.md"
-    />
+    <div class="home-layout">
+      <!-- prettier-ignore -->
+      <MarkdownTree
+        v-model="selectedMarkdown"
+        class="home-tree"
+      />
+      <main class="home-document">
+        <MarkdownViewer :source="selectedMarkdown" />
+      </main>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.home-view {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  padding: 2.5rem 1.5rem 2.5rem 5.5rem;
+  overflow-y: auto;
+}
+
+.home-layout {
+  display: grid;
+  grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr);
+  align-items: start;
+  gap: 1.5rem;
+  width: min(100%, 78rem);
+  margin-inline: auto;
+}
+
+.home-tree {
+  position: sticky;
+  top: 0;
+}
+
+.home-document {
+  min-width: 0;
+}
+
+@media (max-width: 767px) {
+  .home-view {
+    padding: 1.5rem 1rem 2rem 4.75rem;
+  }
+
+  .home-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-tree {
+    position: static;
+  }
+}
+</style>
