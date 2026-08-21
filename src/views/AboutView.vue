@@ -3,6 +3,7 @@ import { RouterLink } from 'vue-router'
 </script>
 
 <template>
+  <!-- prettier-ignore -->
   <div class="flex flex-col items-center gap-4 p-8">
     <h2 class="text-2xl font-bold text-body">
       About

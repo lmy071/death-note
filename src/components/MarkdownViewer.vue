@@ -86,15 +86,33 @@ watch(
 </script>
 
 <template>
-  <section class="markdown-viewer" aria-live="polite">
-    <LoadingMask :visible="loading" text="正在加载 Markdown…" />
-    <p v-if="error" class="markdown-state markdown-error" role="alert">
+  <!-- prettier-ignore -->
+  <section
+    class="markdown-viewer"
+    aria-live="polite"
+  >
+    <LoadingMask
+      :visible="loading"
+      text="正在加载 Markdown…"
+    />
+    <p
+      v-if="error"
+      class="markdown-state markdown-error"
+      role="alert"
+    >
       {{ error }}
     </p>
-    <p v-else-if="!hasSource" class="markdown-state">
+    <p
+      v-else-if="!hasSource"
+      class="markdown-state"
+    >
       {{ emptyText }}
     </p>
-    <article v-else class="markdown-body" v-html="html" />
+    <article
+      v-else
+      class="markdown-body"
+      v-html="html"
+    />
   </section>
 </template>
 

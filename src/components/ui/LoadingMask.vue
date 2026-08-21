@@ -22,6 +22,7 @@ const maskStyle = computed(() => ({
 </script>
 
 <template>
+  <!-- prettier-ignore -->
   <Teleport to="body">
     <Transition name="loading-mask">
       <div
@@ -34,7 +35,10 @@ const maskStyle = computed(() => ({
         :aria-label="text"
       >
         <div class="loading-mask__content">
-          <div class="wrapper" aria-hidden="true">
+          <div
+            class="wrapper"
+            aria-hidden="true"
+          >
             <div class="circle" />
             <div class="circle" />
             <div class="circle" />
@@ -43,7 +47,10 @@ const maskStyle = computed(() => ({
             <div class="shadow" />
           </div>
 
-          <p v-if="text" class="loading-mask__text">
+          <p
+            v-if="text"
+            class="loading-mask__text"
+          >
             {{ text }}
           </p>
         </div>

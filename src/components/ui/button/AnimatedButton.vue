@@ -79,6 +79,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
+  <!-- prettier-ignore -->
   <button
     class="animated-button"
     :class="classes"
@@ -88,8 +89,14 @@ onBeforeUnmount(() => {
     :aria-busy="loading || undefined"
     @pointerdown="createRipple"
   >
-    <span class="animated-button__glow" aria-hidden="true" />
-    <span class="animated-button__shine" aria-hidden="true" />
+    <span
+      class="animated-button__glow"
+      aria-hidden="true"
+    />
+    <span
+      class="animated-button__shine"
+      aria-hidden="true"
+    />
 
     <span
       v-for="ripple in ripples"
@@ -104,18 +111,31 @@ onBeforeUnmount(() => {
       aria-hidden="true"
     />
 
-    <span v-if="loading" class="animated-button__loader" aria-hidden="true">
+    <span
+      v-if="loading"
+      class="animated-button__loader"
+      aria-hidden="true"
+    >
       <slot name="loader">
         <span class="animated-button__spinner" />
       </slot>
     </span>
 
-    <span class="animated-button__content" :class="{ 'animated-button__content--hidden': loading }">
-      <span v-if="$slots.prepend" class="animated-button__affix">
+    <span
+      class="animated-button__content"
+      :class="{ 'animated-button__content--hidden': loading }"
+    >
+      <span
+        v-if="$slots.prepend"
+        class="animated-button__affix"
+      >
         <slot name="prepend" />
       </span>
       <slot />
-      <span v-if="$slots.append" class="animated-button__affix">
+      <span
+        v-if="$slots.append"
+        class="animated-button__affix"
+      >
         <slot name="append" />
       </span>
     </span>
