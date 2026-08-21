@@ -4,6 +4,7 @@ import DOMPurify from 'dompurify'
 import hljs from 'highlight.js'
 import { Marked } from 'marked'
 import { markedHighlight } from 'marked-highlight'
+import LoadingMask from '@/components/ui/LoadingMask.vue'
 
 import 'highlight.js/styles/github-dark.css'
 
@@ -86,8 +87,8 @@ watch(
 
 <template>
   <section class="markdown-viewer" aria-live="polite">
-    <p v-if="loading" class="markdown-state">正在加载 Markdown…</p>
-    <p v-else-if="error" class="markdown-state markdown-error" role="alert">
+    <LoadingMask :visible="loading" text="正在加载 Markdown…" />
+    <p v-if="error" class="markdown-state markdown-error" role="alert">
       {{ error }}
     </p>
     <p v-else-if="!hasSource" class="markdown-state">
