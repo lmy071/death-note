@@ -37,4 +37,6 @@ pnpm run build
 - Follow the repository commit convention documented in `.github/commit-convention.md`.
 - Use `<type>(optional-scope): <description>` with an allowed type such as `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `build`, `ci`, or `chore`.
 - Stage only files that belong to the requested change. Never include unrelated working-tree changes.
-- Commits are allowed upon request, but do not push, merge, or deploy unless the user explicitly authorizes that action.
+- After completing every user request, stage only the files that belong to that request, create a commit, and push the current branch to its configured remote.
+- Treat the previous rule as standing authorization for commits and pushes. Do not ask for additional permission before committing or pushing.
+- Do not merge branches or deploy the application unless the user explicitly requests it.
