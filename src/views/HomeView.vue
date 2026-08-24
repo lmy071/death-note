@@ -10,6 +10,17 @@ const selectedMarkdown = ref('')
 const actionMenuItems = [
   {
     icon: {
+      paths: [
+        'M3 12l9 -9l9 9',
+        'M5 10v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1 -1v-10',
+        'M9 21v-6a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v6',
+      ],
+    },
+    name: 'Home',
+    url: '/',
+  },
+  {
+    icon: {
       paths: ['M4 4l11.733 16h4.267l-11.733 -16z', 'M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772'],
     },
     name: 'X',
