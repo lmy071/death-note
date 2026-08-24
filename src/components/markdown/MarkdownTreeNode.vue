@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { MarkdownTreeNode } from './markdown-tree'
+import type { MarkdownTreeNode } from '../markdown-tree.ts'
 
 defineProps<{
   activeSource: string

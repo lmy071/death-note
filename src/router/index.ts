@@ -8,6 +8,13 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+      children: [
+        {
+          path: '',
+          name: 'markdown',
+          component: () => import('@/views/MarkdownView.vue'),
+        },
+      ],
     },
     {
       path: '/about',

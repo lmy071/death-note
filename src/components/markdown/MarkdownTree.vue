@@ -2,7 +2,7 @@
 import { computed, onMounted } from 'vue'
 import markdownFiles from 'virtual:markdown-files'
 import MarkdownTreeNode from './MarkdownTreeNode.vue'
-import { buildMarkdownTree } from './markdown-tree'
+import { buildMarkdownTree } from '../markdown-tree.ts'
 
 const props = defineProps<{
   modelValue: string

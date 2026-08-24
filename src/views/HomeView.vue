@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { RouterView } from 'vue-router'
 import ActionMenu from '@/components/ActionMenu.vue'
 import type { ActionMenuItem } from '@/components/action-menu'
-import MarkdownTree from '@/components/MarkdownTree.vue'
-import MarkdownViewer from '@/components/MarkdownViewer.vue'
-
-const selectedMarkdown = ref('')
 
 const actionMenuItems = [
   {
@@ -60,16 +56,7 @@ const actionMenuItems = [
       <ActionMenu :items="actionMenuItems" />
     </aside>
 
-    <div class="home-layout">
-      <!-- prettier-ignore -->
-      <MarkdownTree
-        v-model="selectedMarkdown"
-        class="home-tree"
-      />
-      <main class="home-document">
-        <MarkdownViewer :source="selectedMarkdown" />
-      </main>
-    </div>
+    <RouterView />
   </div>
 </template>
 
@@ -82,35 +69,9 @@ const actionMenuItems = [
   overflow-y: auto;
 }
 
-.home-layout {
-  display: grid;
-  grid-template-columns: minmax(14rem, 17rem) minmax(0, 1fr);
-  align-items: start;
-  gap: 1.5rem;
-  width: min(100%, 78rem);
-  margin-inline: auto;
-}
-
-.home-tree {
-  position: sticky;
-  top: 0;
-}
-
-.home-document {
-  min-width: 0;
-}
-
 @media (max-width: 767px) {
   .home-view {
     padding: 1.5rem 1rem 2rem 4.75rem;
-  }
-
-  .home-layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .home-tree {
-    position: static;
   }
 }
 </style>
