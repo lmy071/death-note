@@ -67,6 +67,9 @@ function markdownFilesPlugin(): Plugin {
 }
 
 export default defineConfig({
+  server: {
+    host: true,
+  },
   plugins: [
     sites(),
     markdownFilesPlugin(),
