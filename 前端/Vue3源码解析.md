@@ -1,6 +1,6 @@
 # Vue3源码解析
 
-[vue3为什么要使用.value](Vue3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/vue3%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8%20value.md)
+[vue3为什么要使用.value](Vue3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/vue3%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E4%BD%BF%E7%94%A8.value.md)
 
 [Vue3路由实现原理](Vue3%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/Vue3%E8%B7%AF%E7%94%B1%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86.md)
 
