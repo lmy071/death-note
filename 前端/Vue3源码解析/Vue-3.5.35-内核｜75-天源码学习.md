@@ -46,4 +46,4 @@ SSR：compiler-ssr → server renderer/buffer/stream → HTML → hydrateNode
 - [ ]  完成 mini-reactivity、mini-renderer 和 1,500～3,000 行 mini-vue 或等价实现。
 - [ ]  能从任意公开 API 在 10 分钟内定位核心实现、消费者与测试。
 
-[Vue 3 源码每日学习](Vue%203%205%2035%20%E5%86%85%E6%A0%B8%EF%BD%9C75%20%E5%A4%A9%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0/Vue%203%20%E6%BA%90%E7%A0%81%E6%AF%8F%E6%97%A5%E5%AD%A6%E4%B9%A0.csv)
+[Vue-3-源码每日学习](<Vue-3.5.35-内核｜75-天源码学习/Vue-3-源码每日学习.csv>)

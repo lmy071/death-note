@@ -169,17 +169,56 @@ def first_heading(markdown: Path) -> str | None:
     return None
 
 
-def normalize_value_filename(clean_name: str, source: Path) -> str:
-    """修复 Notion 把标题中的 `.value` 导出为 ` value` 的情况。"""
+def normalize_dotted_filename(clean_name: str, source: Path) -> str:
+    """按一级标题还原被 Notion 替换成空格的点号。"""
     if source.suffix.lower() != ".md":
         return clean_name
     path = Path(clean_name)
     heading = first_heading(source)
-    if not heading or not path.stem.endswith(" value") or not heading.endswith(".value"):
+    if not heading or "." not in heading:
         return clean_name
-    if path.stem[: -len(" value")] != heading[: -len(".value")]:
+    # Notion 会把标题中的点号导出为空格，例如：
+    # `Vue 3.5.35` -> `Vue 3 5 35`、`.value` -> ` value`。
+    # 仅在除点号外完全一致时恢复，避免把任意一级标题强行用作文件名。
+    if heading.replace(".", " ") != path.stem:
         return clean_name
     return heading + path.suffix
+
+
+def hyphenate_spaces(name: str) -> str:
+    """将路径名称中的连续空格统一替换为一个连字符。"""
+    return re.sub(r" +", "-", name)
+
+
+def normalize_renamed_page_links(
+    markdown: str, stem_aliases: dict[str, str]
+) -> str:
+    """将含已重命名页面的本地链接改为 CommonMark 尖括号路径。"""
+    encoded_aliases = {
+        quote(alias, safe="") for alias in stem_aliases.values()
+    }
+    if not encoded_aliases:
+        return markdown
+
+    matches = list(MARKDOWN_LINK_RE.finditer(markdown))
+    for match in reversed(matches):
+        raw_target = match.group(1).strip()
+        if raw_target.startswith("<") and raw_target.endswith(">"):
+            continue
+        if raw_target.startswith("//") or re.match(
+            r"^[a-zA-Z][a-zA-Z0-9+.-]*:", raw_target
+        ):
+            continue
+        if not any(alias in raw_target for alias in encoded_aliases):
+            continue
+
+        readable_target = unquote(raw_target)
+        markdown = (
+            markdown[: match.start(1)]
+            + f"<{readable_target}>"
+            + markdown[match.end(1) :]
+        )
+    return markdown
 
 
 def create_import_tree(raw_root: Path, clean_root: Path) -> tuple[int, int, int]:
@@ -191,13 +230,41 @@ def create_import_tree(raw_root: Path, clean_root: Path) -> tuple[int, int, int]
     replacements: set[tuple[str, str]] = set()
     destinations: dict[str, Path] = {}
 
+    # 先从 Markdown 一级标题建立目录别名。Notion 的页面通常同时导出为
+    # `<页面>.md` 与 `<页面>/`，恢复文件名中的点号时必须同步恢复配套目录，
+    # 否则页面内指向子页面或数据库的链接会失效。
+    stem_aliases: dict[str, str] = {}
+    for source in files:
+        if source.suffix.lower() != ".md":
+            continue
+        clean_name = strip_notion_id(source.name)
+        normalized_name = hyphenate_spaces(
+            normalize_dotted_filename(clean_name, source)
+        )
+        if normalized_name == clean_name:
+            continue
+        old_stem = Path(clean_name).stem
+        new_stem = Path(normalized_name).stem
+        previous = stem_aliases.get(old_stem)
+        if previous is not None and previous != new_stem:
+            raise ImportFailure(
+                f"标题还原后出现目录名冲突：{old_stem} -> {previous} / {new_stem}"
+            )
+        stem_aliases[old_stem] = new_stem
+
     for source in files:
         relative = source.relative_to(raw_root)
         new_parts: list[str] = []
         for index, old_part in enumerate(relative.parts):
             new_part = strip_notion_id(old_part)
-            if index == len(relative.parts) - 1:
-                new_part = normalize_value_filename(new_part, source)
+            if index == len(relative.parts) - 1 and source.suffix.lower() == ".md":
+                new_part = hyphenate_spaces(
+                    normalize_dotted_filename(new_part, source)
+                )
+            elif new_part in stem_aliases:
+                new_part = stem_aliases[new_part]
+            else:
+                new_part = hyphenate_spaces(new_part)
             if old_part != new_part:
                 replacements.add((old_part, new_part))
             new_parts.append(new_part)
@@ -233,6 +300,7 @@ def create_import_tree(raw_root: Path, clean_root: Path) -> tuple[int, int, int]
                 if count:
                     updated = updated.replace(old, new)
                     replaced_links += count
+            updated = normalize_renamed_page_links(updated, stem_aliases)
             if updated != original:
                 changed_markdown += 1
             destination.write_text(updated, encoding="utf-8")
