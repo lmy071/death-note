@@ -1,0 +1,460 @@
+# npm vs pnpm vs yarn 详细对比
+
+<aside>
+📦 npm、pnpm 和 yarn 是 JavaScript/Node.js 生态中最主流的三个包管理器。本文从安装机制、磁盘管理、性能、安全性、功能特性、生态兼容等多个维度，进行全面深入的对比。
+
+</aside>
+
+## 一、什么是包管理器
+
+包管理器（Package Manager）是用于管理项目依赖的工具，核心职责包括：
+
+- 安装、更新、删除依赖包
+- 解析依赖树，确保版本兼容性
+- 锁定版本，保证不同环境安装一致
+- 发布和共享代码包
+
+**目前主流的三款：**npm（Node 官方内置）、yarn（Facebook 推出）、pnpm（性能优先的后来者）
+
+## 二、发展历程
+
+### 1. npm — 元老（2010年至今）
+
+- 2010年随 Node.js 0.4 发布，npm v1 面世
+- 2016年 npm v3 改为扁平化 node_modules（解决嵌套地狱）
+- 2021年 npm v7 引入 workspaces、yarn.lock 兼容
+- 2022年 npm v8/v9 性能大幅优化
+- 2023年 npm v10 继续改进
+
+### 2. yarn — 挑战者（2016年至今）
+
+- 2016年 Facebook/Google/Exponent/TCL 联合推出
+- 核心理念：更快、更安全、确定性安装
+- 引入 yarn.lock 锁定文件（npm 后来才抄）
+- 2018年 yarn v2（Berry）重写，引入 PnP（Plug'n'Play）模式
+- 2020年 yarn v3 稳定，支持约束协议(Constraints)
+- 2023年 yarn v4 继续迭代
+
+### 3. pnpm — 后来居上（2017年至今）
+
+- 2017年由 Zoltan Kochan 创建
+- 核心理念：使用硬链接 + 符号链接，避免重复下载
+- 2019年 pnpm v4 大幅改进
+- 2021年 pnpm v6 支持 workspaces 并逐渐成为主流
+- 2023-2024年 pnpm v8/v9，社区接受度大幅提升，被许多大厂采用
+
+## 三、核心差异对比总表
+
+| **对比维度** | **npm** | **yarn** | **pnpm** |
+| --- | --- | --- | --- |
+| 首次发布 | 2010年 | 2016年 | 2017年 |
+| node_modules结构 | 扁平化（v3起） | 扁平化 / PnP | 非扁平（硬链接+软链接） |
+| 磁盘效率 | 差（重复下载） | 中（缓存 + 本地副本） | 极好（全局 store + 硬链接） |
+| 安装速度 | 较慢 | 快 | 最快 |
+| 安全性 | 基础 | 好（checksum） | 极好（严格隔离） |
+| 锁定文件 | package-lock.json | yarn.lock | pnpm-lock.yaml |
+| Monorepo支持 | workspaces | workspaces | workspaces（最成熟） |
+| 默认孤立依赖 | 否 | 否 / PnP是 | 是 |
+| Node内置 | 是 | 否 | 否 |
+
+---
+
+## 四、node_modules 结构对比（最核心的差异）
+
+### 1. npm — 扁平化（Flat）
+
+npm v3 之前使用嵌套结构，v3 之后改为扁平化：
+
+```bash
+node_modules/
+├── react/              # 直接依赖，版本 ^18.0
+├── scheduler/          # react 的依赖，提升到顶层
+├── loose-envify/       # 多个包共享的依赖，提升到顶层
+└── .package-lock.json  # 锁文件
+```
+
+- **所有依赖尽量提升到 node_modules 顶层**
+- 优点：兼容性好，所有代码都能 require 到任何包
+- **缺点：幽灵依赖（Phantom Dependency）— 可以直接 require 没有声明在 package.json 中的包**
+- 缺点：依赖解析复杂，多版本并存时目录结构不可预测
+
+### 2. yarn — 扁平化 / PnP
+
+yarn v1 基本和 npm 扁平化一致，v2/v3 推出 PnP（Plug'n'Play）模式：
+
+```bash
+# yarn v1 扁平化
+node_modules/
+├── react/
+├── scheduler/
+└── ...
+
+# yarn v2+ PnP 模式
+# 没有 node_modules！用 .pnp.cjs 映射文件
+.pnp.cjs
+.yarn/
+├── cache/
+└── ...
+```
+
+- PnP 模式下不生成 node_modules，通过映射文件直接解析依赖位置
+- 优点：安装极快、无 node_modules 体积问题
+- 缺点：兼容性差，很多工具/包不识别 PnP 模式，需要 .yarnrc.yml 配置
+
+### 3. pnpm — 非扁平化（Content-Addressable）
+
+pnpm 使用全局 store + 硬链接 + 符号链接的独特方案：
+
+```bash
+# 全局 store（所有项目共享）
+~/.pnpm-store/v3/
+├── files/00/...        # 硬链接内容
+├── files/01/...
+└── ...
+
+# 项目内的 node_modules
+node_modules/
+├── .pnpm/              # 硬链接存放目录
+│   ├── react@18.2.0/node_modules/react
+│   ├── scheduler@0.23.0/node_modules/scheduler
+│   └── ...
+├── react -> .pnpm/react@18.2.0/node_modules/react  # 符号链接
+└── scheduler -> .pnpm/scheduler@0.23.0/node_modules/scheduler
+```
+
+- **严格隔离：只能访问 package.json 中声明的依赖**
+- **硬链接复用：相同版本包在不同项目间共享同一份物理文件**
+- 符号链接组织：依赖的依赖也通过符号链接访问，保留嵌套逻辑结构
+- 磁盘占用最低：100 个项目用同一个版本的 lodash，只占 1 份空间
+
+<aside>
+🔒 pnpm 是唯一一个真正解决「幽灵依赖」问题的包管理器。因为 node_modules 结构完全按照 package.json 的依赖树组织，没有提升到顶层。
+
+</aside>
+
+## 五、磁盘空间与性能对比
+
+### 1. 磁盘占用
+
+| **场景** | **npm** | **yarn v1** | **pnpm** |
+| --- | --- | --- | --- |
+| 1个项目 | 300MB | 300MB | 280MB |
+| 10个项目同版本 | 3GB（重复10次） | 3GB（重复10次） | 280MB（共享同一份） |
+| 100个项目同版本 | 30GB | 30GB） | 280MB |
+
+pnpm 的磁盘效率优势随着项目数量增加呈线性放大。对于团队开发环境或 CI，效果极其明显。
+
+### 2. 安装速度（基准测试参考）
+
+| **操作** | **npm** | **yarn** | **pnpm** |
+| --- | --- | --- | --- |
+| 首次安装 | ~60s | ~30s | ~25s |
+| 二次安装（热缓存） | ~12s | ~5s | ~3s |
+| CI 场景 | ~30s | ~15s | ~10s |
+
+数据基于中等规模项目（约 500 个依赖包）在同等网络条件下的近似参考。实际表现因项目和硬件而异。
+
+### 3. 速度优势的原因分析
+
+- **npm 需要为每个项目从头解析依赖树并复制文件**
+- yarn 通过并行下载和缓存加速，但每个项目仍然复制文件
+- **pnpm 使用硬链接直接从全局 store 链接，几乎零成本复制**
+- pnpm 的依赖解析算法更高效，采用锯齿式（zig-zag）算法
+
+## 六、安全性对比
+
+### 1. 幽灵依赖防护
+
+- **npm/yarn v1（扁平化）：可以 require 未声明的依赖，风险高**
+- yarn PnP：有防护，未声明的依赖会报错
+- **pnpm：默认严格隔离，只有 package.json 中声明的依赖可访问**
+
+```bash
+// 幽灵依赖示例
+// package.json 只有 react，没有 scheduler
+import scheduler from 'scheduler'
+// npm/yarn：可以运行（因为 scheduler 被提升到了顶层）
+// pnpm：报错！ERR_PNPM_NO_DEPS 找不到 scheduler
+```
+
+### 2. 完整性校验
+
+- npm v7+：自动验证 integrity（SHA-512）
+- yarn：使用 checksum 验证，支持非网络缓存验证
+- pnpm：使用 SHA-512 integrity + 包签名验证
+
+### 3. 脚本执行安全
+
+- npm：默认自动执行 install scripts（preinstall, postinstall 等）— 有安全隐患
+- yarn：同 npm，默认执行
+- pnpm：提供 `ignore-scripts` 配置，严格模式下可以禁止任意脚本执行
+
+### 4. 依赖混淆攻击
+
+- npm：历史上发生过多次（如 ua-parser-js 投毒事件）
+- yarn：类似风险
+- pnpm：通过锁文件内容寻址 + 严格的依赖隔离，降低攻击面
+
+## 七、锁定文件机制
+
+### 1. npm — package-lock.json
+
+- JSON 格式，可读性好
+- 记录每个包的精确版本、resolved URL、integrity hash
+- npm v7+ 支持 workspaces 锁定
+
+```bash
+{
+  "name": "my-app",
+  "lockfileVersion": 3,
+  "packages": {
+    "node_modules/react": {
+      "version": "18.2.0",
+      "resolved": "https://registry.npmjs.org/react/-/react-18.2.0.tgz",
+      "integrity": "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZOMb7TS+2vH1H9Bc3D0xGqKnD4l3EmM5TOCp/rx4Q1nA=="
+    }
+  }
+}
+```
+
+### 2. yarn — yarn.lock
+
+- 自定义格式，按解析顺序排列
+- v1 和 v2/v3 格式不同
+- yarn v2+ 支持 .yarn/cache 离线缓存
+
+```bash
+# THIS IS AN AUTOGENERATED FILE. DO NOT EDIT THIS FILE DIRECTLY.
+# yarn lockfile v1
+
+react@^18.2.0:
+  version "18.2.0"
+  resolved "https://registry.yarnpkg.com/react/-/react-18.2.0.tgz"
+  integrity sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZOMb7TS-2vH1H9Bc3D0xGqKnD4l3EmM5TOCp/rx4Q1nA==
+  dependencies:
+    loose-envify "^1.1.0" 
+```
+
+### 3. pnpm — pnpm-lock.yaml
+
+- YAML 格式，内容寻址
+- 结构清晰，依赖关系一目了然
+- 支持 importers 区分 workspace 子包
+
+```bash
+lockfileVersion: '6.0'
+importers:
+  .:
+    dependencies:
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+  packages/ui:
+    dependencies:
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+packages:
+  /react@18.2.0:
+    resolution: {integrity: sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZOMb7TS-2vH1H9Bc3D0xGqKnD4l3EmM5TOCp/rx4Q1nA==}
+    dependencies:
+      loose-envify: 1.4.0
+  /loose-envify@1.4.0:
+    resolution: {integrity: sha512-lyuxPGr/WfQRkgdDis...==}
+```
+
+## 八、Monorepo Workspace 支持
+
+### 1. npm workspaces
+
+- npm v7 开始支持
+- 通过 root package.json 的 workspaces 字段配置
+- 基础功能：批量安装、运行脚本
+- 局限：依赖链接、版本管理较薄弱
+
+### 2. yarn workspaces
+
+- yarn v1 即支持，成熟的方案
+- yarn v2+ 约束协议（Constraints）— 声明式规则管理依赖版本
+- 支持 Protocol 自定义协议，如 workspace:^
+
+### 3. pnpm workspaces — 被认为最成熟
+
+- **最完善的 monorepo 支持**
+- **原生支持 workspace 协议**
+- 自动识别 workspace 内部包的版本依赖
+- 支持 filter 过滤（如 pnpm --filter @project/server add lodash）
+- 支持 packageManager 字段
+- Catalog 功能：统一管理多包版本的依赖版本号
+
+```bash
+# pnpm-workspace.yaml
+packages:
+  - 'packages/*'
+  - 'apps/*'
+  - '!**/test/**'
+
+# 在 package.json 中使用 workspace 协议
+{
+  "dependencies": {
+    "@my-lib/shared": "workspace:^"
+  }
+}
+
+# Catalog（pnpm v9 特性）
+# pnpm-workspace.yaml
+catalog:
+  typescript: ^5.4.0
+  vite: ^6.0.0
+```
+
+## 九、命令对比
+
+| **操作** | **npm** | **yarn** | **pnpm** |
+| --- | --- | --- | --- |
+| 安装依赖 | npm install | yarn / yarn install | pnpm install |
+| 添加包 | npm add react | yarn add react | pnpm add react |
+| 删除包 | npm uninstall react | yarn remove react | pnpm remove react |
+| 更新包 | npm update react | yarn up react | pnpm update react |
+| 全局安装 | npm i -g ... | yarn global add ... | pnpm add -g ... |
+| 运行脚本 | npm run build | yarn build | pnpm build |
+| 创建项目 | npm init | yarn init | pnpm init |
+| 清理缓存 | npm cache clean | yarn cache clean | pnpm store prune |
+| 锁定检查 | npm ls | yarn list | pnpm ls |
+| 审计 | npm audit | yarn audit | pnpm audit |
+| 运行特定包 | npx ... | yarn dlx ... | pnpm dlx ... |
+
+## 十、配置文件对比
+
+| **文件** | **npm** | **yarn** | **pnpm** |
+| --- | --- | --- | --- |
+| 项目配置 | package.json | package.json | package.json |
+| 锁文件 | package-lock.json | yarn.lock | pnpm-lock.yaml |
+| rc 文件 | .npmrc | .yarnrc.yml | .npmrc |
+| workspace配置 | package.json workspaces | package.json workspaces | pnpm-workspace.yaml |
+| 覆盖配置 | overrides | resolutions | pnpm.overrides |
+
+## 十一、镜像源与 registry 配置
+
+```bash
+# npm — 设置镜像源
+npm config set registry https://registry.npmmirror.com
+
+# yarn — 设置镜像源
+yarn config set registry https://registry.npmmirror.com
+
+# pnpm — 设置镜像源（同 npm 语法）
+pnpm config set registry https://registry.npmmirror.com
+
+# .npmrc 统一配置
+registry=https://registry.npmmirror.com
+```
+
+- 三个工具都支持 .npmrc 文件，语法兼容
+- pnpm 额外支持 publishRegistry 区分发布源与下载源
+- 企业环境常用 Verdaccio / Nexus 作为私有 registry
+
+## 十二、CI/CD 场景对比
+
+在 CI 环境中，包管理器的选择直接影响构建速度和缓存策略：
+
+### 1. 缓存策略
+
+- npm: 缓存 ~/.npm（通常 200-500MB，取决于项目）
+- yarn v1: 缓存 ~/.cache/yarn（和 npm 类似 + offline mirror）
+- **yarn v2+: 缓存 .yarn/cache（可以提交到 git，实现零网络安装）**
+- **pnpm: 缓存 ~/.pnpm-store（所有项目共享，CI 缓存效率最高）**
+
+### 2. CI 安装时间对比（典型场景）
+
+| **场景** | **无缓存** | **有缓存** | **优势** |
+| --- | --- | --- | --- |
+| npm | ~50s | ~10s | 最慢 |
+| yarn | ~25s | ~5s | 中等 |
+| pnpm | ~15s | ~2s | 最快 |
+
+## 十三、生态兼容与社区
+
+### 1. 生态兼容性
+
+- **npm：最好。Node 内置，所有工具默认兼容**
+- yarn v1：兼容性好，v2+ PnP 模式兼容性较差（需要额外配置）
+- pnpm：兼容性好，大部分工具适配，少数不兼容的需要配置 shamefully-hoist
+
+```bash
+# pnpm 兼容性配置（.npmrc）
+# 如果某些工具需要访问未声明的依赖
+shamefully-hoist=true
+
+# 指定 node_modules 中 .bin 的链接方式
+node-linker=hoisted  # 切换到扁平模式（放弃 pnpm 优势）
+```
+
+### 2. 社区活跃度（2025年数据）
+
+- npm：最大的生态，每月下载量百亿级
+- yarn：Meta（Facebook）维护，社区活跃但增速放缓
+- **pnpm：增长最快，GitHub Stars 28k+，被 Vite、Next.js、Nuxt 等主流工具推荐**
+
+### 3. 主流框架推荐
+
+- Vite 官方：推荐 pnpm，其次 yarn，再次 npm
+- Next.js：官方示例大量使用 pnpm
+- Vue/Nuxt：官方推荐 pnpm
+- React：官方文档未指定，但社区偏向 pnpm
+
+## 十四、pnpm 独有的高级特性
+
+### 1. 内容寻址存储
+
+所有包根据内容哈希存储在全局 store 中，同一个版本只存一份。即使包名和版本相同但内容不同（如 hash 冲突），也会分别存储。
+
+### 2. 严格的依赖隔离
+
+pnpm 的 node_modules 结构完全反映了 package.json 的依赖声明，任何未声明的依赖都无法访问——从根本上杜绝了幽灵依赖。
+
+### 3. Filter 过滤系统
+
+```bash
+# 只对某个 workspace 子包执行命令
+pnpm --filter @my-app/server add typescript
+pnpm --filter @my-app/web run build
+
+# 并行执行多个子包的脚本
+pnpm --recursive --parallel run build
+
+# 只运行变更过的包（类似 Turborepo）
+pnpm --filter="...[origin/main]" run build
+```
+
+### 4. Catalog 统一版本管理
+
+pnpm v9 引入 Catalog，在 pnpm-workspace.yaml 中声明统一版本号，所有子包引用它，避免版本分裂。
+
+### 5. deploy 命令
+
+pnpm deploy 可以创建一个仅包含生产依赖的部署目录，非常适合容器化部署场景：
+
+```bash
+pnpm deploy --filter @my-app/server --prod /deploy/server
+```
+
+## 十五、总结与选型建议
+
+### 💡 如何选择
+
+- 小项目 / 个人项目：npm 就够用了，Node 内置零配置
+- 团队项目 / 中型项目：推荐 pnpm，性能和安全性优势明显
+- 大型 Monorepo：首选 pnpm，workspace + filter + catalog 最成熟
+- 特殊场景（如无 node_modules 环境）：yarn PnP 模式，虽然兼容性有挑战
+
+<aside>
+🏆 根据 2025 年的开发者调查，pnpm 已成为增长最快的包管理器。Vite、Next.js、Nuxt、Turborepo 等现代工具链都推荐使用 pnpm。如果你在开始一个新项目，pnpm 是最推荐的默认选择。
+
+</aside>
+
+参考链接：
+npm 官方文档: https://docs.npmjs.com
+yarn 官方文档: https://yarnpkg.com
+pnpm 官方文档: https://pnpm.io
+pnpm vs npm vs yarn 基准: https://pnpm.io/benchmarks
