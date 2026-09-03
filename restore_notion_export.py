@@ -4,6 +4,7 @@
 用法：
     python3 restore_notion_export.py
     python3 restore_notion_export.py /path/to/notion-export.zip
+    python restore_notion_export.py
     python3 restore_notion_export.py /path/to/notion-export.zip --dry-run
 
 不传 ZIP 路径时，脚本会在项目根目录查找唯一的 .zip 文件。
