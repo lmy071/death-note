@@ -18,16 +18,75 @@ REFERENCE_LINK_RE = re.compile(
 )
 
 
-FENCED_CODE_RE = re.compile(r"```.*?```|~~~.*?~~~", re.DOTALL)
+FENCE_OPEN_RE = re.compile(r" {0,3}(`{3,}|~{3,})([^\r\n]*)$")
 
 
-INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
+INLINE_CODE_RE = re.compile(r"(?<!`)(`+)(?!`)(.+?)(?<!`)\1(?!`)", re.DOTALL)
 
 
 IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp", ".avif", ".ico", ".apng"}
 
 
 IMAGE_PROPERTY_RE = re.compile(r"^[ \t]*(?:图片|图像|images?)[ \t]*[:：][ \t]*", re.IGNORECASE)
+
+
+def code_spans(markdown: str) -> list[tuple[int, int]]:
+    """统一识别围栏、缩进代码及等长反引号代码，供转换和校验共用。"""
+    blocks: list[tuple[int, int]] = []
+    fence_start: int | None = None
+    fence_end: re.Pattern[str] | None = None
+    indent_start: int | None = None
+    previous_blank = True
+    offset = 0
+    for line in markdown.splitlines(keepends=True):
+        start = offset
+        offset += len(line)
+        content = line.rstrip("\r\n")
+        blank = not content.strip()
+        indented = content.startswith(("    ", "\t"))
+        if fence_start is not None:
+            if fence_end is not None and fence_end.fullmatch(content):
+                blocks.append((fence_start, offset))
+                fence_start = None
+                previous_blank = True
+            continue
+        if indent_start is not None:
+            if blank or indented:
+                continue
+            blocks.append((indent_start, start))
+            indent_start = None
+            previous_blank = True
+        opening = FENCE_OPEN_RE.fullmatch(content)
+        if opening and not (opening[1][0] == "`" and "`" in opening[2]):
+            fence_start = start
+            marker = re.escape(opening[1][0])
+            fence_end = re.compile(r" {0,3}" + marker + "{" + str(len(opening[1])) + r",}[ \t]*")
+        elif indented and previous_blank and not blank:
+            indent_start = start
+        else:
+            previous_blank = blank
+
+    if fence_start is not None:
+        blocks.append((fence_start, len(markdown)))
+    if indent_start is not None:
+        blocks.append((indent_start, len(markdown)))
+
+    # 只在代码块之间寻找行内代码，避免跨围栏匹配吞掉正常正文。
+    spans = list(blocks)
+    offset = 0
+    for start, end in [*blocks, (len(markdown), len(markdown))]:
+        text = markdown[offset:start]
+        position = 0
+        while match := INLINE_CODE_RE.search(text, position):
+            prefix = text[:match.start()]
+            escaped = (len(prefix) - len(prefix.rstrip("\\"))) % 2
+            if escaped:
+                position = match.start() + len(match[1])
+            else:
+                spans.append((offset + match.start(), offset + match.end()))
+                position = match.end()
+        offset = end
+    return sorted(spans)
 
 
 def split_link_target(raw: str) -> tuple[str, str, bool]:
@@ -59,8 +118,7 @@ def is_image_target(target: str) -> bool:
 
 def embed_image_links(markdown: str) -> str:
     """将图片链接、图片属性裸地址及独占一行的图片地址转为图片语法。"""
-    protected = [match.span() for match in FENCED_CODE_RE.finditer(markdown)]
-    protected.extend(match.span() for match in INLINE_CODE_RE.finditer(markdown))
+    protected = code_spans(markdown)
 
     def in_code(position: int) -> bool:
         return any(start <= position < end for start, end in protected)
@@ -101,8 +159,7 @@ def rewrite_local_links(
     markdown: str, source: Path, paths: dict[Path, Path]
 ) -> tuple[str, int]:
     """按完整源路径改写目标，保留正文、代码、外链和页面身份。"""
-    protected = [match.span() for match in FENCED_CODE_RE.finditer(markdown)]
-    protected.extend(match.span() for match in INLINE_CODE_RE.finditer(markdown))
+    protected = code_spans(markdown)
     changed = 0
 
     def replace(match: re.Match[str]) -> str:

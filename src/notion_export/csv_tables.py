@@ -19,6 +19,8 @@ def csv_cell_to_markdown(value: str) -> str:
 
     def escape_text(text: str) -> str:
         text = html.escape(text, quote=False)
+        # 反引号是 CSV 文本；使用实体避免后续链接扫描把跨单元格文本当成代码。
+        text = text.replace("`", "&#96;")
         text = re.sub(r"([\\`*_\[\]|])", r"\\\1", text)
         text = re.sub(
             r"^[ \t]+|[ \t]+$",

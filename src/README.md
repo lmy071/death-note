@@ -25,9 +25,12 @@ python src/restore_notion_export.py /path/to/notion-export.zip
 | `notion_export/validation.py` | 本地链接及残留 Notion ID 校验 |
 | `notion_export/importer.py` | 构建导入目录、替换项目内容与失败回滚 |
 | `notion_export/errors.py` | 导入异常定义 |
+| `text/` | 按模块组织的单元回归与临时项目端到端测试 |
 
 运行测试：
 
 ```bash
-python -m unittest discover -v
+python -B -m unittest discover -s src/text -t . -v
 ```
+
+测试范围和单模块运行方式见 [回归测试说明](text/README.md)。

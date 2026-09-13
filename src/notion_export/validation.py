@@ -8,10 +8,9 @@ from urllib.parse import unquote
 
 from .errors import ImportFailure
 from .markdown import (
-    FENCED_CODE_RE,
-    INLINE_CODE_RE,
     MARKDOWN_LINK_RE,
     REFERENCE_LINK_RE,
+    code_spans,
     split_link_target,
 )
 from .paths import NOTION_ID_RE
@@ -23,8 +22,9 @@ def validate_links(root: Path) -> int:
 
     for markdown in root.rglob("*.md"):
         text = markdown.read_text(encoding="utf-8")
-        text = FENCED_CODE_RE.sub("", text)
-        text = INLINE_CODE_RE.sub("", text)
+        for start, end in reversed(code_spans(text)):
+            masked = "".join("\n" if char == "\n" else " " for char in text[start:end])
+            text = text[:start] + masked + text[end:]
         matches = list(MARKDOWN_LINK_RE.finditer(text))
         matches.extend(REFERENCE_LINK_RE.finditer(text))
         for match in matches:

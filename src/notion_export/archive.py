@@ -25,7 +25,7 @@ def select_archive(project_root: Path, requested: Path | None) -> Path:
             raise ImportFailure(f"输入文件不是 ZIP：{archive}")
         return archive
 
-    archives = sorted(project_root.glob("*.zip"))
+    archives = sorted(path for path in project_root.glob("*.zip") if path.is_file())
     if not archives:
         raise ImportFailure("项目根目录中没有 .zip 文件。")
     if len(archives) > 1:
@@ -41,7 +41,11 @@ def safe_member_path(name: str) -> Path:
     if "\x00" in normalized:
         raise ImportFailure("ZIP 成员名包含空字节。")
     pure = PurePosixPath(normalized)
-    if pure.is_absolute() or not pure.parts or any(part in {"", ".", ".."} for part in pure.parts):
+    if (
+        pure.is_absolute()
+        or not pure.parts
+        or any(part in {"", ".", ".."} or ":" in part for part in pure.parts)
+    ):
         raise ImportFailure(f"ZIP 包含不安全路径：{name}")
     return Path(*pure.parts)
 
@@ -84,7 +88,7 @@ def unpack_nested_export(archive: Path, workspace: Path) -> Path:
     current.mkdir()
     extract_zip_safely(archive, current)
 
-    for depth in range(1, MAX_NESTED_ZIP_DEPTH + 1):
+    for depth in range(MAX_NESTED_ZIP_DEPTH + 1):
         macos_metadata = current / "__MACOSX"
         if macos_metadata.exists():
             shutil.rmtree(macos_metadata)
@@ -96,10 +100,11 @@ def unpack_nested_export(archive: Path, workspace: Path) -> Path:
         if not entries or len(wrapper_zips) != len(entries):
             return current
 
-        next_layer = workspace / f"layer-{depth}"
+        if depth == MAX_NESTED_ZIP_DEPTH:
+            raise ImportFailure(f"嵌套 ZIP 超过 {MAX_NESTED_ZIP_DEPTH} 层。")
+
+        next_layer = workspace / f"layer-{depth + 1}"
         next_layer.mkdir()
         for nested_archive in sorted(wrapper_zips):
             extract_zip_safely(nested_archive, next_layer)
         current = next_layer
-
-    raise ImportFailure(f"嵌套 ZIP 超过 {MAX_NESTED_ZIP_DEPTH} 层。")

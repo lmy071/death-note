@@ -18,7 +18,7 @@ from src.notion_export import cli, importer
 from src.notion_export.errors import ImportFailure
 
 
-PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 ENTRYPOINT = PROJECT_ROOT / "src" / "restore_notion_export.py"
 
 
@@ -84,6 +84,18 @@ class NotionCliTests(unittest.TestCase):
         self.assertIn("--dry-run", result.stdout)
         self.assertIn("archive", result.stdout)
         self.assertEqual(result.stderr, "")
+
+    def test_module_entrypoint_help_works(self) -> None:
+        result = subprocess.run(
+            [sys.executable, "-B", "-X", "utf8", "-m", "src.restore_notion_export", "--help"],
+            cwd=PROJECT_ROOT,
+            capture_output=True,
+            encoding="utf-8",
+            timeout=30,
+            check=False,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("--dry-run", result.stdout)
 
     def test_injected_project_root_selects_root_zip_and_dry_run_changes_nothing(self) -> None:
         (self.other_cwd / "wrong.zip").write_bytes(b"Not the requested project.")
@@ -203,6 +215,124 @@ class NotionCliTests(unittest.TestCase):
                 )
 
         self.assertEqual(attempted_installs, 2)
+        self.assertEqual(snapshot(self.project), before)
+
+    def test_explicit_relative_zip_uses_working_directory(self) -> None:
+        requested = self.other_cwd / "selected.zip"
+        shutil.copy2(self.archive, requested)
+        before = snapshot(self.project)
+        output = io.StringIO()
+        with contextlib.chdir(self.other_cwd), contextlib.redirect_stdout(output):
+            result = cli.main(["selected.zip", "--dry-run"], project_root=self.project)
+        self.assertEqual(result, 0)
+        self.assertIn(str(requested.resolve()), output.getvalue())
+        self.assertEqual(snapshot(self.project), before)
+
+    def test_broken_links_abort_before_replacing_any_project_content(self) -> None:
+        self.write_export({"吃谷.md": "# 吃谷\n[不存在](missing.md)\n"})
+        before = snapshot(self.project)
+        error = io.StringIO()
+        with contextlib.redirect_stderr(error):
+            result = cli.run([], project_root=self.project)
+        self.assertEqual(result, 1)
+        self.assertIn("missing.md", error.getvalue())
+        self.assertEqual(snapshot(self.project), before)
+
+    def test_invalid_utf8_aborts_before_replacing_project_content(self) -> None:
+        with ZipFile(self.archive, "w") as archive:
+            archive.writestr("吃谷.md", b"\xff\xfeinvalid")
+        before = snapshot(self.project)
+        with contextlib.redirect_stderr(io.StringIO()):
+            result = cli.run([], project_root=self.project)
+        self.assertEqual(result, 1)
+        self.assertEqual(snapshot(self.project), before)
+
+    def test_empty_export_aborts_without_removing_existing_pages(self) -> None:
+        self.write_export({})
+        before = snapshot(self.project)
+        with contextlib.redirect_stderr(io.StringIO()):
+            result = cli.run([], project_root=self.project)
+        self.assertEqual(result, 1)
+        self.assertEqual(snapshot(self.project), before)
+
+    def test_indirect_protected_names_abort_without_modifying_project(self) -> None:
+        for name in ("SRC.md", ".git.md", "test_existing.py.md", "export.zip.md"):
+            with self.subTest(name=name):
+                self.write_export({name: "# protected\n"})
+                before = snapshot(self.project)
+                with contextlib.redirect_stdout(io.StringIO()), contextlib.redirect_stderr(io.StringIO()):
+                    result = cli.run([], project_root=self.project)
+                self.assertEqual(result, 1)
+                self.assertEqual(snapshot(self.project), before)
+
+    def test_backup_failure_restores_already_moved_content(self) -> None:
+        workspace = self.base / "workspace"
+        clean = workspace / "clean"
+        clean.mkdir(parents=True)
+        (clean / "吃谷.md").write_text("# 新正文\n", encoding="utf-8")
+        before = snapshot(self.project)
+        original_move = shutil.move
+        attempts = 0
+
+        def fail_second_backup(source: str, destination: str | Path) -> str:
+            nonlocal attempts
+            if Path(source).parent == self.project:
+                attempts += 1
+                if attempts == 2:
+                    raise OSError("simulated backup failure")
+            return original_move(source, destination)
+
+        with patch.object(importer.shutil, "move", side_effect=fail_second_backup):
+            with self.assertRaisesRegex(OSError, "simulated backup failure"):
+                importer.replace_project_contents(self.project, clean, self.archive, workspace)
+        self.assertEqual(attempts, 2)
+        self.assertEqual(snapshot(self.project), before)
+
+    def test_page_only_export_removes_stale_companion_directory(self) -> None:
+        self.write_export({"吃谷.md": "# 吃谷\n新正文\n"})
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(cli.main([], project_root=self.project), 0)
+        self.assertFalse((self.project / "吃谷").exists())
+        self.assertEqual((self.project / "吃谷.md").read_text(encoding="utf-8"), "# 吃谷\n新正文\n")
+        self.assertTrue((self.project / "无关页面.md").exists())
+
+    def test_directory_only_export_removes_stale_companion_page(self) -> None:
+        self.write_export({"吃谷/新记录.md": "# 新记录\n"})
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(cli.main([], project_root=self.project), 0)
+        self.assertFalse((self.project / "吃谷.md").exists())
+        self.assertFalse((self.project / "吃谷/旧记录.md").exists())
+        self.assertEqual((self.project / "吃谷/新记录.md").read_text(encoding="utf-8"), "# 新记录\n")
+
+    def test_repeated_import_has_identical_result(self) -> None:
+        with contextlib.redirect_stdout(io.StringIO()):
+            self.assertEqual(cli.main([], project_root=self.project), 0)
+            before = snapshot(self.project)
+            self.assertEqual(cli.main([], project_root=self.project), 0)
+        self.assertEqual(snapshot(self.project), before)
+
+    def test_file_only_partial_install_is_removed_during_rollback(self) -> None:
+        workspace = self.base / "workspace"
+        clean = workspace / "clean"
+        clean.mkdir(parents=True)
+        (clean / "first.md").write_text("# first\n", encoding="utf-8")
+        (clean / "second.md").write_text("# second\n", encoding="utf-8")
+        before = snapshot(self.project)
+        original_move = shutil.move
+        attempts = 0
+
+        def fail_second_install(source: str, destination: str | Path) -> str:
+            nonlocal attempts
+            if Path(source).parent == clean:
+                attempts += 1
+                if attempts == 2:
+                    raise OSError("file installation failure")
+            return original_move(source, destination)
+
+        with patch.object(importer.shutil, "move", side_effect=fail_second_install):
+            with self.assertRaisesRegex(OSError, "file installation failure"):
+                importer.replace_project_contents(self.project, clean, self.archive, workspace)
+        self.assertEqual(attempts, 2)
         self.assertEqual(snapshot(self.project), before)
 
 
