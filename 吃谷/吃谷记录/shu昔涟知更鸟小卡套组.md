@@ -1,0 +1,7 @@
+# shu昔涟知更鸟小卡套组
+
+价格: 30
+卖家: 不接受市价涨跌的别买外谷
+图片: ![图片](https://gitee.com/Lmy071/images/raw/main/ChiGuJiLu/1787195931726.png)
+场次: 七月韩国场贩
+数量: 1

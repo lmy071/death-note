@@ -11,19 +11,21 @@
 导入会保留 .git、其他点号开头的项目配置、本脚本和根目录 ZIP。
 全量替换仅作用于本次 ZIP 包含的根页面：例如导入 `前端.md` 与 `前端/`
 时，只删除并重建这两个路径，其他根页面保持不变。
+清理名称后若出现同名页面，会自动追加 -2、-3 等序号，并同步更新目录与链接。
+图片链接及图片属性中的裸地址会转换为可直接显示的 Markdown 图片。
 """
 
 from __future__ import annotations
 
 import argparse
-import os
+import posixpath
 import re
 import shutil
 import stat
 import sys
 import tempfile
 from pathlib import Path, PurePosixPath
-from urllib.parse import quote, unquote
+from urllib.parse import quote, unquote, urlsplit
 from zipfile import BadZipFile, ZipFile
 
 
@@ -31,9 +33,14 @@ NOTION_ID_RE = re.compile(
     r"^(?P<name>.+) (?P<id>[0-9a-f]{32})(?P<tail>_all)?(?P<suffix>\.[^.]*)?$",
     re.IGNORECASE,
 )
-MARKDOWN_LINK_RE = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
+MARKDOWN_LINK_RE = re.compile(r"!?\[[^\]\n]*\]\((<[^>\n]*>[^)\n]*|(?:[^()\n]|\([^()\n]*\))*)\)")
+REFERENCE_LINK_RE = re.compile(
+    r"^[ \t]{0,3}\[[^\]\n]+\]:[ \t]*(<[^>\n]*>|[^\s]+)", re.MULTILINE
+)
 FENCED_CODE_RE = re.compile(r"```.*?```|~~~.*?~~~", re.DOTALL)
 INLINE_CODE_RE = re.compile(r"`[^`\n]*`")
+IMAGE_SUFFIXES = {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp", ".avif", ".ico", ".apng"}
+IMAGE_PROPERTY_RE = re.compile(r"^[ \t]*(?:图片|图像|images?)[ \t]*[:：][ \t]*", re.IGNORECASE)
 MAX_NESTED_ZIP_DEPTH = 8
 MAX_UNCOMPRESSED_BYTES = 2 * 1024 * 1024 * 1024
 
@@ -191,35 +198,208 @@ def hyphenate_spaces(name: str) -> str:
     return re.sub(r" +", "-", name)
 
 
-def normalize_renamed_page_links(
-    markdown: str, stem_aliases: dict[str, str]
-) -> str:
-    """将含已重命名页面的本地链接改为 CommonMark 尖括号路径。"""
-    encoded_aliases = {
-        quote(alias, safe="") for alias in stem_aliases.values()
-    }
-    if not encoded_aliases:
-        return markdown
+def plan_import_paths(raw_root: Path) -> dict[Path, Path]:
+    """逐层分配名称；页面、数据库与配套目录作为一组消歧。"""
+    paths = {Path(): Path()}
 
-    matches = list(MARKDOWN_LINK_RE.finditer(markdown))
-    for match in reversed(matches):
-        raw_target = match.group(1).strip()
-        if raw_target.startswith("<") and raw_target.endswith(">"):
+    def visit(directory: Path) -> None:
+        entries = sorted(directory.iterdir(), key=lambda entry: (entry.name.casefold(), entry.name))
+        groups: dict[tuple[str, str], list[tuple[Path, str]]] = {}
+        for entry in entries:
+            if entry.is_dir():
+                continue
+            match = NOTION_ID_RE.match(entry.name)
+            if entry.suffix.lower() == ".md":
+                key = ("page", entry.stem)
+                suffix = entry.suffix
+            elif entry.suffix.lower() == ".csv" and match:
+                key = ("page", match.group("name") + " " + match.group("id"))
+                suffix = (match.group("tail") or "") + entry.suffix
+            else:
+                key = ("file", entry.name)
+                suffix = ""
+            groups.setdefault(key, []).append((entry, suffix))
+
+        for entry in entries:
+            if not entry.is_dir():
+                continue
+            key = ("page", entry.name)
+            if key not in groups and not NOTION_ID_RE.match(entry.name):
+                # 部分导出为带 ID 的页面/CSV 配上不带 ID 的目录。
+                # 仅在唯一匹配时关联，不能猜测多个同名页面的附件归属。
+                candidates = [
+                    candidate for candidate in groups
+                    if candidate[0] == "page"
+                    and strip_notion_id(candidate[1]) == entry.name
+                    and not any(item.is_dir() for item, _ in groups[candidate])
+                    and not (directory / candidate[1]).is_dir()
+                ]
+                if len(candidates) == 1:
+                    key = candidates[0]
+            groups.setdefault(key, []).append((entry, ""))
+
+        bases: dict[tuple[str, str], str] = {}
+        for key, members in groups.items():
+            base = strip_notion_id(key[1])
+            for entry, suffix in members:
+                if entry.is_file() and entry.suffix.lower() == ".md":
+                    base = Path(normalize_dotted_filename(base + suffix, entry)).stem
+                    break
+            bases[key] = hyphenate_spaces(base)
+
+        # 预留所有自然名称，包括配套目录名，避免自动生成的 -2 抢占原有标题。
+        reserved = {
+            name.casefold()
+            for key, members in groups.items()
+            for name in [bases[key], *(bases[key] + suffix for _, suffix in members)]
+        }
+        used: set[str] = set()
+        parent = paths[directory.relative_to(raw_root)]
+        for key in sorted(groups, key=lambda item: (item[1].casefold(), item[1], item[0])):
+            members = groups[key]
+            base = bases[key]
+            candidate = base
+            number = 1
+            while True:
+                names = {candidate.casefold()}
+                names.update((candidate + suffix).casefold() for _, suffix in members)
+                if not names & used and (number == 1 or not names & reserved):
+                    break
+                number += 1
+                if key[0] == "file":
+                    filename = Path(base)
+                    candidate = f"{filename.stem}-{number}{filename.suffix}"
+                else:
+                    candidate = f"{base}-{number}"
+            used.update(names)
+            for entry, suffix in members:
+                paths[entry.relative_to(raw_root)] = parent / (candidate + suffix)
+
+        for entry in entries:
+            if entry.is_dir():
+                visit(entry)
+
+    visit(raw_root)
+    return paths
+
+
+def split_link_target(raw: str) -> tuple[str, str, bool]:
+    """分离链接目标、可选标题及尖括号，供改写和校验共用。"""
+    raw = raw.strip()
+    if raw.startswith("<") and ">" in raw:
+        end = raw.index(">")
+        return raw[1:end], raw[end + 1 :], True
+    title = re.match(r'''^(.*?)(\s+(?:"[^"\n]*"|'[^'\n]*'|\([^()\n]*\)))$''', raw)
+    if title:
+        return title.group(1), title.group(2), False
+    return raw, "", False
+
+
+def is_image_target(target: str) -> bool:
+    """按目标路径扩展名识别图片，忽略查询参数及锚点，不请求远程资源。"""
+    if not target or target.startswith(("#", "?")):
+        return False
+    try:
+        parts = urlsplit(target)
+    except ValueError:
+        return False
+    if parts.scheme.lower() not in {"", "http", "https"}:
+        return False
+    if not parts.scheme and ":" in parts.path:
+        return False
+    return PurePosixPath(unquote(parts.path)).suffix.lower() in IMAGE_SUFFIXES
+
+
+def embed_image_links(markdown: str) -> str:
+    """将图片链接、图片属性裸地址及独占一行的图片地址转为图片语法。"""
+    protected = [match.span() for match in FENCED_CODE_RE.finditer(markdown)]
+    protected.extend(match.span() for match in INLINE_CODE_RE.finditer(markdown))
+
+    def in_code(position: int) -> bool:
+        return any(start <= position < end for start, end in protected)
+
+    edits: list[tuple[int, int, str]] = []
+    for match in MARKDOWN_LINK_RE.finditer(markdown):
+        if in_code(match.start()) or match.group(0).startswith(("!", "[![")):
             continue
-        if raw_target.startswith("//") or re.match(
-            r"^[a-zA-Z][a-zA-Z0-9+.-]*:", raw_target
+        # 保留转义后的链接示例，不能把字面文本变成图片。
+        preceding = markdown[: match.start()]
+        if (len(preceding) - len(preceding.rstrip("\\"))) % 2:
+            continue
+        target, _, _ = split_link_target(match.group(1))
+        if is_image_target(target):
+            edits.append((match.start(), match.start(), "!"))
+
+    offset = 0
+    for line in markdown.splitlines(keepends=True):
+        content = line.rstrip("\r\n")
+        property_match = IMAGE_PROPERTY_RE.match(content)
+        start = property_match.end() if property_match else len(content) - len(content.lstrip())
+        raw = content[start:].rstrip()
+        target, _, bracketed = split_link_target(raw)
+        if (
+            not in_code(offset + start)
+            and (bracketed or not re.search(r"[\s\[\]]", target))
+            and is_image_target(target)
         ):
-            continue
-        if not any(alias in raw_target for alias in encoded_aliases):
-            continue
+            edits.append((offset + start, offset + start + len(raw), f"![图片]({raw})"))
+        offset += len(line)
 
-        readable_target = unquote(raw_target)
-        markdown = (
-            markdown[: match.start(1)]
-            + f"<{readable_target}>"
-            + markdown[match.end(1) :]
-        )
+    for start, end, replacement in sorted(edits, reverse=True):
+        markdown = markdown[:start] + replacement + markdown[end:]
     return markdown
+
+
+def rewrite_local_links(
+    markdown: str, source: Path, paths: dict[Path, Path]
+) -> tuple[str, int]:
+    """按完整源路径改写目标，保留正文、代码、外链和页面身份。"""
+    protected = [match.span() for match in FENCED_CODE_RE.finditer(markdown)]
+    protected.extend(match.span() for match in INLINE_CODE_RE.finditer(markdown))
+    changed = 0
+
+    def replace(match: re.Match[str]) -> str:
+        nonlocal changed
+        if any(start <= match.start() < end for start, end in protected):
+            return match.group(0)
+        target, title, bracketed = split_link_target(match.group(1))
+        if not target or target.startswith(("#", "?", "//")) or re.match(
+            r"^[a-zA-Z][a-zA-Z0-9+.-]*:", target
+        ):
+            return match.group(0)
+        path_text, *tail = re.split(r"(?=[?#])", target, maxsplit=1)
+        decoded = unquote(path_text).replace("\\", "/")
+        absolute = decoded.startswith("/")
+        original_path = posixpath.normpath(
+            decoded.lstrip("/") if absolute else posixpath.join(source.parent.as_posix(), decoded)
+        )
+        destination = paths.get(Path(original_path))
+        if destination is None:
+            return match.group(0)
+        new_path = (
+            "/" + destination.as_posix() if absolute
+            else posixpath.relpath(destination.as_posix(), paths[source].parent.as_posix())
+        )
+        if new_path == decoded:
+            return match.group(0)
+        new_target = quote(new_path, safe="/") + "".join(tail)
+        if bracketed:
+            new_target = f"<{new_target}>"
+        changed += 1
+        start, end = match.span(1)
+        return (
+            markdown[match.start() : start]
+            + new_target + title
+            + markdown[end : match.end()]
+        )
+
+    # 两种语法都在原文中定位后逆序改写，避免前一处长度变化影响代码区间。
+    matches = list(MARKDOWN_LINK_RE.finditer(markdown))
+    matches.extend(REFERENCE_LINK_RE.finditer(markdown))
+    updated = markdown
+    for match in sorted(matches, key=lambda item: item.start(), reverse=True):
+        updated = updated[: match.start()] + replace(match) + updated[match.end() :]
+    return updated, changed
 
 
 def create_import_tree(raw_root: Path, clean_root: Path) -> tuple[int, int, int]:
@@ -227,81 +407,25 @@ def create_import_tree(raw_root: Path, clean_root: Path) -> tuple[int, int, int]
     if not files:
         raise ImportFailure("ZIP 中没有可导入文件。")
 
-    plans: list[tuple[Path, Path]] = []
-    replacements: set[tuple[str, str]] = set()
-    destinations: dict[str, Path] = {}
-
-    # 先从 Markdown 一级标题建立目录别名。Notion 的页面通常同时导出为
-    # `<页面>.md` 与 `<页面>/`，恢复文件名中的点号时必须同步恢复配套目录，
-    # 否则页面内指向子页面或数据库的链接会失效。
-    stem_aliases: dict[str, str] = {}
-    for source in files:
-        if source.suffix.lower() != ".md":
-            continue
-        clean_name = strip_notion_id(source.name)
-        normalized_name = hyphenate_spaces(
-            normalize_dotted_filename(clean_name, source)
-        )
-        if normalized_name == clean_name:
-            continue
-        old_stem = Path(clean_name).stem
-        new_stem = Path(normalized_name).stem
-        previous = stem_aliases.get(old_stem)
-        if previous is not None and previous != new_stem:
-            raise ImportFailure(
-                f"标题还原后出现目录名冲突：{old_stem} -> {previous} / {new_stem}"
-            )
-        stem_aliases[old_stem] = new_stem
-
-    for source in files:
-        relative = source.relative_to(raw_root)
-        new_parts: list[str] = []
-        for index, old_part in enumerate(relative.parts):
-            new_part = strip_notion_id(old_part)
-            if index == len(relative.parts) - 1 and source.suffix.lower() == ".md":
-                new_part = hyphenate_spaces(
-                    normalize_dotted_filename(new_part, source)
-                )
-            elif new_part in stem_aliases:
-                new_part = stem_aliases[new_part]
-            else:
-                new_part = hyphenate_spaces(new_part)
-            if old_part != new_part:
-                replacements.add((old_part, new_part))
-            new_parts.append(new_part)
-
-        destination_relative = Path(*new_parts)
-        collision_key = os.path.normcase(str(destination_relative)).casefold()
-        previous = destinations.get(collision_key)
-        if previous is not None:
-            raise ImportFailure(
-                f"移除 Notion ID 后出现同名冲突：{previous} 和 {relative}"
-            )
-        destinations[collision_key] = relative
-        plans.append((source, clean_root / destination_relative))
-
-    encoded_replacements: list[tuple[str, str]] = []
-    for old, new in replacements:
-        encoded_replacements.append((quote(old, safe=""), quote(new, safe="")))
-        encoded_replacements.append((old, new))
-    encoded_replacements.sort(key=lambda pair: len(pair[0]), reverse=True)
+    paths = plan_import_paths(raw_root)
+    for relative, destination in paths.items():
+        if (raw_root / relative).is_dir():
+            (clean_root / destination).mkdir(parents=True, exist_ok=True)
 
     changed_markdown = 0
     replaced_links = 0
-    for source, destination in plans:
+    for source in files:
+        relative = source.relative_to(raw_root)
+        destination = clean_root / paths[relative]
         destination.parent.mkdir(parents=True, exist_ok=True)
         if source.suffix.lower() == ".md":
             try:
                 original = source.read_text(encoding="utf-8-sig")
             except UnicodeDecodeError as exc:
                 raise ImportFailure(f"Markdown 不是 UTF-8 编码：{source}") from exc
-            updated = original
-            for old, new in encoded_replacements:
-                count = updated.count(old)
-                if count:
-                    updated = updated.replace(old, new)
-                    replaced_links += count
-            updated = normalize_renamed_page_links(updated, stem_aliases)
+            updated = embed_image_links(original)
+            updated, count = rewrite_local_links(updated, relative, paths)
+            replaced_links += count
             if updated != original:
                 changed_markdown += 1
             destination.write_text(updated, encoding="utf-8")
@@ -320,11 +444,11 @@ def validate_links(root: Path) -> int:
         text = markdown.read_text(encoding="utf-8")
         text = FENCED_CODE_RE.sub("", text)
         text = INLINE_CODE_RE.sub("", text)
-        for match in MARKDOWN_LINK_RE.finditer(text):
-            raw_target = match.group(1).strip()
-            if raw_target.startswith("<") and raw_target.endswith(">"):
-                raw_target = raw_target[1:-1]
-            if not raw_target or raw_target.startswith("#"):
+        matches = list(MARKDOWN_LINK_RE.finditer(text))
+        matches.extend(REFERENCE_LINK_RE.finditer(text))
+        for match in matches:
+            raw_target, _, _ = split_link_target(match.group(1))
+            if not raw_target or raw_target.startswith(("#", "?")):
                 continue
             if raw_target.startswith("//") or re.match(
                 r"^[a-zA-Z][a-zA-Z0-9+.-]*:", raw_target
