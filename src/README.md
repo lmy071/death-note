@@ -7,7 +7,7 @@
 ```bash
 python src/restore_notion_export.py
 python src/restore_notion_export.py /path/to/notion-export.zip --dry-run
-python src/restore_notion_export.py /path/to/notion-export.zip
+python3 src/restore_notion_export.py /path/to/notion-export.zip
 ```
 
 省略 ZIP 参数时，自动选择项目根目录中唯一的 ZIP。即使从其他工作目录启动脚本，也会导入脚本所在的项目根目录。相对 ZIP 参数仍相对于当前工作目录解析。

@@ -307,6 +307,6 @@ flowchart TD
 - `D:/ProjectCode/vue3/tsconfig.json`、`D:/ProjectCode/vue3/tsconfig.build.json`、`D:/ProjectCode/vue3/rollup.config.js`、`D:/ProjectCode/vue3/rollup.dts.config.js`、`D:/ProjectCode/vue3/vitest.config.ts`、`D:/ProjectCode/vue3/eslint.config.js`。
 - 编译器、测试和示例中的依赖引用，以及本地 `tslib` 说明。
 
-进一步了解私有工具工程：[packages-private 目录用途说明](<packages-private-目录用途说明.md>)。
+进一步了解私有工具工程：[packages-private 目录用途说明](packages-private-%E7%9B%AE%E5%BD%95%E7%94%A8%E9%80%94%E8%AF%B4%E6%98%8E.md)。
 
 [文档整理](../%E6%96%87%E6%A1%A3%E6%95%B4%E7%90%86.md)
