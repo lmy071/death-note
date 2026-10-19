@@ -1,0 +1,15 @@
+{
+  "downloaded_at": "2026-10-15T08:04:07.511050+00:00",
+  "source_images": {
+    "BWIKI": 454,
+    "Honkai Impact 3 Wiki": 812,
+    "米游社官方档案馆": 700
+  },
+  "source_records": 1966,
+  "unique_files": 1306,
+  "total_bytes": 670398776,
+  "errors": 3,
+  "download_failures": 0,
+  "missing_source_references": 3,
+  "cdn_sha1_differences": 100
+}

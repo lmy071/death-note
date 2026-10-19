@@ -1,0 +1,16 @@
+{
+  "verified_at": "2026-10-15T08:05:10.193733+00:00",
+  "verified_unique_images": 1306,
+  "verified_source_records": 1966,
+  "official_catalog_entries": 700,
+  "official_downloaded_entries": 700,
+  "missing_files": 0,
+  "unlisted_images": 0,
+  "checksum_errors": 0,
+  "dimension_errors": 0,
+  "files_by_folder": {
+    "补充立绘/BWIKI": 431,
+    ".": 700,
+    "补充立绘/国际服及历史版本": 175
+  }
+}
