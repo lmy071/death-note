@@ -1,0 +1,497 @@
+[
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "关于存储型 XSS（Stored XSS），下列说法正确的是？",
+    "options": [
+      "攻击载荷随 URL 参数传递，仅对触发的那一次请求生效",
+      "攻击载荷被持久化存储在服务器端（如评论、留言），用户每次访问相关页面都会被触发执行",
+      "攻击只能在开发者控制台手工触发，普通用户无法中招",
+      "攻击完全在浏览器端完成，不向服务器发送任何请求"
+    ],
+    "answer": "B",
+    "analysis": "存储型 XSS 将恶意脚本持久化到服务端数据库，用户访问包含该数据的页面时脚本随页面输出而执行，属于持久型攻击。随 URL 参数的是反射型，完全在浏览器端触发的是 DOM 型。",
+    "difficulty": 2,
+    "tag": "存储型XSS"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "反射型 XSS（Reflected XSS）的典型触发方式是？",
+    "options": [
+      "用户点击包含恶意参数的链接，服务端将参数内容未经处理反射进响应页面并执行",
+      "恶意脚本被提前存入服务器数据库，之后每次访问都执行",
+      "恶意脚本由浏览器 DOM API 直接写入页面，完全不经过服务器",
+      "恶意脚本通过修改路由器 DNS 生效"
+    ],
+    "answer": "A",
+    "analysis": "反射型是非持久型 XSS，恶意代码随 URL 或表单参数提交，服务端把参数拼进 HTML 返回，浏览器执行，诱导用户点击是关键前提。存入数据库的是存储型，纯浏览器端触发的是 DOM 型。",
+    "difficulty": 2,
+    "tag": "反射型XSS"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "DOM 型 XSS 与反射型、存储型 XSS 的本质区别是？",
+    "options": [
+      "DOM 型 XSS 必须依赖服务端模板注入",
+      "DOM 型 XSS 的恶意代码由服务器数据库存储",
+      "DOM 型 XSS 由浏览器端 DOM 操作触发，数据未经服务端处理",
+      "DOM 型 XSS 只能影响 IE 浏览器"
+    ],
+    "answer": "C",
+    "analysis": "DOM 型 XSS 的污染源与执行都在浏览器端（如 location.hash 被写入 innerHTML），HTTP 请求中甚至可以不包含恶意代码，因此服务端输出转义难以拦截。涉及服务端拼接输出的是反射型与存储型。",
+    "difficulty": 3,
+    "tag": "DOM型XSS"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "下列哪项设置能防止 XSS 窃取会话 Cookie，但并不能阻止 XSS 脚本本身执行？",
+    "options": [
+      "启用 HTTPS",
+      "设置 CSP 的 default-src",
+      "对输出做 HTML 转义",
+      "为 Cookie 设置 HttpOnly 属性"
+    ],
+    "answer": "D",
+    "analysis": "HttpOnly 使 JavaScript 无法通过 document.cookie 读取该 Cookie，从而降低 XSS 窃取会话的损失，但脚本本身仍会执行（如篡改页面、发起请求）。CSP 与输出转义才是阻止脚本执行的手段，HTTPS 只防传输窃听。",
+    "difficulty": 4,
+    "tag": "HttpOnly"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "针对 XSS 攻击，最关键的防御措施是？",
+    "options": [
+      "前端把输入统一改为大写",
+      "在输出到 HTML 时对不可信数据做上下文相关的转义编码",
+      "禁止用户输入数字",
+      "使用 display:none 隐藏输入框"
+    ],
+    "answer": "B",
+    "analysis": "XSS 的本质是“不可信数据进入可执行上下文”，因此按上下文（HTML 元素、属性、JS、URL）对输出做转义编码是关键防线。输入校验只能作为辅助手段，无法单独构成完整防御。",
+    "difficulty": 2,
+    "tag": "XSS防御"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "内容安全策略 CSP 的核心作用是？",
+    "options": [
+      "通过白名单限制浏览器加载与执行资源的来源，缓解 XSS 等注入类攻击",
+      "对请求内容进行加密传输",
+      "加快页面渲染速度",
+      "自动备份用户数据"
+    ],
+    "answer": "A",
+    "analysis": "CSP 通过 script-src、img-src 等指令限定资源来源，能阻断恶意脚本加载与内联脚本执行，是 XSS 的重要缓解手段。它不负责加密（那是 HTTPS/TLS 的职责），也与加速、备份无关。",
+    "difficulty": 1,
+    "tag": "CSP"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "关于 CSP 的配置方式，下列说法正确的是？",
+    "options": [
+      "只能通过 HTTP 响应头设置，meta 标签完全无效",
+      "只能通过 meta 标签设置，响应头无效",
+      "既可通过 Content-Security-Policy 响应头，也可通过 <meta http-equiv=\"Content-Security-Policy\"> 配置",
+      "可通过 <img src> 属性配置"
+    ],
+    "answer": "C",
+    "analysis": "主流浏览器同时支持响应头与 meta 两种方式下发 CSP（meta 方式下部分指令如 frame-ancestors 不受支持）。<img> 的 src 是普通资源引用，与 CSP 配置无关。",
+    "difficulty": 3,
+    "tag": "CSP"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "设 CSP 配置为 script-src 'self'，以下哪种脚本会被浏览器正常执行？",
+    "options": [
+      "来自 cdn.example.com 的 <script src>",
+      "与页面同源的 <script src=\"/app.js\">",
+      "页面内联的 <script>console.log(1)</script>",
+      "onclick 事件属性中的代码"
+    ],
+    "answer": "B",
+    "analysis": "'self' 只允许同源外部脚本，跨域 CDN 脚本、内联脚本（未加 'unsafe-inline'）与事件属性中的代码都会被 CSP 拦截。如需放行第三方脚本，应显式添加对应域名。",
+    "difficulty": 4,
+    "tag": "CSP"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "CSRF 攻击能够冒用用户身份发起请求的根本原因是？",
+    "options": [
+      "攻击者破解了用户的登录密码",
+      "服务器不校验任何请求头",
+      "用户浏览器存在木马",
+      "浏览器发起请求时会自动携带目标站点的 Cookie/凭证，服务器难以区分请求是否用户本意"
+    ],
+    "answer": "D",
+    "analysis": "CSRF 利用浏览器自动携带 Cookie 的机制，在用户处于登录态时向目标站点提交伪造的跨站请求，无需获取密码。防御需引入 CSRF Token、SameSite、Referer/Origin 校验等验证请求来源的手段。",
+    "difficulty": 2,
+    "tag": "CSRF"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "下列防御 CSRF 的措施中，最常用且有效的是？",
+    "options": [
+      "在表单/请求中携带服务器下发的随机 Token 并由服务端校验",
+      "为 Cookie 设置 HttpOnly",
+      "将密码存进 localStorage",
+      "关闭浏览器的提示框"
+    ],
+    "answer": "A",
+    "analysis": "CSRF Token 由服务器为会话生成随机值并校验，攻击者无法预知，是核心防御手段。HttpOnly 只防 XSS 读取 Cookie，而 CSRF 不需要读取 Cookie，因此对 CSRF 无效。",
+    "difficulty": 3,
+    "tag": "CSRF防御"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "Cookie 的 SameSite 属性取值为 Lax 时，以下描述正确的是？",
+    "options": [
+      "任何跨站请求都不携带该 Cookie",
+      "跨站请求无条件携带该 Cookie",
+      "跨站请求默认不携带，仅跨站顶层导航的 GET 请求会携带",
+      "仅同源页面才能使用该 Cookie"
+    ],
+    "answer": "C",
+    "analysis": "Lax 是较为均衡的默认值：阻止跨站 POST、iframe 与 XHR 等请求携带 Cookie，但允许用户从外链点击进入站点的顶层导航 GET 携带，兼顾安全与体验。Strict 则全部禁止。",
+    "difficulty": 3,
+    "tag": "SameSite"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "利用 Referer/Origin 校验防御 CSRF 时，下列理解正确的是？",
+    "options": [
+      "只要校验 Referer 就绝对安全，因为所有浏览器请求都必带",
+      "优先校验 Origin 头：跨站请求一般会携带，且不受隐私策略影响，比 Referer 更可靠",
+      "校验 User-Agent 即可阻止 CSRF",
+      "校验 Cookie 的 Domain 即可阻止 CSRF"
+    ],
+    "answer": "B",
+    "analysis": "跨站请求通常携带 Origin，且不像 Referer 会因 referrerpolicy 等隐私配置而缺失，是更可靠的来源校验头。单独来源校验仍有绕过场景，生产环境常与 Token 等机制叠加使用。",
+    "difficulty": 3,
+    "tag": "CSRF防御"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "关于 XSS 与 CSRF 的关系，下列说法正确的是？",
+    "options": [
+      "CSRF 必须依赖 XSS 才能发起",
+      "XSS 与 CSRF 是同一类攻击的两种叫法",
+      "防御住 CSRF 就等于防御了 XSS",
+      "XSS 可在同源上下文发起请求从而绕过 CSRF Token、SameSite 等防护，两者是独立的漏洞类型"
+    ],
+    "answer": "D",
+    "analysis": "CSRF 只利用已登录凭证的自动携带机制，不依赖 XSS；而 XSS 能在同源页面内执行脚本，可构造同源请求绕过 CSRF 防护。二者是相互独立、需要分别防御的漏洞类型。",
+    "difficulty": 5,
+    "tag": "XSS与CSRF"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "把用户登录凭证（如 Token）保存在 localStorage 的主要风险是？",
+    "options": [
+      "一旦发生 XSS，脚本可直接读取 localStorage 窃取凭证",
+      "localStorage 会自动随每个请求发送给服务器",
+      "localStorage 数据会定期被服务器覆盖",
+      "localStorage 无法保存字符串"
+    ],
+    "answer": "A",
+    "analysis": "localStorage 对页面 JS 完全可读，XSS 可直接取走其中的凭证；它不像 Cookie 会自动随请求携带。会话凭证更应放在 HttpOnly Cookie 中以降低被窃取的风险。",
+    "difficulty": 2,
+    "tag": "存储安全"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "为会话 Cookie 配置以下哪组属性组合最安全？",
+    "options": [
+      "只设置较长的过期时间",
+      "只设置 Path=/",
+      "HttpOnly、Secure、SameSite 组合使用",
+      "关闭 SameSite 并允许 HTTP 明文传输"
+    ],
+    "answer": "C",
+    "analysis": "HttpOnly 防 JS 读取、Secure 保证仅 HTTPS 传输、SameSite 缓解 CSRF，三者组合是会话 Cookie 的安全基线。只设置过期时间或 Path 无法防窃取与跨站利用。",
+    "difficulty": 3,
+    "tag": "Cookie安全"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "SSR（服务端渲染）相比纯 CSR 的主要优势是？",
+    "options": [
+      "完全不需要网络请求",
+      "首屏可更快呈现完整 HTML，且利于 SEO",
+      "服务器压力更小",
+      "不支持任何前端框架"
+    ],
+    "answer": "B",
+    "analysis": "SSR 在服务端拼出完整 HTML，浏览器无需等待 JS 执行即可看到内容，爬虫也能直接抓取，从而首屏更快且 SEO 更好。代价是服务器承担渲染压力，且同样支持组件化框架开发。",
+    "difficulty": 2,
+    "tag": "SSR"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "SSR 模式最典型的缺点是？",
+    "options": [
+      "不返回 HTML",
+      "SEO 效果变差",
+      "无法使用组件化开发",
+      "每次请求都要服务端渲染，高并发下服务器压力与成本大"
+    ],
+    "answer": "D",
+    "analysis": "SSR 按请求动态渲染，流量高峰时服务器 CPU 与带宽消耗明显，需要更强的服务端资源与缓存设计。SEO 好与组件化开发反而是它的优点。",
+    "difficulty": 2,
+    "tag": "SSR"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "SSG（静态站点生成）与 SSR 的最大区别是？",
+    "options": [
+      "SSG 在构建期生成静态 HTML，部署后无需服务端实时渲染；SSR 每次请求动态渲染",
+      "SSG 不支持 HTML",
+      "SSG 必须依赖用户登录",
+      "SSG 只能运行在 Node.js 浏览器端"
+    ],
+    "answer": "A",
+    "analysis": "SSG 把渲染提前到构建阶段，产物是静态文件，可放 CDN 快速分发；SSR 则在运行时按请求渲染。内容更新频率低的站点适合 SSG，动态数据多的场景适合 SSR 或混合方案。",
+    "difficulty": 2,
+    "tag": "SSG"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "下列哪种项目最适合采用 SSG 方案？",
+    "options": [
+      "实时股票行情看板",
+      "多人实时协作编辑器",
+      "更新不频繁的文档站/博客",
+      "需要 WebSocket 推送的聊天室"
+    ],
+    "answer": "C",
+    "analysis": "文档/博客内容变化少，SSG 构建一次即可高效分发部署。强实时、强交互的应用需要 CSR/SSR 或混合渲染来保证数据实时性，不适合纯 SSG。",
+    "difficulty": 2,
+    "tag": "SSG"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "纯 CSR（客户端渲染）首屏较慢的主要原因是？",
+    "options": [
+      "服务端每次请求都渲染 HTML 消耗资源",
+      "浏览器需先下载并执行 JavaScript，才能动态生成主要内容",
+      "页面没有 HTML 标签",
+      "CSR 强制使用 WebSocket"
+    ],
+    "answer": "B",
+    "analysis": "CSR 的初始 HTML 往往是空壳容器，关键内容依赖 JS 包下载、解析、执行后才渲染出来，因此首屏慢。SSR/SSG 直接返回内容 HTML 可以缓解这一问题。",
+    "difficulty": 2,
+    "tag": "CSR"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "从 SEO 角度看，SSR 优于 CSR 的原因是？",
+    "options": [
+      "SSR 页面禁止爬虫访问",
+      "两者没有任何差别",
+      "CSR 页面天生被搜索引擎完美索引",
+      "SSR 返回的 HTML 中直接包含页面内容，爬虫无需执行 JS 即可抓取"
+    ],
+    "answer": "D",
+    "analysis": "搜索引擎爬虫对 JavaScript 执行的支持有限，CSR 初始 HTML 几乎没有内容导致收录差；SSR 输出包含完整内容的 HTML，爬虫可直接解析，SEO 效果更好。",
+    "difficulty": 2,
+    "tag": "SSR"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "微前端架构最核心的理念是？",
+    "options": [
+      "将应用拆分为可独立开发、独立部署、技术栈无关的子应用，由主应用集成",
+      "所有子应用必须共用同一个代码仓库与框架",
+      "只允许 iframe 一种加载方式",
+      "所有代码必须合并为单个大 bundle"
+    ],
+    "answer": "A",
+    "analysis": "微前端强调团队自治：子应用各自选择技术栈、独立开发部署上线，主应用负责注册、加载与调度。常见实现有 qiankun、single-spa、Module Federation 等，并非只能 iframe。",
+    "difficulty": 1,
+    "tag": "微前端"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "关于 qiankun 微前端框架，下列说法正确的是？",
+    "options": [
+      "qiankun 完全独立实现，不依赖任何已有微前端方案",
+      "qiankun 只支持 Vue 子应用",
+      "qiankun 基于 single-spa，提供 HTML 入口、JS 沙箱与样式隔离等能力",
+      "qiankun 必须把子应用 iframe 化"
+    ],
+    "answer": "C",
+    "analysis": "qiankun 是在 single-spa 之上封装的方案，支持任意技术栈子应用，通过 HTML 入口加载子应用，并提供 JS 沙箱隔离全局变量、样式隔离与资源预加载等能力。",
+    "difficulty": 3,
+    "tag": "qiankun"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "下列不属于微前端主应用与子应用常见通信方式的是？",
+    "options": [
+      "通过 props 传入参数（如 qiankun 的 initGlobalState）",
+      "通过 window 全局自定义事件（CustomEvent）通信",
+      "通过共享的全局状态仓库通信",
+      "直接修改对方服务器上的数据库"
+    ],
+    "answer": "D",
+    "analysis": "微前端常见通信方式有 props 注入、自定义事件、共享全局状态、URL 参数等。跨应用直接操作对方数据库既不安全，也不属于应用间通信机制。",
+    "difficulty": 2,
+    "tag": "主子通信"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "注册 Service Worker 的站点必须满足什么条件？",
+    "options": [
+      "任意 HTTP 站点",
+      "HTTPS 或 localhost（安全上下文）",
+      "必须使用 CDN 加速",
+      "必须运行 Node.js"
+    ],
+    "answer": "B",
+    "analysis": "Service Worker 能拦截、缓存网络请求，权限较大，浏览器强制要求安全上下文（HTTPS 或 localhost）才能注册使用，普通 HTTP 站点无法注册。",
+    "difficulty": 2,
+    "tag": "Service Worker"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "PWA 的 manifest.json 文件的主要作用是？",
+    "options": [
+      "编写 Service Worker 的离线缓存逻辑",
+      "存储用户登录信息",
+      "描述应用名称、图标、启动地址与显示方式，使应用可被安装",
+      "配置服务端路由"
+    ],
+    "answer": "C",
+    "analysis": "manifest 提供 Web 应用的元信息（name、icons、start_url、display 等），配合 Service Worker 使站点具备“添加到主屏幕/安装”的能力。离线逻辑在独立的 JS 文件中编写。",
+    "difficulty": 2,
+    "tag": "PWA"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "小程序的“双线程模型”指的是？",
+    "options": [
+      "逻辑层（JS 线程）与渲染层（WebView）分离，通过原生桥通信",
+      "两个渲染线程同时渲染同一页面",
+      "逻辑层运行在 Node.js 中",
+      "渲染层与逻辑层在同一线程交替执行"
+    ],
+    "answer": "A",
+    "analysis": "小程序逻辑层与渲染层分离运行，setData 经原生桥把数据同步到渲染层，避免 JS 长时间执行阻塞渲染。这与浏览器中 JS 与 DOM 同线程的模型不同。",
+    "difficulty": 3,
+    "tag": "小程序"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "小程序页面结构使用下列哪种语言编写？",
+    "options": [
+      "HTML",
+      "标准 XML 文件",
+      "WXML（配合 WXSS 描述样式）",
+      "MDX"
+    ],
+    "answer": "C",
+    "analysis": "小程序使用 WXML 描述页面结构、WXSS 描述样式。WXML 不是 HTML，小程序运行环境中没有标准 DOM/BOM 能力。",
+    "difficulty": 1,
+    "tag": "WXML"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "关于小程序 setData 方法，下列说法正确的是？",
+    "options": [
+      "同步直接修改 DOM 节点",
+      "将逻辑层数据同步到渲染层触发视图更新，异步生效且有数据量限制",
+      "用于发起网络请求",
+      "只能修改页面标题"
+    ],
+    "answer": "B",
+    "analysis": "setData 把数据从逻辑层传到渲染层，通过原生桥异步更新视图，数据量过大或调用过频繁会拖慢渲染性能。小程序没有 DOM API，不能直接操作 DOM。",
+    "difficulty": 3,
+    "tag": "setData"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "下列基于 React 语法开发小程序/H5 的跨端框架是？",
+    "options": [
+      "uni-app",
+      "原生 WXML 开发",
+      "Taro",
+      "Vant"
+    ],
+    "answer": "C",
+    "analysis": "Taro 以 React 语法编写，可编译到微信小程序、H5、React Native 等多端。uni-app 以 Vue 语法为主，Vant 是移动端组件库。",
+    "difficulty": 2,
+    "tag": "Taro"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "关于 uni-app，下列说法正确的是？",
+    "options": [
+      "基于 Vue 语法，一套代码可编译到小程序、H5、App 等多端",
+      "只能开发支付宝小程序",
+      "完全不支持 Vue 语法",
+      "是基于 React 的框架"
+    ],
+    "answer": "A",
+    "analysis": "uni-app 使用 Vue 语法（支持 Vue2/Vue3），通过编译把一套代码输出到小程序、H5、App 等多端，是国内常用的跨端方案之一。",
+    "difficulty": 2,
+    "tag": "uni-app"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "一个“强交互、实时数据、无需 SEO”的内部后台管理系统，最合适的架构是？",
+    "options": [
+      "SSG 静态生成",
+      "纯静态 HTML",
+      "SSR + 每请求渲染",
+      "CSR（SPA）+ 后端 API"
+    ],
+    "answer": "D",
+    "analysis": "后台系统强交互、需要频繁与接口交互且无 SEO 需求，CSR（SPA）开发效率高、交互流畅。SSG/SSR 在此场景收益小、成本反而更高。",
+    "difficulty": 2,
+    "tag": "架构选型"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "面向内容型门户，要求首屏快、SEO 好，但部分区块又有实时数据（如热搜榜），更合理的架构选择是？",
+    "options": [
+      "纯客户端渲染（CSR）",
+      "以 SSR 或 SSG 为主、部分组件在客户端异步拉取实时数据（混合渲染）",
+      "完全禁用 JavaScript",
+      "把所有接口请求都改为 WebSocket"
+    ],
+    "answer": "B",
+    "analysis": "混合渲染兼顾内容页的 SEO 与首屏速度，同时让实时区块通过客户端数据请求补充更新。纯 CSR 首屏与 SEO 差，完全禁用 JS 则无法实现任何交互。",
+    "difficulty": 4,
+    "tag": "架构选型"
+  }
+]

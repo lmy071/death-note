@@ -1,0 +1,332 @@
+[
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "下列选择器中，能够选中页面中所有带有 class=\"title\" 的元素的是？",
+  "options": [".title", "#title", "title", "[title]"],
+  "answer": "A",
+  "analysis": "类选择器以点号开头，匹配元素的 class 属性，即 .title 可选中所有 class 含 title 的元素。#title 是 ID 选择器，title 是标签选择器，[title] 是属性选择器。",
+  "difficulty": 1,
+  "tag": "选择器"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "关于 ID 选择器 #nav 与类选择器 .nav 的区别，下列说法正确的是？",
+  "options": ["类选择器权重更高，且只能用于一个元素", "同一页面中 ID 应保持唯一，且 ID 选择器优先级权重更高", "两者没有任何区别", "ID 选择器只能选中 div 元素"],
+  "answer": "B",
+  "analysis": "ID 选择器的权重为 (0,1,0,0)，高于类选择器的 (0,0,1,0)，且规范约定同一页面中 ID 应唯一；类选择器可任意复用于多个元素，并非只能用于一个元素。",
+  "difficulty": 1,
+  "tag": "选择器"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "属性选择器 a[href$=\".pdf\"] 的匹配规则是？",
+  "options": ["匹配 href 属性值以 .pdf 开头的链接", "匹配 href 属性值中包含 .pdf 的链接", "匹配 href 属性值以 .pdf 结尾的链接", "匹配 href 属性值恰好等于 .pdf 的链接"],
+  "answer": "C",
+  "analysis": "属性选择器中 $= 表示匹配属性值结尾，因此 a[href$=\".pdf\"] 选中 href 以 .pdf 结尾的链接；^= 表示开头匹配，*= 表示包含匹配，= 表示完全相等。",
+  "difficulty": 2,
+  "tag": "选择器"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "后代选择器 div p 与子代选择器 div > p 的作用范围有何区别？",
+  "options": ["前者只匹配 div 的直接子元素，后者匹配所有层级的后代", "两者都要匹配 p 的祖先必须是 div，规则完全相同", "两者都只匹配 div 的直接子元素 p", "前者会匹配 div 内所有层级的 p，后者只匹配 div 的直接子元素 p"],
+  "answer": "D",
+  "analysis": "后代选择器使用空格连接，匹配任意层级的后代；子代选择器使用大于号连接，只匹配直接子元素。题干问的是两者区别，描述准确的是后者写法只匹配直接子元素。",
+  "difficulty": 2,
+  "tag": "选择器"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "相邻兄弟选择器 h2 + p 的作用是？",
+  "options": ["选中紧跟在 h2 后面的第一个兄弟 p 元素", "选中 h2 后面所有的兄弟 p 元素", "选中 h2 内部的 p 元素", "选中 h2 前面紧邻的 p 元素"],
+  "answer": "A",
+  "analysis": "相邻兄弟组合器使用加号，匹配指定元素后紧邻的第一个兄弟元素；若要匹配后面所有同级的 p 应使用通用兄弟选择器 h2 ~ p，h2 内部的 p 则应用后代选择器。",
+  "difficulty": 2,
+  "tag": "选择器"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "下列选择器中属于伪类选择器的是？",
+  "options": ["::before", ":hover", "::after", "[type=text]"],
+  "answer": "B",
+  "analysis": "伪类使用单冒号，用于描述元素的特定状态，如 :hover、:focus 等；::before、::after 是伪元素（双冒号），[type=text] 是属性选择器。",
+  "difficulty": 1,
+  "tag": "伪类"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "关于伪元素与伪类的区别，下列说法正确的是？",
+  "options": ["伪类用于生成并样式化 DOM 中不存在的部分，伪元素用于描述元素状态", "伪类只能应用于 a 元素，伪元素只能应用于 div 元素", "伪元素用于生成并样式化 DOM 中不存在的部分，伪类用于描述元素的特定状态", "两者含义完全相同，只是书写冒号数量不同"],
+  "answer": "C",
+  "analysis": "伪元素（::before 等）会在文档树之外创建虚拟元素以插入额外内容，伪类（:hover 等）则根据元素的交互或结构状态进行匹配，二者在语义上有着本质区别。",
+  "difficulty": 2,
+  "tag": "伪元素"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "若要选中父元素中的第奇数个子元素，应使用下列哪个选择器？",
+  "options": [":nth-child(even)", ":nth-of-type(2n)", ":last-child", ":nth-child(odd)"],
+  "answer": "D",
+  "analysis": ":nth-child(odd) 匹配父元素中位置为奇数的子元素；even 与 2n 匹配偶数位子元素，:last-child 只匹配最后一个子元素。注意 nth-child 是按兄弟位置计数，与元素类型无关。",
+  "difficulty": 2,
+  "tag": "伪类"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "选择器 div .content p 的优先级权重是？",
+  "options": ["(0,0,1,2)", "(0,0,2,1)", "(0,1,2,0)", "(0,0,2,2)"],
+  "answer": "A",
+  "analysis": "权重按（内联样式，ID，类/属性/伪类，元素/伪元素）四元组计算：一个类选择器计 (0,0,1,0)，div 与 p 两个元素选择器计 (0,0,0,2)，合计 (0,0,1,2)。",
+  "difficulty": 4,
+  "tag": "优先级"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "关于 !important 声明的作用，下列说法正确的是？",
+  "options": ["会降低该声明的优先级", "带 !important 的声明优先级最高，能够覆盖普通的内联样式声明", "与普通声明优先级完全相同，只影响书写顺序", "只能用于 ID 选择器，不能用于类选择器"],
+  "answer": "B",
+  "analysis": "!important 提升作者样式的优先级，可覆盖普通（非 important）的内联样式；但多条 !important 之间仍按来源和特异性比较。它适用于任何选择器写法，并非 ID 专属。",
+  "difficulty": 2,
+  "tag": "层叠"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "不考虑 !important 时，内联样式（style 属性）与外部样式表中同属性的声明，优先级关系是？",
+  "options": ["外部样式表一定优先", "内联样式一定无法被覆盖", "无 !important 时内联样式优先于外部样式表中的相同声明", "取两者中后加载者生效"],
+  "answer": "C",
+  "analysis": "层叠规则中内联样式的特异性 (1,0,0,0) 最高，外部样式表无法用普通声明覆盖它，只能通过 !important 覆盖；后写规则只在特异性相同时才起作用。",
+  "difficulty": 2,
+  "tag": "优先级"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "设置 box-sizing: border-box 后，元素的 width 属性包含哪些部分？",
+  "options": ["仅内容区", "内容区加内边距", "内容区加边框", "内容区、内边距与边框"],
+  "answer": "D",
+  "analysis": "border-box 模式下 width 表示包含 content、padding 与 border 的总宽度；而默认的 content-box 模式下 width 只表示内容区宽度，padding 与 border 会额外向外扩展。",
+  "difficulty": 2,
+  "tag": "盒模型"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "默认盒模型（content-box）下，一个 width: 100px、padding: 10px、border: 2px 的元素，其实际占用的总宽度是？",
+  "options": ["124px", "100px", "110px", "122px"],
+  "answer": "A",
+  "analysis": "content-box 下总宽度等于 width 加左右 padding 与左右 border，即 100 + 10×2 + 2×2 = 124px。若改为 border-box，总宽度才是 100px。",
+  "difficulty": 1,
+  "tag": "盒模型"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "关于外边距折叠（margin collapsing），下列说法正确的是？",
+  "options": ["相邻兄弟元素的水平 margin 会合并取大", "相邻兄弟元素的垂直 margin 会发生折叠，取两者中的较大值", "设置 box-sizing: border-box 可以避免外边距折叠", "外边距折叠只发生在上边距之间，与下边距无关"],
+  "answer": "B",
+  "analysis": "普通文档流中相邻兄弟元素的垂直 margin 会折叠，取较大值；水平 margin 不会折叠。box-sizing 只影响宽度计算，不影响 margin 折叠，创建 BFC 才能隔离折叠。",
+  "difficulty": 3,
+  "tag": "盒模型"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "position: relative 的元素具有什么特点？",
+  "options": ["相对视口进行偏移并脱离文档流", "相对最近的非 static 定位祖先定位", "相对自身原有位置进行偏移，且不脱离文档流，原占位空间保留", "与静态定位完全相同，设置 top、left 完全无效"],
+  "answer": "C",
+  "analysis": "relative 以元素自身的原始位置为基准，通过 top/left 等进行偏移，但元素仍占据原始空间，不脱离文档流；相对最近定位祖先定位的是 absolute，相对视口的是 fixed。",
+  "difficulty": 2,
+  "tag": "定位"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "position: absolute 的元素的定位基准是？",
+  "options": ["视口", "父元素的内容区", "根元素 html", "最近的 position 非 static 的定位祖先"],
+  "answer": "D",
+  "analysis": "绝对定位元素相对最近的定位祖先（position 为 relative/absolute/fixed/sticky，即非 static）进行定位；若所有祖先都是 static，则相对初始包含块定位。视口是 fixed 的基准。",
+  "difficulty": 3,
+  "tag": "定位"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "position: fixed 的元素默认相对什么进行定位？",
+  "options": ["视口", "父元素", "最近的定位祖先", "body 元素"],
+  "answer": "A",
+  "analysis": "fixed 默认相对视口定位，页面滚动时元素保持不动；它与 absolute 的区别在于基准不同。需要注意的是，当祖先存在 transform 等属性时会创建新的包含块，改变 fixed 的基准。",
+  "difficulty": 1,
+  "tag": "定位"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "关于 position: sticky 的行为特点，下列说法正确的是？",
+  "options": ["元素始终固定于视口中央，与 fixed 完全相同", "滚动越过设定阈值前按相对定位表现，越过阈值后类似固定定位，且活动范围不超出其包含块", "一旦设置即完全脱离文档流", "只能在表格中使用，普通元素无效"],
+  "answer": "B",
+  "analysis": "sticky 是相对定位与固定定位的结合：在未达到 top 等阈值时按相对定位参与文档流，越过阈值后表现为固定效果，且被限制在其父容器（包含块）范围内，不会像 fixed 一样始终钉在视口。",
+  "difficulty": 4,
+  "tag": "定位"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "关于 z-index 的使用规则，下列说法正确的是？",
+  "options": ["对任意元素都生效，无论其定位方式", "z-index 取值越小，元素显示越靠上", "只对定位元素以及 flex/grid 项目等有意义，数值大者显示在上层", "与元素书写顺序无关，只取决于 position 取值"],
+  "answer": "C",
+  "analysis": "z-index 只作用于定位元素（position 非 static）以及设置了 z-index 的 flex/grid 项目等；同一层叠上下文内数值越大越靠上，数值相同时按书写顺序后写者在上。static 元素设置 z-index 无效。",
+  "difficulty": 3,
+  "tag": "层叠上下文"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "下列清除浮动的方法中，不能达到预期效果的是？",
+  "options": ["在浮动元素之后添加 clear: both 的空元素", "父容器使用 ::after 伪元素配合 clear: both", "父容器设置 overflow: hidden", "给浮动元素自身添加 clear: both"],
+  "answer": "D",
+  "analysis": "clear 作用于非浮动元素，使其移动到前面浮动元素的下方；给浮动元素自身加 clear 不会产生任何清除效果。其余三项都是常见且有效的清除浮动方案。",
+  "difficulty": 2,
+  "tag": "浮动"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "下列哪种方式可以触发 BFC（块级格式化上下文）？",
+  "options": ["overflow: hidden", "margin: auto", "position: static", "border: none"],
+  "answer": "A",
+  "analysis": "overflow 取值为 hidden、auto、scroll 等非 visible 值时会触发 BFC；position: static 不触发（absolute/fixed 会触发），margin 与 border 与 BFC 的创建无关。",
+  "difficulty": 3,
+  "tag": "BFC"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "flex 容器在默认情况下，其主轴方向是？",
+  "options": ["垂直方向，从上到下（column）", "水平方向，从左到右（row）", "由 flex-wrap 的取值决定", "沿对角线方向排列"],
+  "answer": "B",
+  "analysis": "flex-direction 的默认值是 row，即主轴沿水平方向从左到右排列项目；设置为 column 后主轴才变为垂直方向。flex-wrap 只决定是否换行，与主轴方向无关。",
+  "difficulty": 1,
+  "tag": "Flexbox"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "在 flex 容器上设置 justify-content: center 会起到什么作用？",
+  "options": ["在交叉轴方向居中排列项目", "让所有项目撑满整个容器", "在主轴方向居中排列项目", "让项目自动换行"],
+  "answer": "C",
+  "analysis": "justify-content 控制主轴方向的对齐方式，center 表示主轴居中；交叉轴方向的对齐由 align-items 或 align-content 控制，换行由 flex-wrap 控制。",
+  "difficulty": 1,
+  "tag": "Flexbox"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "align-items: center 作用于 flex 容器的哪个方向？",
+  "options": ["主轴方向", "只影响单行排列的间距", "网格线的位置", "交叉轴方向"],
+  "answer": "D",
+  "analysis": "align-items 控制 flex 项目在交叉轴方向的对齐方式；主轴方向的对齐由 justify-content 负责。两者的方向维度需要区分清楚，这也是 Flexbox 中最容易混淆的知识点。",
+  "difficulty": 2,
+  "tag": "Flexbox"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "简写属性 flex: 1 等价于下列哪一项？",
+  "options": ["flex: 1 1 0%", "flex: 1 0 auto", "flex: 0 1 auto", "flex: 1 1 auto"],
+  "answer": "A",
+  "analysis": "flex 简写只写一个数字时，规范规定 flex-grow 取该值、flex-shrink 取 1、flex-basis 取 0%，因此 flex: 1 等价于 flex: 1 1 0%；这也是让项目等分剩余空间的常见写法。",
+  "difficulty": 4,
+  "tag": "Flexbox"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "grid-template-columns: 1fr 2fr 声明的是？",
+  "options": ["两列固定像素宽度", "两列网格，剩余空间按 1:2 分配，第二列宽度为第一列的两倍", "一列宽度 1fr、一行 2fr", "高度相等的两行"],
+  "answer": "B",
+  "analysis": "grid-template-columns 定义列的轨道，两个值表示两列；fr 是弹性单位，用于按比例分配网格容器的剩余空间，1fr:2fr 即第二列宽度是第一列的两倍。",
+  "difficulty": 2,
+  "tag": "Grid"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "关于 grid-template-areas 的用法，下列说法正确的是？",
+  "options": ["只能用于定义列，不能定义行", "使用该方法后就不能再使用 grid-template-columns", "用字符串声明命名区域，网格项通过 grid-area 属性引用区域名完成放置", "区域名必须用引号包裹，且同一区域名只能出现一次"],
+  "answer": "C",
+  "analysis": "grid-template-areas 中每个字符串代表一行，字符串中的名称代表命名区域，可以用点号表示空单元格；网格项通过 grid-area: 区域名 放置。同一区域名可以连续出现多次以跨多格，且可与其他模板属性配合使用。",
+  "difficulty": 4,
+  "tag": "Grid"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "使用 Flex 布局将子元素水平垂直居中，正确的做法是？",
+  "options": ["给子元素设置 margin: auto 且容器不设置 display: flex", "容器设置 text-align: center 和 vertical-align: middle", "给子元素设置 float: center", "容器设置 display: flex，并同时设置 justify-content: center 与 align-items: center"],
+  "answer": "D",
+  "analysis": "flex 容器用 justify-content 控制主轴居中、align-items 控制交叉轴居中，二者结合即可实现水平垂直居中；text-align 只对行内内容水平居中，不存在 float: center 这种取值。",
+  "difficulty": 1,
+  "tag": "居中"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "下列哪种情况会产生新的层叠上下文？",
+  "options": ["元素的 opacity 小于 1", "元素设置了 border", "元素的背景色发生变化", "元素设置 display: block"],
+  "answer": "A",
+  "analysis": "opacity 小于 1、transform 不为 none、filter 等都会创建新的层叠上下文；设置 border、改变背景色以及 display: block 都不会创建层叠上下文。",
+  "difficulty": 3,
+  "tag": "层叠上下文"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "下列定义并引用 CSS 变量的写法中，正确的是？",
+  "options": ["使用 $main-color 定义变量", "在 :root 中定义 --main-color: red，使用时写成 color: var(--main-color)", "变量名必须以 # 号开头", "变量定义后只能在自身元素使用，不能被后代继承"],
+  "answer": "B",
+  "analysis": "CSS 自定义属性以双横线开头，如 --main-color，通过 var() 函数引用；在 :root 中定义即为全局变量，且自定义属性遵循继承规则。$ 是 Sass 的变量语法，不是原生 CSS。",
+  "difficulty": 2,
+  "tag": "CSS变量"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "rem 单位的计算基准是？",
+  "options": ["父元素的 font-size", "当前元素自身的 font-size", "根元素 html 的 font-size", "视口的宽度"],
+  "answer": "C",
+  "analysis": "rem 全称是 root em，相对根元素 html 的 font-size 计算，与父元素无关；em 相对父元素（font-size 场景）或自身字号（其他属性）。",
+  "difficulty": 1,
+  "tag": "单位"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "vh 和 vw 单位分别相对什么进行换算？",
+  "options": ["父元素的高度与宽度", "根元素字号的倍数", "屏幕的物理分辨率", "视口的高度与宽度，1vh 为视口高度的 1%"],
+  "answer": "D",
+  "analysis": "vh/vw 相对视口尺寸计算，1vh 等于视口高度的 1%，1vw 等于视口宽度的 1%，与父元素和字号无关；它们常与媒体查询和 rem 一起用于响应式布局。",
+  "difficulty": 1,
+  "tag": "单位"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "single",
+  "question": "媒体查询 @media (max-width: 600px) 的匹配条件是？",
+  "options": ["视口宽度小于等于 600px 时生效", "视口宽度大于 600px 时生效", "视口宽度恰好等于 600px 时才生效", "与视口宽度无关，只匹配特定手机型号"],
+  "answer": "A",
+  "analysis": "max-width 表示上限，视口宽度不超过 600px 时满足条件；min-width 则表示下限。媒体查询按视口（含设备宽度）判断，与具体机型无关。",
+  "difficulty": 1,
+  "tag": "响应式"
+}
+]

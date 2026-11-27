@@ -1,0 +1,332 @@
+[
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "以下关于 HTTP/2 特性的描述，正确的有",
+    "options": [
+      "在同一 TCP 连接上可以并行发送多个请求与响应，无需排队等待",
+      "使用二进制分帧层对报文进行分帧传输",
+      "采用 HPACK 对头部进行压缩，减少传输体积",
+      "一个 TCP 连接同一时刻只能处理一个请求，必须串行"
+    ],
+    "answer": "ABC",
+    "analysis": "HTTP/2 引入二进制分帧，在单一 TCP 连接上通过多个流实现多路复用，可并发收发多个请求和响应，解决了 HTTP/1.1 的队头阻塞问题，同时用 HPACK 压缩头部减少冗余。D 所述串行行为是 HTTP/1.1 的特征，故不选。",
+    "difficulty": 3,
+    "tag": "HTTP/2"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "关于 HTTPS 的说法，正确的有",
+    "options": [
+      "HTTPS 默认使用 443 端口",
+      "通信内容基于 TLS/SSL 加密传输，可防止明文被窃听",
+      "采用非对称加密协商会话密钥、对称加密传输业务数据",
+      "只要启用 HTTPS 就能防止所有中间人攻击，无需校验证书"
+    ],
+    "answer": "ABD",
+    "analysis": "HTTPS 在 HTTP 与 TCP 之间加入 TLS/SSL 加密层，默认使用 443 端口，并采用非对称加密协商密钥、对称加密传输数据的混合加密方式。证书校验是抵御中间人攻击的前提，D 的绝对化表述错误。",
+    "difficulty": 2,
+    "tag": "HTTPS"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "关于 HTTP 方法幂等性的说法，正确的有",
+    "options": [
+      "GET 是安全且幂等的方法",
+      "PUT 是幂等方法，DELETE 按规范也属于幂等方法",
+      "POST 重复提交产生的资源状态与单次提交完全一致，是幂等方法",
+      "幂等方法意味着请求一定会成功"
+    ],
+    "answer": "AB",
+    "analysis": "幂等指同一请求重复执行与执行一次结果一致；GET 既安全又幂等，PUT 整体替换、DELETE 删除按 RFC 7231 均属于幂等方法。POST 用于创建资源，重复提交会产生重复资源，是非幂等的；D 混淆了幂等与请求成功。",
+    "difficulty": 3,
+    "tag": "幂等性"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "关于 HTTP 请求方法语义的说法，正确的有",
+    "options": [
+      "PATCH 用于对资源进行整体替换",
+      "PUT 用于整体替换资源，PATCH 用于部分更新",
+      "OPTIONS 只能用于 CORS 预检，没有其他用途",
+      "HEAD 与 GET 返回相同语义的头部信息，但不返回响应体"
+    ],
+    "answer": "BD",
+    "analysis": "PUT 对资源做整体替换，PATCH 只更新部分字段；OPTIONS 常用于 CORS 预检，也可探测服务器支持的请求方法（Allow 头）；HEAD 与 GET 语义一致但无响应体。A 混淆了 PATCH 与 PUT 的用途，C 缩小了 OPTIONS 的能力范围。",
+    "difficulty": 4,
+    "tag": "方法语义"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "以下状态码与其含义对应正确的有",
+    "options": [
+      "200 —— 请求成功",
+      "404 —— 请求的资源不存在",
+      "500 —— 服务器内部错误",
+      "302 —— 资源已永久迁移"
+    ],
+    "answer": "ABC",
+    "analysis": "2xx 表示请求成功（200 OK），4xx 表示客户端错误（404 资源不存在），5xx 表示服务器端错误（500 内部错误）。301 才是永久重定向，302 是临时重定向，故 D 错误。",
+    "difficulty": 1,
+    "tag": "状态码"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "以下关于 3xx 状态码的说法，正确的有",
+    "options": [
+      "301 是临时重定向",
+      "301 是永久重定向，客户端应改用新地址",
+      "302 是临时重定向",
+      "304 表示请求的资源内容已更新"
+    ],
+    "answer": "BC",
+    "analysis": "301 Moved Permanently 为永久重定向，302 Found 为临时重定向。304 Not Modified 表示资源未修改、可继续使用本地缓存，属于协商缓存命中，而非内容已更新。",
+    "difficulty": 2,
+    "tag": "状态码"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "以下关于 4xx/5xx 状态码的说法，正确的有",
+    "options": [
+      "401 表示未认证，403 表示已认证但无权限",
+      "429 表示请求数量过多被限流",
+      "502 表示服务暂时不可用",
+      "500 表示服务器内部错误"
+    ],
+    "answer": "ABD",
+    "analysis": "401 表示未携带或凭证无效，403 表示已认证但无访问权限，429 表示请求过多触发限流；500 表示服务器内部错误。502 Bad Gateway 是网关收到上游无效响应，服务暂时不可应是 503，故 C 错误。",
+    "difficulty": 2,
+    "tag": "状态码"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "关于强缓存的响应头与命中过程，说法正确的有",
+    "options": [
+      "Cache-Control: max-age=60 表示 60 秒内直接使用本地缓存的副本",
+      "Expires 取值为绝对时间，依赖客户端本地时钟，时间不准时可能失效",
+      "Cache-Control 与 Expires 同时存在时，以 Expires 为准",
+      "强缓存命中时不向服务器发起网络请求"
+    ],
+    "answer": "ABD",
+    "analysis": "Cache-Control: max-age 是 HTTP/1.1 的强缓存主控字段，命中后资源直接取自本地缓存，不再发起网络请求；Expires 是 HTTP/1.0 的绝对时间字段，依赖客户端时钟。两者并存时 Cache-Control 优先生效，故 C 错误。",
+    "difficulty": 3,
+    "tag": "强缓存"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "关于协商缓存的机制，说法正确的有",
+    "options": [
+      "ETag 是响应头，对应的条件请求头是 If-None-Match",
+      "Last-Modified 是响应头，对应的条件请求头是 If-Modified-Since",
+      "协商缓存命中时服务器返回 304，浏览器继续使用本地缓存",
+      "协商缓存无需向服务器发送请求即可判断资源是否变化"
+    ],
+    "answer": "ABC",
+    "analysis": "协商缓存必须携带条件请求头向服务器验证资源版本：ETag 对应 If-None-Match，Last-Modified 对应 If-Modified-Since；资源未变化时返回 304 且无响应体，浏览器沿用本地缓存。D 混淆了协商缓存与强缓存。",
+    "difficulty": 3,
+    "tag": "协商缓存"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "以下关于 Content-Type 的说法，正确的有",
+    "options": [
+      "application/json 表示数据以 JSON 格式传输",
+      "text/plain 类型的请求体会被服务器自动解析为 JSON",
+      "multipart/form-data 适合包含文件上传的表单提交",
+      "application/x-www-form-urlencoded 会把键值对进行 URL 编码后拼接"
+    ],
+    "answer": "ACD",
+    "analysis": "application/json 对应 JSON 数据传输；multipart/form-data 通过分块边界编码，适合含文件的表单；application/x-www-form-urlencoded 对键值对做 URL 编码，是普通表单的默认格式。text/plain 只是纯文本，不会被自动解析为 JSON。",
+    "difficulty": 2,
+    "tag": "媒体类型"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "关于 HTTP 请求头与响应头的作用，说法正确的有",
+    "options": [
+      "Accept 请求头声明客户端期望接收的响应媒体类型",
+      "Set-Cookie 是请求头，用于向服务器提交 Cookie",
+      "Authorization 是响应头，用于向客户端下发认证凭证",
+      "Content-Type 在请求头中声明请求体类型，在响应头中声明响应体类型"
+    ],
+    "answer": "AD",
+    "analysis": "Accept 声明客户端期望的响应类型；Content-Type 在请求头中描述请求体、在响应头中描述响应体的媒体类型。Set-Cookie 是服务器下发 Cookie 的响应头（请求头是 Cookie），Authorization 是客户端携带凭证的请求头。",
+    "difficulty": 3,
+    "tag": "请求头"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "服务端为支持跨域请求，需要正确配置 CORS 相关响应头，以下说法正确的有",
+    "options": [
+      "通过 Access-Control-Allow-Origin 指定允许跨域访问的来源",
+      "需携带 Cookie 时应设置 Access-Control-Allow-Credentials: true，且 Allow-Origin 不能为 *",
+      "只要设置 Access-Control-Allow-Origin: *，浏览器就允许跨域请求携带认证凭证",
+      "Access-Control-Allow-Methods 用于声明服务器允许的跨域请求方法"
+    ],
+    "answer": "ABD",
+    "analysis": "Access-Control-Allow-Origin 声明允许的来源，Access-Control-Allow-Methods 声明允许的方法；携带凭证（credentials 模式）时须设置 Access-Control-Allow-Credentials: true，且 Allow-Origin 必须为具体源而不能是 *。C 忽略了凭证模式对 * 的限制。",
+    "difficulty": 4,
+    "tag": "CORS"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "关于 CORS 预检（Preflight）请求，说法正确的有",
+    "options": [
+      "使用 PUT、DELETE 等非简单方法时，浏览器通常会先发送 OPTIONS 预检请求",
+      "携带自定义请求头（如 X-Token）不会触发预检",
+      "请求 Content-Type 为 application/json 时会触发预检",
+      "所有跨域请求都会触发预检"
+    ],
+    "answer": "AC",
+    "analysis": "简单请求（GET/POST 且 Content-Type 为表单类、无自定义头）不触发预检；使用非简单方法、携带自定义头或 Content-Type 为 application/json 时，浏览器会先发送 OPTIONS 预检确认服务器允许。B、D 的描述与触发条件相悖。",
+    "difficulty": 4,
+    "tag": "CORS"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "关于 JSONP 实现跨域的机制，说法正确的有",
+    "options": [
+      "JSONP 依赖 XMLHttpRequest 对象发送请求",
+      "通过动态插入 script 标签加载跨域脚本来获取数据",
+      "JSONP 只支持 GET 请求，不支持 POST",
+      "需要服务端将数据包装成回调函数调用的形式返回"
+    ],
+    "answer": "BCD",
+    "analysis": "JSONP 利用 script 标签不受同源策略限制的特性，动态创建 script 加载跨域脚本，服务端把数据包装进回调函数返回；因此只能发 GET 请求，且必须服务端配合。JSONP 不经过 XHR，故 A 错误。",
+    "difficulty": 3,
+    "tag": "JSONP"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "关于使用代理方案解决跨域的说法，正确的有",
+    "options": [
+      "开发环境中使用 devServer.proxy 将 /api 请求转发到目标服务器，浏览器只与同源代理通信",
+      "该方案下服务端必须额外配置 CORS 响应头才能生效",
+      "真实请求由代理服务器转发，浏览器侧不再直接跨域访问目标服务",
+      "使用代理后浏览器请求的 URL 与页面同源，因此不会触发 CORS 预检"
+    ],
+    "answer": "ACD",
+    "analysis": "代理方案（如 devServer.proxy、Nginx 反向代理）让浏览器只与同源代理通信，真实请求由代理转发，规避了浏览器的同源限制，因此无需服务端配置 CORS，也不会有跨域预检。B 混淆了代理与 CORS 的关系。",
+    "difficulty": 3,
+    "tag": "跨域代理"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "以下符合 RESTful 接口设计约定的有",
+    "options": [
+      "以资源为中心，URL 使用名词而非动词",
+      "查询用户信息应使用 POST /getUser",
+      "资源层级可用嵌套路径表达，如 GET /users/1/orders",
+      "POST 请求必须用于查询类操作"
+    ],
+    "answer": "AC",
+    "analysis": "RESTful 以资源为中心，URL 使用名词且不出现动词，层级关系用路径嵌套表达（如 /users/1/orders）；查询应用 GET、创建用 POST。B 的 /getUser 混入动词且用 POST 做查询，D 固定 POST 用途，均不符合约定。",
+    "difficulty": 2,
+    "tag": "RESTful"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "关于 RESTful 接口的异常处理约定，说法正确的有",
+    "options": [
+      "所有响应都返回 200，仅在响应体中用业务码区分成功与失败",
+      "5xx 状态码表示客户端请求参数有误",
+      "参数校验失败返回 400 或 422，未认证返回 401，无权限返回 403",
+      "为前端设计统一的错误响应结构（如 { code, message }）便于统一处理"
+    ],
+    "answer": "CD",
+    "analysis": "RESTful 异常处理应使用有语义的 HTTP 状态码：参数错误 400/422、未认证 401、无权限 403，并配合统一的错误响应结构。一律返回 200 用业务码判断会弱化 HTTP 状态码语义；5xx 表示服务器端错误而非客户端参数错误。",
+    "difficulty": 5,
+    "tag": "异常处理"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "以下关于 axios 的说法，正确的有",
+    "options": [
+      "axios 在浏览器端基于 fetch API 实现",
+      "通过请求/响应拦截器可以在发送前或响应处理前统一处理逻辑",
+      "支持配置 timeout 超时时间，并支持取消请求",
+      "常在响应拦截器中统一处理错误码与 token 过期跳转"
+    ],
+    "answer": "BCD",
+    "analysis": "axios 在浏览器端基于 XMLHttpRequest 封装（Node 端基于 http 模块），自带请求与响应拦截器，可统一注入 token、处理错误码；支持 timeout 与请求取消。A 误以为 axios 基于 fetch 实现。",
+    "difficulty": 3,
+    "tag": "axios"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "以下关于 Fetch API 的说法，正确的有",
+    "options": [
+      "fetch 遇到 HTTP 4xx/5xx 状态码时不会自动 reject，需手动检查 response.ok",
+      "默认 credentials 为 same-origin，跨域请求默认不携带 Cookie",
+      "fetch 自带完善的拦截器机制，可直接配置全局拦截器",
+      "response.json() 返回普通对象，无需 await 即可使用"
+    ],
+    "answer": "AB",
+    "analysis": "fetch 只在网络故障或请求被中止时 reject，HTTP 错误状态需自行判断 response.ok 处理；默认 credentials 为 same-origin，跨域默认不携带 Cookie。fetch 没有内置拦截器，response.json() 返回 Promise 必须 await。",
+    "difficulty": 3,
+    "tag": "fetch"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "关于 JWT（JSON Web Token）的说法，正确的有",
+    "options": [
+      "JWT 由 Header、Payload、Signature 三部分用点号连接而成",
+      "Header 与 Payload 使用 Base64Url 编码，可被解码查看，不应存放敏感信息",
+      "Signature 用于服务端校验令牌是否被篡改",
+      "JWT 由浏览器端生成，服务端负责验签"
+    ],
+    "answer": "ABC",
+    "analysis": "JWT 由 Header、Payload、Signature 三段以点号连接；Header 与 Payload 仅做 Base64Url 编码、内容可解，故不能放敏感信息，签名用于服务端验签防篡改。令牌由服务端签发、客户端保存，D 颠倒了签发与校验方。",
+    "difficulty": 3,
+    "tag": "JWT"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "关于 Cookie 与 Token 鉴权方式，说法正确的有",
+    "options": [
+      "设置了 HttpOnly 属性的 Cookie 可以被 JavaScript 直接读取",
+      "采用 JWT 时服务端必须存储会话才能完成校验",
+      "把 JWT 存放在 localStorage 中时，需要防范 XSS 窃取令牌",
+      "Token 通常通过 Authorization: Bearer <token> 请求头携带"
+    ],
+    "answer": "CD",
+    "analysis": "HttpOnly 禁止脚本读取 Cookie，可降低 XSS 窃取风险；JWT 无状态，服务端无需存储会话，令牌常经 Authorization: Bearer 头携带。存于 localStorage 的 Token 可被脚本读取，因此需防范 XSS。",
+    "difficulty": 4,
+    "tag": "鉴权"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "multiple",
+    "question": "关于 WebSocket 的说法，正确的有",
+    "options": [
+      "WebSocket 基于 UDP 协议进行数据传输",
+      "WebSocket 是全双工通信，客户端与服务端建立连接后可同时互发消息",
+      "WebSocket 与 HTTP 完全无关，不经过 HTTP 握手即可建立连接",
+      "建立连接时，客户端通过 HTTP 的 Upgrade 请求头发起握手"
+    ],
+    "answer": "BD",
+    "analysis": "WebSocket 基于 TCP，通过 HTTP 的 Upgrade 机制完成握手（可复用 80/443 端口），建立后即为全双工长连接，双方可同时收发消息。A 误认为基于 UDP，C 否认了与 HTTP 握手的关联。",
+    "difficulty": 3,
+    "tag": "长连接"
+  }
+]

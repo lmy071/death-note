@@ -1,0 +1,332 @@
+[
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于 pnpm 包管理器的说法，正确的有（　）",
+    "options": [
+      "pnpm 通过内容寻址存储将依赖保存到全局仓库中，多个项目共享同一份文件，可显著节省磁盘空间",
+      "pnpm 安装时会把所有依赖（含传递依赖）扁平化平铺到项目根目录的 node_modules 下",
+      "pnpm 通过硬链接或符号链接把全局存储中的包关联到项目的 node_modules，避免为每个项目重复复制",
+      "pnpm 严格管理依赖层级，未在 package.json 中声明的传递依赖不能被项目代码直接 import，可避免幽灵依赖"
+    ],
+    "answer": "ACD",
+    "analysis": "pnpm 采用内容寻址存储加链接机制实现依赖共享，节省磁盘且安装快速。选项 B 是 npm 旧版扁平化平铺（hoisting）的行为，pnpm 恰恰相反采用非扁平结构。选项 D 正是 pnpm 避免幽灵依赖的设计。综合判断，A、C、D 正确，B 错误。",
+    "difficulty": 4,
+    "tag": "pnpm"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于依赖锁文件（如 package-lock.json、pnpm-lock.yaml），下列说法正确的有（　）",
+    "options": [
+      "锁文件记录了依赖树中每个包的确切版本与解析结果，保证不同环境安装出的依赖版本一致",
+      "存在锁文件时，安装命令会优先按锁文件中的版本进行安装，从而支持可复现构建",
+      "删除锁文件对依赖版本没有任何影响，因为 package.json 中的声明已足够完整",
+      "修改 package.json 中的版本范围后，锁文件会自动同步更新，无需重新执行安装命令"
+    ],
+    "answer": "AB",
+    "analysis": "锁文件锁定依赖树的确切版本，是 CI 环境实现可复现安装的关键。选项 C 错误，因为 package.json 只声明版本范围，实际解析结果由锁文件决定；选项 D 错误，修改版本范围后必须重新执行 install 才会更新锁文件。",
+    "difficulty": 1,
+    "tag": "锁文件"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于 ES Module 与 CommonJS 两种模块规范的差异，下列说法正确的有（　）",
+    "options": [
+      "ES Module 的 import/export 是静态语法，依赖关系在编译阶段即可确定，是 tree shaking 的前提条件",
+      "CommonJS 的 require 是同步加载，浏览器原生不支持，需要打包工具转换后才能在前端使用",
+      "import 语句与 require 一样，可以写在条件分支内部按需导入模块",
+      "ES Module 中 import 声明必须位于模块顶层作用域，不能嵌套在代码块中"
+    ],
+    "answer": "ABD",
+    "analysis": "ES Module 静态化是 tree shaking 的基础，CommonJS 的 require 同步且动态，浏览器不原生支持。选项 C 错误，静态 import 必须位于模块顶层，条件内按需加载应使用动态 import()。选项 D 正确描述了 import 的语法约束。",
+    "difficulty": 3,
+    "tag": "ESM规范"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于动态 import() 语法，下列说法正确的有（　）",
+    "options": [
+      "import() 返回一个 Promise 对象，可以配合 async/await 在运行时按需加载模块",
+      "动态 import() 是打包工具进行代码分割、实现组件或路由按需加载的常用方式",
+      "import() 必须写在文件顶部，否则浏览器会直接抛出语法错误",
+      "在 Node.js 的 CommonJS 模块中无法使用动态 import() 语法"
+    ],
+    "answer": "AB",
+    "analysis": "动态 import() 返回 Promise，可在代码任何位置调用，是 Webpack、Vite 识别代码分割点的标准方式。选项 C 混淆了静态 import 与动态 import()，后者是表达式无需在顶部。选项 D 错误，Node.js 的 CommonJS 模块同样支持动态 import()。",
+    "difficulty": 2,
+    "tag": "动态导入"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于 Webpack 中 Loader 的作用，下列说法正确的有（　）",
+    "options": [
+      "Loader 用于对模块的源代码进行转换，例如把 TypeScript 编译为 JavaScript、把 Sass 编译为 CSS",
+      "Loader 在 module.rules 中配置，多个 Loader 按从右到左的顺序链式执行，后匹配的先处理",
+      "Loader 可以监听打包的完整生命周期钩子，在产物输出前执行资源级操作",
+      "file-loader 等 Loader 的主要作用是对打包产物中的 JavaScript 进行压缩混淆"
+    ],
+    "answer": "AB",
+    "analysis": "Loader 是模块级源码转换器，链式执行顺序为从右到左。选项 C 描述的是 Plugin 的职责，Loader 无法访问构建生命周期钩子。选项 D 错误，压缩混淆由 TerserPlugin 等完成，file-loader 用于处理图片字体等静态资源。",
+    "difficulty": 3,
+    "tag": "Loader"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于 Webpack 的 Plugin 机制，下列说法正确的有（　）",
+    "options": [
+      "Plugin 通过监听打包过程的钩子（hooks）在特定时机执行自定义逻辑，如 HtmlWebpackPlugin 自动生成并注入 HTML 页面",
+      "Plugin 只能用于压缩 JavaScript 代码，无法处理其他构建任务",
+      "MiniCssExtractPlugin 可以将 CSS 从打包产物中抽离成独立的样式文件",
+      "Loader 能完成的转换任务 Plugin 都能完成，两者可以互相替代"
+    ],
+    "answer": "AC",
+    "analysis": "Plugin 基于 Tapable 钩子体系贯穿整个构建生命周期，HtmlWebpackPlugin、MiniCssExtractPlugin、DefinePlugin 等都是典型应用。选项 B、D 错误，Plugin 与 Loader 分工不同：Loader 负责模块内容转换，Plugin 负责构建流程与产物层面的处理，不可互相替代。",
+    "difficulty": 3,
+    "tag": "Plugin"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于 Webpack 的代码分割（Code Splitting），下列说法正确的有（　）",
+    "options": [
+      "通过动态 import() 可以把路由或组件代码拆分为独立 chunk，在用户访问时才加载",
+      "optimization.splitChunks 可以提取多入口共享的公共依赖与体积较大的第三方库，避免重复打包",
+      "启用代码分割后，浏览器首屏必须等待所有 chunk 全部下载完成才能完成渲染",
+      "代码分割会增加构建产物的总体积，因此会降低所有场景下的性能"
+    ],
+    "answer": "AB",
+    "analysis": "代码分割的目的正是按需加载、降低首屏体积，splitChunks 自动提取共享模块并合理分包。选项 C、D 错误：未被引用的 chunk 不会加载，且总体积不变或更小，性能目标是提升而非降低。",
+    "difficulty": 3,
+    "tag": "代码分割"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于 Webpack 输出文件指纹与浏览器缓存，下列说法正确的有（　）",
+    "options": [
+      "使用 contenthash 时，只有该文件内容发生变化，其文件名哈希才会改变，适合静态资源的长期缓存",
+      "使用 hash 时哈希是本次构建全局唯一的，任意一个文件变化都会导致所有输出文件改名",
+      "chunkhash 与 contenthash 的粒度完全相同，在工程中可以直接互换使用",
+      "使用 contenthash 时，只要任意一个文件的内容发生变化，所有输出文件的文件名都会一起改变"
+    ],
+    "answer": "AB",
+    "analysis": "三种指纹粒度不同：hash 作用于整个构建、chunkhash 按 chunk、contenthash 按具体文件内容，contenthash 与长期缓存组合最优。选项 C 混淆了 chunkhash 与 contenthash 的粒度差异；选项 D 描述的是 hash 而非 contenthash 的行为。",
+    "difficulty": 5,
+    "tag": "缓存指纹"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于 Webpack 的 mode 配置（development/production），下列说法正确的有（　）",
+    "options": [
+      "production 模式默认启用代码压缩与 tree shaking 等一系列优化，产物面向线上发布",
+      "development 模式默认不压缩产物、构建速度更快，并保留更友好的错误提示，便于开发调试",
+      "production 模式默认会自动删除代码中所有的 console.log 语句",
+      "production 模式默认使用 eval 类型的 source map，以换取最快的构建速度"
+    ],
+    "answer": "AB",
+    "analysis": "mode 决定了一组预设行为：production 默认压缩与优化，development 默认 devtool 为 eval 且不压缩。选项 C 错误，删除 console 需显式配置 TerserPlugin 的 drop_console；选项 D 错误，production 默认不生成 source map，eval 是 development 的默认 devtool。",
+    "difficulty": 2,
+    "tag": "mode配置"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于模块热替换（HMR），下列说法正确的有（　）",
+    "options": [
+      "HMR 可以在不刷新整个页面的前提下只替换发生变化的模块，尽量保留应用当前的运行状态",
+      "HMR 由开发服务器的 devServer 提供，通过 WebSocket 与浏览器通信并推送模块更新",
+      "生产构建默认开启 HMR，用来加快线上用户的首屏加载速度",
+      "使用 style-loader 处理样式时，修改 CSS 必须整页刷新才能看到效果"
+    ],
+    "answer": "AB",
+    "analysis": "HMR 是开发期的能力：模块级热替换配合状态保留，通过 WebSocket 推送更新，样式模块由 style-loader 支持免刷新生效。选项 C 错误，HMR 仅用于开发环境，生产构建默认关闭；选项 D 错误，样式正是 HMR 最典型的免刷新场景。",
+    "difficulty": 3,
+    "tag": "HMR"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于 CSS 预处理器（如 Sass/SCSS、Less），下列说法正确的有（　）",
+    "options": [
+      "预处理器支持变量、嵌套规则、混合（mixin）、函数等编程特性，最终需编译为标准 CSS 供浏览器解析",
+      "预处理器编译后的 CSS 中，嵌套与变量会被原样保留，由浏览器运行时处理",
+      "在 Webpack 中通过 sass-loader → css-loader → style-loader 的链式处理，样式既能编译也能在开发中支持热更新",
+      "使用 CSS 预处理器可以完全替代 PostCSS 等工具，浏览器兼容性问题都能自行解决"
+    ],
+    "answer": "AC",
+    "analysis": "预处理器的变量、嵌套、mixin 都在编译期展开为标准 CSS，浏览器不识别预处理器语法。选项 B 错误，编译产物中不再保留嵌套与变量。选项 D 错误，浏览器前缀等兼容问题仍需借助 autoprefixer 等 PostCSS 工具处理。",
+    "difficulty": 3,
+    "tag": "预处理器"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于 Babel 在前端工程化中的作用，下列说法正确的有（　）",
+    "options": [
+      "Babel 可以将箭头函数、可选链等 ES6+ 新语法转换为旧浏览器可识别的 ES5 语法",
+      "@babel/preset-env 会根据 targets 指定的目标环境，按需决定要转换哪些语法特性",
+      "Babel 只负责语法转换，对于 Promise、Array.prototype.includes 等新 API，需要 core-js 等 polyfill 在运行时补充",
+      "Babel 无需任何配置即可处理所有新特性，并能直接修补浏览器原生对象使其立即生效"
+    ],
+    "answer": "ABC",
+    "analysis": "Babel 是语法转译器，配合 preset-env 按目标环境做按需转换；新 API 属于运行时能力，由 core-js polyfill 注入实现。选项 D 错误，Babel 需要配置且不能凭空给旧浏览器补全运行时能力，语法与 API 两件事必须分开看待。",
+    "difficulty": 4,
+    "tag": "Babel"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于 tree shaking（摇树优化），下列说法正确的有（　）",
+    "options": [
+      "tree shaking 依赖 ES Module 的静态结构，可以分析出未被使用的导出并在打包产物中剔除",
+      "使用 CommonJS 规范编写的模块也能被可靠地执行 tree shaking 优化",
+      "Webpack 在生产构建中默认启用 tree shaking，通常还需在 package.json 中声明 sideEffects 来配合剔除未使用模块",
+      "在 package.json 中声明 sideEffects: false，可以安全地剔除未被引用且无副作用的模块"
+    ],
+    "answer": "ACD",
+    "analysis": "tree shaking 依赖 ESM 的静态 import/export 才能确定依赖关系，CommonJS 的动态 require 无法可靠静态分析，故选项 B 错误。sideEffects 声明告诉打包器模块整体无副作用，从而允许移除未被引用的模块，选项 C、D 正确描述了这一机制。",
+    "difficulty": 4,
+    "tag": "摇树优化"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于 Vite 的基本原理与构建流程，下列说法正确的有（　）",
+    "options": [
+      "Vite 开发环境基于原生 ES Module，浏览器直接请求按需编译的模块，无需像 Webpack 那样启动时预打包整个应用",
+      "Vite 使用 esbuild 对依赖进行预构建，将 CommonJS/UMD 形式的依赖转换为 ESM 并合并为少量请求",
+      "Vite 的生产构建默认使用 Rollup 进行打包，输出经过压缩与优化的静态资源",
+      "Vite 开发服务器启动时会先对项目全部源码执行一次完整打包，因此冷启动速度较慢"
+    ],
+    "answer": "ABC",
+    "analysis": "Vite 的开发模式按需编译加原生 ESM 免去整包构建，esbuild 负责依赖预构建，生产构建交给 Rollup，这是其三段式流程。选项 D 描述的恰是传统 Webpack 的启动行为，与 Vite 的设计相反。",
+    "difficulty": 3,
+    "tag": "Vite"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于 TypeScript 在前端工程中的应用，下列说法正确的有（　）",
+    "options": [
+      "TypeScript 是 JavaScript 的超集，类型检查发生在编译阶段，类型标注编译后会被擦除，不影响运行时性能",
+      "使用 ts-loader 或带 @babel/preset-typescript 的 babel-loader，可以在 Webpack 构建流程中直接编译 TypeScript",
+      "TypeScript 的类型错误只有在浏览器运行时才会暴露，编译阶段不会给出任何提示",
+      "任何第三方 JavaScript 库都必须用 TypeScript 重写，才能被 TypeScript 项目引用"
+    ],
+    "answer": "AB",
+    "analysis": "TS 在编译期完成类型检查与类型擦除，运行时无类型开销，且能通过 ts-loader/babel-loader 融入现有打包链路。选项 C 错误，类型错误会在编译时被捕获；选项 D 错误，JS 库通过 .d.ts 声明文件即可提供类型支持。",
+    "difficulty": 3,
+    "tag": "TS基础"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于前端路由（SPA）的实现原理，下列说法正确的有（　）",
+    "options": [
+      "Hash 模式路由通过监听 hashchange 事件感知 URL 变化，hash 变化不会向服务器发起新的请求",
+      "History 模式路由基于 History API（pushState/popstate）实现，URL 简洁美观，但部署时需要服务器将所有路径重定向到入口页面",
+      "前端路由只能使用 Hash 模式实现，History 模式不被主流框架支持",
+      "History 模式下调用 pushState 改变地址栏 URL 时会立即重新加载页面"
+    ],
+    "answer": "AB",
+    "analysis": "Hash 路由利用锚点变化不触发请求的特性，History 路由则借助 History API 改写 URL，二者都是 SPA 前端控制路由的常见方案。选项 C 错误，两种模式均被 Vue Router、React Router 等主流框架支持；选项 D 错误，pushState 只变更地址栏，不会刷新页面。",
+    "difficulty": 3,
+    "tag": "前端路由"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于前端懒加载，下列说法正确的有（　）",
+    "options": [
+      "图片懒加载通常借助 IntersectionObserver 或滚动监听判断元素进入视口后再加载，减少首屏带宽与请求数",
+      "路由级或组件级懒加载配合动态 import() 拆分代码，用户访问对应路由时才加载相应模块",
+      "懒加载只对图片资源生效，JavaScript 代码与组件无法实现按需加载",
+      "懒加载会显著增加首屏传输的总字节数，反而加重首屏渲染压力"
+    ],
+    "answer": "AB",
+    "analysis": "懒加载的核心思想是把非首屏必需资源推迟到需要时加载，图片、路由、组件与 JS chunk 均可应用，既减小主包体积也加快首屏。选项 C、D 均与懒加载的机制和目的相悖。",
+    "difficulty": 2,
+    "tag": "懒加载"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于使用 CDN 加速静态资源，下列说法正确的有（　）",
+    "options": [
+      "CDN 将资源缓存到分布在各地区的边缘节点，用户从就近节点获取资源，可减少网络传输延迟",
+      "部署 CDN 可以分担源站服务器的带宽压力，提升资源的可用性与抗并发能力",
+      "CDN 静态资源通常配合文件名哈希与强缓存（Cache-Control）实现长期缓存，资源更新时通过新的 URL 使旧缓存失效",
+      "使用 CDN 后浏览器会放弃本地缓存，每次请求都必须回源获取最新资源"
+    ],
+    "answer": "ABC",
+    "analysis": "CDN 通过边缘节点就近分发、缓存与负载分担提升访问速度与可用性，配合指纹 URL 加强缓存是经典静态资源策略。选项 D 错误，浏览器本地缓存依然生效，CDN 是分发介质而非替代浏览器缓存。",
+    "difficulty": 2,
+    "tag": "CDN"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于防抖（debounce）与节流（throttle），下列说法正确的有（　）",
+    "options": [
+      "防抖指事件触发后等待一段时间再执行，若期间再次触发则重新计时，最终只执行最后一次",
+      "节流限制某个时间间隔内事件处理函数最多执行一次，适合滚动、拖拽等高频触发场景",
+      "搜索框输入联想常用防抖以减少请求次数，监听页面滚动位置常用节流控制计算频率",
+      "防抖与节流必须依赖 requestAnimationFrame 才能实现，setTimeout 无法达到同样效果"
+    ],
+    "answer": "ABC",
+    "analysis": "防抖合并连续触发、延迟执行最后一次，节流保证固定频率执行，两者的实现均可用 setTimeout 完成，并不强制依赖 rAF。选项 A、B、C 分别准确描述了机制、适用场景与典型用例，选项 D 错误。",
+    "difficulty": 3,
+    "tag": "防抖节流"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于 Web 性能指标（Core Web Vitals 等），下列说法正确的有（　）",
+    "options": [
+      "LCP（Largest Contentful Paint）衡量首屏最大内容元素从开始加载到渲染完成的时间，反映加载性能",
+      "FCP（First Contentful Paint）表示首次渲染出任何文本、图片等内容的时刻，反映页面可感知的加载进度",
+      "CLS（Cumulative Layout Shift）衡量页面加载与交互过程中元素发生意外位移的累计程度，反映视觉稳定性",
+      "Core Web Vitals 只包含 LCP 一个指标，FCP 与 CLS 均不属于该体系"
+    ],
+    "answer": "ABC",
+    "analysis": "FCP、LCP 关注加载，INP/FID 关注交互，CLS 关注视觉稳定，Core Web Vitals 由 LCP、INP（原 FID）、CLS 构成。选项 D 错误，LCP 只是 Core Web Vitals 之一，FCP 虽不在核心三项中但也是常用加载指标，职责描述不准确。",
+    "difficulty": 2,
+    "tag": "性能指标"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于前端自动化测试，下列说法正确的有（　）",
+    "options": [
+      "单元测试用于验证单个函数或组件的独立行为，常用工具包括 Jest、Vitest",
+      "端到端测试（E2E）通过真实浏览器模拟用户完整操作流程，常用工具包括 Playwright、Cypress",
+      "测试金字塔建议以大量低成本、高覆盖的单元测试为基础，端到端测试数量最少",
+      "单元测试只能运行在浏览器中，无法在 Node.js 环境下执行"
+    ],
+    "answer": "ABC",
+    "analysis": "测试按粒度分为单元、集成与端到端三层，测试金字塔倡导单元测试占比最大。Jest、Vitest 默认在 Node 环境配合 jsdom 等模拟 DOM 运行，因此选项 D 错误。选项 A、B、C 分别对应工具与分层策略的正确描述。",
+    "difficulty": 2,
+    "tag": "自动化测试"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "multiple",
+    "question": "关于前端项目的 CI/CD（持续集成/持续交付），下列说法正确的有（　）",
+    "options": [
+      "CI 指开发提交代码后由流水线自动执行依赖安装、代码检查与单元测试等集成验证，尽早发现集成问题",
+      "CD 可分为持续交付（自动完成构建与测试，上线前保留人工确认环节）与持续部署（检查全部通过后自动上线）",
+      "CI/CD 流水线构建完成后可将产物自动发布到对象存储或 CDN，配合指纹 URL 实现无间断发布与快速回滚",
+      "CI/CD 只适用于后端服务，前端项目无法接入持续集成与持续部署流水线"
+    ],
+    "answer": "ABC",
+    "analysis": "CI 负责自动化的集成验证，CD 负责交付与部署环节，二者共同缩短发布周期并提高可回滚性。前端项目同样可以接入 CI/CD，静态产物发布到 CDN 是标准做法。选项 D 的说法与前端工程化实践相悖。",
+    "difficulty": 3,
+    "tag": "CI/CD"
+  }
+]

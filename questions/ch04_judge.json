@@ -1,0 +1,222 @@
+[
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "一个 Promise 对象只能处于 pending、fulfilled、rejected 三种状态之一，且状态转换是单向的。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Promise 的生命周期从 pending 开始，最终只能单向转换为 fulfilled（成功）或 rejected（失败），且状态一旦改变就凝固（settled）不可再变。因此说三态互斥、转换单向是正确的。",
+    "difficulty": 1,
+    "tag": "Promise状态"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "Promise 对象在进入 fulfilled 状态后，仍然可以更改状态为 rejected。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "Promise 的状态转换只允许 pending 变为 fulfilled 或 rejected，一旦 settled 就永久固定，任何 then、catch 都无法再次改变它。故该说法错误。",
+    "difficulty": 2,
+    "tag": "Promise状态"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "使用 Promise.all 时，只要其中一个 promise 变为 rejected，Promise.all 就会立即拒绝，并中断其它 promise 的执行。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "Promise.all 在任一 promise 失败时会立即拒绝（快速失败），但并不会取消或中断其它 promise，它们仍会继续执行，只是结果被忽略。若需要每个 promise 的最终结果，应使用 Promise.allSettled。",
+    "difficulty": 3,
+    "tag": "Promise.all"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "Promise.resolve(value).then(回调) 中的回调一定会同步立即执行。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "then 注册的回调无论 promise 是否早已达成，都会以微任务的形式异步执行，不会同步执行。同步执行的是构造函数中的 executor 和 resolve 调用本身。",
+    "difficulty": 2,
+    "tag": "Promise回调"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "async 函数内部抛出且未被捕获的异常时，该函数返回的 Promise 会进入 rejected 状态。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "async 函数的返回值总是 Promise，函数体内抛出的异常会被自动捕获并使返回的 Promise 变为 rejected。调用方可通过 try/catch 包裹 await 或使用 catch 方法捕获该错误。",
+    "difficulty": 2,
+    "tag": "async函数"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "async 函数 return 一个普通值时，函数返回的 Promise 会以该值进入 fulfilled 状态。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "async 函数会把返回值自动包装为 fulfilled 状态的 Promise，行为与 Promise.resolve(value) 一致。调用方用 await 或 then 即可拿到该值。",
+    "difficulty": 1,
+    "tag": "async函数"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "在 async 函数中，await 之后的代码会在 Promise 完成后同步立即执行，不会进入微任务队列。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "await 会把后续代码挂起，待 Promise settled 后以微任务（类似 then 回调）的形式恢复执行，并非同步执行。其调度同样遵循事件循环规则。",
+    "difficulty": 2,
+    "tag": "await"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "setTimeout 注册的回调属于宏任务，Promise 的 then 回调属于微任务，执行下一个宏任务之前会先清空微任务队列。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "事件循环每执行完一个宏任务，会先处理完所有已入队的微任务，再取出下一个宏任务。因此 then 回调总是比同轮才加入的 setTimeout 回调先执行。",
+    "difficulty": 3,
+    "tag": "事件循环"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "每执行完一个宏任务，浏览器都会清空整个微任务队列，然后才继续执行下一个宏任务。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "这是事件循环的核心规则：宏任务之间会穿插微任务检查点，把当前微任务队列清空后才进入下一宏任务。因此一个宏任务产生的多个微任务会连续执行完。",
+    "difficulty": 3,
+    "tag": "事件循环"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "setTimeout(fn, 0) 注册的回调一定比一个已经 resolve 的 Promise 的 then 回调更早执行。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "已 resolve 的 Promise 的 then 回调属于微任务，会在当前宏任务结束后的微任务阶段执行；setTimeout 的回调属于下一轮宏任务，因此微任务一定先执行。所以该说法错误。",
+    "difficulty": 4,
+    "tag": "事件循环"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "requestAnimationFrame 注册的回调属于微任务。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "requestAnimationFrame 的回调由浏览器在渲染流程中、绘制新帧之前调用，既不属于宏任务也不属于微任务，不与 Promise.then 在同一队列中排队。因此该说法错误。",
+    "difficulty": 4,
+    "tag": "事件循环"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "箭头函数没有自己的 this，其 this 在定义时由外层作用域决定，且之后不会改变。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "箭头函数不绑定 this，this 取自定义时所处的词法作用域，且不随调用方式改变，call、apply 也无法改变它。这是箭头函数与普通函数的重要区别。",
+    "difficulty": 2,
+    "tag": "箭头函数"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "箭头函数拥有自己的 arguments 对象。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "箭头函数没有自己的 arguments，访问 arguments 会沿词法作用域向外层函数查找，容易出错。需要参数列表时应使用剩余参数（...args）替代。",
+    "difficulty": 2,
+    "tag": "箭头函数"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "箭头函数不能作为构造函数使用 new 关键字实例化。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "箭头函数没有 [[Construct]] 内部方法也没有 prototype 属性，用 new 调用会抛出 TypeError。因此箭头函数不能作为构造函数使用。",
+    "difficulty": 1,
+    "tag": "箭头函数"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "扩展运算符（...）只能用于展开数组，不能用于对象字面量。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "ES2018 起对象字面量支持扩展语法 {...obj}，可把对象自身的可枚举属性复制到新对象中，常用来合并多个对象或创建副本。因此该说法错误。",
+    "difficulty": 2,
+    "tag": "扩展运算符"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "new Set([1, 2, 2, 3]) 创建的 Set 大小（size）为 4。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "Set 会自动去重，数组 [1, 2, 2, 3] 存入后只剩 1、2、3 三个元素，size 为 3。重复的原始值在 Set 中只会保留一份。",
+    "difficulty": 1,
+    "tag": "Set"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "Map 的键只能是字符串或 Symbol 类型，不能使用对象作为键。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Map 的键可以是任意类型的值，包括对象、函数、NaN 等，这与普通对象（键会转为字符串）不同。该题给出的限制说法本身是错的，故判断为错误。",
+    "difficulty": 2,
+    "tag": "Map"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "可以通过 Map 的 size 属性获取其键值对的个数。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Map 提供 size 属性直接返回键值对数量，无需像对象那样用 Object.keys().length 计算；执行 set 或 delete 后 size 会同步更新。",
+    "difficulty": 1,
+    "tag": "Map"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "const { a, ...rest } = obj 会把 obj 中除了 a 之外的剩余可枚举属性收集到 rest 对象中。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "对象解构支持剩余收集语法，rest 必须放在解构模式的最后且是一个对象。该语法常用于剔除某个属性后保留其余属性。",
+    "difficulty": 3,
+    "tag": "解构赋值"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "在解构赋值中，当解构出的值是 null 时同样会应用默认值。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "默认值仅在解构出的值为 undefined 时才会启用。null 是一个明确的值，解构时直接得到 null 而不会触发默认值，因此该说法错误。",
+    "difficulty": 2,
+    "tag": "解构赋值"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "Symbol.for('a') 与 Symbol('a') 会返回同一个 Symbol 值。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "Symbol.for 会在全局注册表中按 key 查找或创建，同 key 多次调用返回同一个值；而 Symbol('a') 每次调用都创建全新的唯一 Symbol，即使描述相同也不是同一个值。",
+    "difficulty": 3,
+    "tag": "Symbol"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "judge",
+    "question": "Symbol() 每次调用都会返回一个唯一的值，可以作为对象的属性名以避免命名冲突。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Symbol 是原始类型且具有唯一性，两个 Symbol 永远不相等。用它作为对象属性名可避免属性名冲突，这些属性不会被普通遍历枚举，需用 Object.getOwnPropertySymbols 获取。",
+    "difficulty": 1,
+    "tag": "Symbol"
+  }
+]

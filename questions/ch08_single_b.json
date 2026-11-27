@@ -1,0 +1,497 @@
+[
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "在 Vue 3 中，`reactive` 对象属性的依赖关系（副作用函数与该属性的关联）是在什么时候建立的？",
+    "options": [
+      "属性被定义或初始化时自动建立",
+      "组件实例创建完成时统一建立",
+      "属性被副作用函数（如渲染函数、computed、watch 回调）读取时建立",
+      "属性被修改时临时建立，修改结束后立即销毁"
+    ],
+    "answer": "C",
+    "analysis": "Vue 3 响应式基于 Proxy，属性读取会触发 getter 内部的 track 收集当前正在执行的副作用函数，属性写入则触发 trigger。因此依赖是在“读取”这一动作发生时建立的，而非定义时或挂载完成时。这正是“收集依赖”与“触发更新”两个阶段的分界。",
+    "difficulty": 3,
+    "tag": "响应式原理"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "当一个响应式对象的某个属性同时被多个组件的渲染过程读取，该属性发生变化时会发生什么？",
+    "options": [
+      "只有最先读取该属性的组件会更新",
+      "所有读取了该属性的组件的渲染副作用都会重新执行",
+      "所有组件都会更新，无论是否读取过该属性",
+      "不会自动更新，需要手动调用 `forceUpdate`"
+    ],
+    "answer": "B",
+    "analysis": "依赖收集阶段会把所有读取该属性的副作用函数加入同一个依赖集合（Set），属性变化时 trigger 会遍历整个集合并逐一执行。因此凡是读取过该属性的组件都会被通知更新，未读取的组件不受影响，也无需手动强制刷新。",
+    "difficulty": 2,
+    "tag": "响应式原理"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 Vue 3 `computed` 的缓存机制，下列说法正确的是？",
+    "options": [
+      "依赖未变化时，多次读取直接返回缓存结果，不会重复计算",
+      "每次访问 computed 都会重新执行计算函数",
+      "依赖一旦变化，computed 立即重新计算并推送更新",
+      "computed 不缓存结果，仅在模板中第一次使用时计算一次"
+    ],
+    "answer": "A",
+    "analysis": "computed 具有惰性缓存：依赖未变化时读取直接返回上次的计算结果；依赖变化后只是把值标记为过期（dirty），直到该 computed 再次被读取时才重新计算。它既不会在依赖变化时立即重算，也不会每次访问都重算。",
+    "difficulty": 3,
+    "tag": "computed"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 `computed` 与 `watch` 的使用场景区分，下列说法正确的是？",
+    "options": [
+      "computed 适合执行异步或高频副作用操作",
+      "watch 适合从已有数据派生出新数据并在模板中展示",
+      "watch 的返回值可以直接绑定到模板中使用",
+      "computed 用于基于响应式依赖派生数据且带缓存，watch 用于侦听数据变化执行副作用"
+    ],
+    "answer": "D",
+    "analysis": "computed 是纯派生数据，带缓存、返回值可直接在模板中使用，不应包含副作用；watch 关注“数据变化之后做什么”，适合异步请求、日志等副作用操作，其回调没有返回值供模板使用。二者定位互补而非等价。",
+    "difficulty": 2,
+    "tag": "watch/computed"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "在 `v-for` 列表渲染中为每个节点设置 `key` 的主要作用是？",
+    "options": [
+      "控制循环渲染的次数",
+      "标识节点的唯一身份，便于虚拟 DOM diff 时精准复用与移动节点",
+      "等价于设置元素的原生 id 属性",
+      "作为事件绑定的目标定位"
+    ],
+    "answer": "B",
+    "analysis": "key 是 diff 算法判断“同一个节点”的依据，Vue 据此决定节点是复用、移动还是重建，从而最小化真实 DOM 操作并保留组件内部状态。它不等价于 id，也不决定循环次数。",
+    "difficulty": 1,
+    "tag": "v-for/key"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "使用数组索引作为 `v-for` 的 key（`:key=\"index\"`），当在列表头部插入新元素时，最可能引发的问题是？",
+    "options": [
+      "浏览器控制台必然报出 key 重复的错误",
+      "列表数据完全无法渲染",
+      "原有 DOM 节点与数据错位复用，导致输入框内容或组件状态错乱",
+      "列表渲染性能必然大幅下降"
+    ],
+    "answer": "C",
+    "analysis": "头部插入元素会使后续所有元素的 index 改变，而 key 又恰好随 index 改变，Vue 会误判复用关系，把原有节点与新位置的数据错误匹配，造成输入残留、组件状态错位等问题。key 应使用数据本身稳定且唯一的标识，如 id。",
+    "difficulty": 4,
+    "tag": "v-for/key"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 `v-model` 与复选框（checkbox）的配合使用，下列说法正确的是？",
+    "options": [
+      "单个复选框绑定布尔值；多个复选框绑定同一数组时，选中项对应值会被自动加入数组",
+      "无论几个复选框，v-model 绑定的都是字符串",
+      "复选框只能通过 `:checked` 绑定，不能使用 v-model",
+      "v-model 对复选框始终绑定数字 0 或 1"
+    ],
+    "answer": "A",
+    "analysis": "单个 checkbox 的 v-model 绑定布尔值（选中为 true、取消为 false）；多个 checkbox 绑定同一个数组变量时，勾选元素的 value 会被自动加入或移出该数组。这正是 v-model 按元素类型分派绑定行为的具体体现。",
+    "difficulty": 3,
+    "tag": "v-model"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "使用 `v-model` 绑定 `<select>` 下拉框时，绑定的数据对应的是？",
+    "options": [
+      "选中 `<option>` 的文本内容",
+      "选中 `<option>` 在列表中的索引号",
+      "当前选中的整个 `<option>` DOM 元素",
+      "选中 `<option>` 的 value 属性值"
+    ],
+    "answer": "D",
+    "analysis": "v-model 在 select 上读写的是当前选中 option 的 value 值，而不是显示文本或索引。若 option 未显式写 value，则会退化为使用其文本内容作为值，但标准语义与常规用法都是绑定 value 属性。",
+    "difficulty": 2,
+    "tag": "v-model"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "`v-model.number` 修饰符的功能是？",
+    "options": [
+      "限制输入框只能输入数字字符",
+      "把输入值尽可能转为数字，若 `parseFloat` 解析失败则保留原始字符串",
+      "将数字格式化为千分位显示",
+      "自动四舍五入保留两位小数"
+    ],
+    "answer": "B",
+    "analysis": "`.number` 在输入同步时对值执行 parseFloat 尝试转为数字，解析结果为 NaN 时保留原始字符串；它不做输入拦截，也不负责格式化。限制只能输入数字应使用 input 的 type=\"number\" 或正则校验。",
+    "difficulty": 3,
+    "tag": "修饰符"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "`v-model.trim` 修饰符的作用是？",
+    "options": [
+      "去除输入值中间的所有空格",
+      "自动将输入值转为大写",
+      "自动去除输入值首尾的空格",
+      "限制输入框的最大输入长度"
+    ],
+    "answer": "C",
+    "analysis": "`.trim` 会在输入值同步到数据之前调用 trim 方法，仅去除首尾空白，不影响中间空格，也不限制长度或转换大小写。它常与表单校验搭配，防止提交含多余空格的输入。",
+    "difficulty": 1,
+    "tag": "修饰符"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "事件绑定 `@click.stop` 中 `.stop` 修饰符的作用是？",
+    "options": [
+      "阻止事件继续冒泡传播",
+      "阻止元素的默认行为",
+      "阻止事件进入捕获阶段",
+      "停止该元素上的所有事件监听"
+    ],
+    "answer": "A",
+    "analysis": "`.stop` 等价于调用 `event.stopPropagation()`，阻止事件沿 DOM 树向上冒泡，从而避免父元素上的同名事件处理函数被触发。阻止浏览器默认行为应使用 `.prevent`。",
+    "difficulty": 1,
+    "tag": "修饰符"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "事件绑定 `@click.once` 中 `.once` 修饰符的行为是？",
+    "options": [
+      "事件每秒最多触发一次",
+      "事件触发后延迟一秒再执行处理函数",
+      "只允许处理函数在第一轮事件流中执行",
+      "处理函数只执行一次，之后自动移除该事件监听"
+    ],
+    "answer": "D",
+    "analysis": "`.once` 确保事件处理函数最多执行一次，首次触发后监听器即被移除，后续点击不再响应。它与节流中的“每秒一次”或延迟执行没有关系。",
+    "difficulty": 2,
+    "tag": "修饰符"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "在表单元素上使用 `@submit.prevent`，其作用是？",
+    "options": [
+      "阻止点击事件的冒泡传播",
+      "禁用表单内所有输入控件",
+      "阻止表单的默认提交行为，交由回调函数处理",
+      "阻止事件捕获阶段的执行"
+    ],
+    "answer": "C",
+    "analysis": "`.prevent` 等价于调用 `event.preventDefault()`，阻止表单提交、链接跳转等浏览器默认行为，通常配合回调实现异步校验后手动提交。阻止事件冒泡应使用 `.stop`。",
+    "difficulty": 2,
+    "tag": "修饰符"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "Vue 3 中父组件与子组件首次渲染挂载阶段的生命周期顺序是？",
+    "options": [
+      "子组件先完成挂载，父组件再开始创建",
+      "父 beforeCreate → 父 created → 父 beforeMount → 子组件创建并挂载完成 → 父 mounted",
+      "父子组件同时挂载，彼此没有先后顺序",
+      "父组件所有钩子执行完毕后才开始创建子组件"
+    ],
+    "answer": "B",
+    "analysis": "父组件先执行自身的创建钩子与 beforeMount，随后在渲染过程中递归地完成子组件从创建到挂载的全部流程；子组件 mounted 之后，父组件才执行自己的 mounted。整体呈“父先开始、子先结束、父后收尾”的顺序。",
+    "difficulty": 3,
+    "tag": "生命周期"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "父组件被销毁时，父组件与子组件的卸载（unmounted）钩子执行顺序是？",
+    "options": [
+      "子组件先执行 beforeUnmount/unmounted，父组件后执行",
+      "父组件先执行卸载钩子，子组件后执行",
+      "父子组件同时执行，顺序不确定",
+      "子组件不执行任何卸载钩子"
+    ],
+    "answer": "A",
+    "analysis": "销毁过程自内向外：父组件开始卸载时会先卸载其子组件，等子组件的 beforeUnmount/unmounted 全部执行完后，父组件才执行自己的卸载钩子。这与挂载阶段“子先完成、父后收尾”的递归过程保持一致。",
+    "difficulty": 3,
+    "tag": "生命周期"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "组件被 `<keep-alive>` 缓存后，再次从缓存中激活显示时会触发哪个生命周期钩子？",
+    "options": [
+      "mounted",
+      "beforeCreate",
+      "errorCaptured",
+      "activated"
+    ],
+    "answer": "D",
+    "analysis": "被 keep-alive 缓存的组件在切换时不会销毁重建，而是通过 activated/deactivated 钩子感知激活与失活状态。首次挂载仍会执行 mounted，之后的反复切换只触发 activated/deactivated。",
+    "difficulty": 2,
+    "tag": "keep-alive"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "`<keep-alive>` 的 `include` 属性作用是？",
+    "options": [
+      "设置可缓存组件的最大数量",
+      "指定哪些组件不参与缓存",
+      "指定要缓存的组件（按组件 name 匹配）",
+      "设置缓存内容的过期时间"
+    ],
+    "answer": "C",
+    "analysis": "include 用逗号分隔的字符串或正则按组件的 name 匹配需要缓存的组件；与之相反，exclude 指定不参与缓存的组件；缓存数量上限由 max 属性控制。",
+    "difficulty": 2,
+    "tag": "keep-alive"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "使用 `<component :is=\"currentComponent\" />` 可以实现的功能是？",
+    "options": [
+      "按需异步加载所有组件代码",
+      "根据 `is` 的值动态渲染不同的组件",
+      "强制渲染一个固定的静态组件",
+      "为组件自动添加过渡动画"
+    ],
+    "answer": "B",
+    "analysis": "`<component>` 的 is 属性指向组件名称、选项对象或导入的组件，其值变化时 Vue 会切换渲染对应组件，常与 keep-alive 配合实现标签页切换。它本身不负责异步加载，也不提供动画能力。",
+    "difficulty": 1,
+    "tag": "动态组件"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "使用 `defineAsyncComponent(() => import('./Foo.vue'))` 注册组件，主要目的是？",
+    "options": [
+      "将组件代码拆分为独立 chunk、按需加载，减小首屏包体积",
+      "让组件可以被 keep-alive 缓存",
+      "让组件默认启用过渡动画",
+      "使组件能够在多个路由间共享同一个实例"
+    ],
+    "answer": "A",
+    "analysis": "defineAsyncComponent 配合动态 import 实现组件级代码分割，只有在该组件被实际渲染时才请求对应代码块。它还支持 loading、error 等加载状态配置，但与缓存、动画、实例共享无关。",
+    "difficulty": 2,
+    "tag": "异步组件"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "`provide`/`inject` 组合最主要的应用场景是？",
+    "options": [
+      "兄弟组件之间双向同步数据",
+      "替代所有父子组件之间的 props 通信",
+      "实现跨浏览器标签页的数据共享",
+      "祖先组件向任意深度的后代组件注入数据，避免逐层传递 props"
+    ],
+    "answer": "D",
+    "analysis": "provide 在祖先组件提供数据，inject 在后代组件声明接收，可跨越任意层级，省去中间组件无意义的 prop 透传。它是单向提供且就近优先，不适合兄弟通信，也不能完全替代 props 与状态管理。",
+    "difficulty": 3,
+    "tag": "provide/inject"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 provide/inject 的响应性，下列说法正确的是？",
+    "options": [
+      "provide 传入的普通值会自动变成响应式数据",
+      "直接 provide 一个普通值不具备响应性，需要提供 ref/reactive 等响应式对象才能保持联动",
+      "只有 inject 端主动修改数据才会触发响应",
+      "provide 的参数必须写成返回函数的表达式"
+    ],
+    "answer": "B",
+    "analysis": "provide 只是透传引用，普通值不会被自动包装成响应式；要实现注入数据的响应式联动，需要 provide 由 ref/reactive 包裹的值，或提供返回值的函数。inject 端通常只读使用，直接解构会丢失响应性，应借助 computed 等保持。",
+    "difficulty": 4,
+    "tag": "provide/inject"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "Vue 3 自定义指令中，在绑定元素被插入父节点（挂载到 DOM）后调用的钩子函数是？",
+    "options": [
+      "created",
+      "inserted",
+      "mounted",
+      "deactivated"
+    ],
+    "answer": "C",
+    "analysis": "Vue 3 的指令钩子与组件生命周期对齐，元素插入 DOM 后触发 mounted；Vue 2 中的 inserted 钩子在 Vue 3 中被重命名为 mounted。created 发生在绑定元素初始化前，deactivated 用于组件失活场景，编写新代码时应使用 Vue 3 的钩子命名。",
+    "difficulty": 4,
+    "tag": "自定义指令"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "自定义指令钩子参数 `binding.value` 表示的是？",
+    "options": [
+      "指令绑定的值，例如 `v-bg=\"'red'\"` 中的 `'red'`",
+      "指令的名称",
+      "绑定元素的 DOM 引用",
+      "指令的修饰符对象"
+    ],
+    "answer": "A",
+    "analysis": "binding 对象包含 value（绑定值）、arg（参数）、modifiers（修饰符）、name（指令名）等字段；DOM 元素本身是钩子的第一个参数 el。`v-bg=\"'red'\"` 中 value 即字符串 'red'。",
+    "difficulty": 2,
+    "tag": "自定义指令"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 Vue 3 中 setup（含 `<script setup>`）的执行时机，下列说法正确的是？",
+    "options": [
+      "组件每次重新渲染时都会重新执行",
+      "组件实例创建阶段最先执行，早于选项式的生命周期钩子",
+      "在 mounted 钩子之后执行",
+      "在 beforeUnmount 阶段执行"
+    ],
+    "answer": "B",
+    "analysis": "setup 在组件创建流程的起始阶段执行一次，早于 beforeCreate/created 等选项式钩子，此时可访问 props 与 setupContext（attrs、slots、emit）。它不会随组件重渲染重复执行，也不在挂载或卸载阶段执行。",
+    "difficulty": 3,
+    "tag": "组合式API"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 `ref` 与 `reactive` 的用法区别，下列说法正确的是？",
+    "options": [
+      "reactive 可以包装任意基本类型并保持响应",
+      "ref 包装基本类型后在模板和脚本中都不需要 .value",
+      "ref 通过 .value 访问值（模板中自动解包），reactive 只接受对象并直接以属性方式访问",
+      "ref 只能用于组件内部，不能跨组件传递"
+    ],
+    "answer": "C",
+    "analysis": "reactive 只能处理对象类型（内部用 Proxy 代理），基本类型需用 ref 包装并通过 .value 读写；在模板渲染上下文中 ref 会自动解包，无需写 .value。ref 也可以作为 props 或 store 数据正常跨组件传递。",
+    "difficulty": 3,
+    "tag": "组合式API"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "调用 `reactive(42)` 或 `reactive('str')` 这类以基本类型为参数的情况，结果是？",
+    "options": [
+      "返回一个可用 .value 访问的响应式引用",
+      "无法获得响应式代理能力，包装基本类型应使用 ref",
+      "返回一个值恒定的常量对象",
+      "程序会直接抛出语法错误"
+    ],
+    "answer": "B",
+    "analysis": "reactive 只对对象类型建立 Proxy 代理，传入基本类型不会获得响应式能力（通常不报错，但返回值无意义）。规范用法是用 ref 包装基本类型（内部转为 .value），或把基本类型放进对象中再使用 reactive。",
+    "difficulty": 3,
+    "tag": "组合式API"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "`toRefs(reactiveObj)` 的作用是？",
+    "options": [
+      "将响应式对象的每个属性转换为独立 ref，解构后仍保持与原对象的响应式联动",
+      "对响应式对象做深拷贝，切断与原对象的关联",
+      "把多个 ref 合并为一个 reactive 对象",
+      "返回对象所有属性名的数组"
+    ],
+    "answer": "A",
+    "analysis": "toRefs 把 reactive 对象的每个属性包装成 ref，且与源对象共享同一份响应式数据，因此 `const { a } = toRefs(obj)` 解构出的 a 仍是响应式的。普通解构会丢失响应性，这正是 toRefs 存在的意义。",
+    "difficulty": 4,
+    "tag": "组合式API"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "`watch` 选项中 `immediate: true` 的效果是？",
+    "options": [
+      "只有数据在创建后立即发生变化时才执行回调",
+      "让监听在组件卸载时立即停止",
+      "让回调始终推迟到下一轮宏任务执行",
+      "创建 watcher 时立即执行一次回调，即使监听源尚未发生变化"
+    ],
+    "answer": "D",
+    "analysis": "immediate: true 会在 watcher 创建时立刻执行一次回调，便于初始化读值或回填数据，之后仍按依赖变化正常触发。它与“立即停止”或“异步调度”无关。",
+    "difficulty": 2,
+    "tag": "watch"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 `watchEffect`，下列说法正确的是？",
+    "options": [
+      "必须显式声明要监听的数据源",
+      "回调只执行一次，之后不再响应任何变化",
+      "自动追踪回调内读取的所有响应式依赖，任一依赖变化即重新执行",
+      "只能监听 ref，不能监听 reactive 对象"
+    ],
+    "answer": "C",
+    "analysis": "watchEffect 执行回调时会收集期间访问过的响应式依赖形成依赖集合，之后任何依赖变化都会触发回调重新执行，无需手动列出监听源。它不提供新旧值对比，适合只关心“数据变了要做什么”的副作用场景。",
+    "difficulty": 3,
+    "tag": "watch"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "`watch` 直接监听一个 reactive 对象（不传任何选项）时，关于监听深度的说法正确的是？",
+    "options": [
+      "默认只监听对象引用变化，内部属性变化不触发回调",
+      "隐式启用深度监听，对象内部任意嵌套属性变化都会触发回调",
+      "必须显式传入 `deep: true` 才能监听到属性变化",
+      "reactive 对象不能被 watch 直接监听"
+    ],
+    "answer": "B",
+    "analysis": "直接 watch reactive 对象时 Vue 会隐式开启 deep，内部任意嵌套属性的变化都会触发回调；而 watch 一个由 ref 包裹的对象时默认不深度监听，需要显式加 `deep: true`。这是 watch 与 reactive 配合时容易踩坑的细节。",
+    "difficulty": 5,
+    "tag": "watch"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 Pinia 与 Vuex 的对比，下列说法正确的是？",
+    "options": [
+      "Pinia 取消了 mutations，state 可直接修改，且完整支持组合式 API 风格",
+      "Pinia 只能用于 Vue 2 项目",
+      "Vuex 4 不支持 Vue 3",
+      "Pinia 需要显式开启 namespaced 才能创建多个 store"
+    ],
+    "answer": "A",
+    "analysis": "Pinia 移除了 mutations，可以直接修改 state 或调用 actions，store 可用组合式 API 编写；Vuex 则要求通过 mutations 同步修改 state。Vuex 4 正是针对 Vue 3 的版本，Pinia 同时支持 Vue 2/3，且多个 store 天然按需模块化，无需 namespaced。",
+    "difficulty": 4,
+    "tag": "状态管理"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "`const Home = () => import('@/views/Home.vue')` 作为路由组件注册，目的是？",
+    "options": [
+      "让路由跳转瞬间完成",
+      "将所有组件打包进同一个文件便于排查问题",
+      "使该路由组件常驻内存",
+      "该路由被访问时才加载对应组件代码，实现路由级代码分割"
+    ],
+    "answer": "D",
+    "analysis": "动态 import 返回 Promise，Vue Router 支持将组件写成函数形式，从而把每个路由组件拆成独立 chunk，在访问对应路由时才按需加载，缩小首屏 bundle。这本质上就是路由懒加载，与跳转速度或常驻内存无关。",
+    "difficulty": 2,
+    "tag": "路由懒加载"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "在 Vue Router 4 中，需要在“路由跳转确认前统一校验登录状态”时，应使用的全局守卫是？",
+    "options": [
+      "router.afterEach",
+      "router.onError",
+      "组件内的 beforeRouteLeave",
+      "router.beforeEach"
+    ],
+    "answer": "D",
+    "analysis": "beforeEach 在导航确认前同步执行，最适合做鉴权、重定向等前置拦截，可通过返回值或 next 控制放行；afterEach 在导航完成后触发，onError 只处理导航错误，beforeRouteLeave 是离开当前路由时触发的组件内守卫。",
+    "difficulty": 2,
+    "tag": "导航守卫"
+  }
+]

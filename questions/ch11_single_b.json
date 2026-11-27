@@ -1,0 +1,497 @@
+[
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "用户在一论坛发布帖子，帖内包含 <script> 代码，其他用户打开帖子时脚本被执行。该攻击属于？",
+    "options": [
+      "反射型 XSS",
+      "嗅探攻击",
+      "存储型 XSS",
+      "钓鱼攻击"
+    ],
+    "answer": "C",
+    "analysis": "恶意代码被持久化存储在服务端（帖子数据库），其他用户访问时随页面输出执行，符合存储型 XSS 的持久化特征。反射型不持久化，只影响提交者本人。",
+    "difficulty": 3,
+    "tag": "存储型XSS"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "攻击者将恶意脚本 URL 编码后放在链接中，诱导用户点击。服务端把参数原样拼入页面返回并执行。这种攻击是？",
+    "options": [
+      "存储型 XSS",
+      "反射型 XSS",
+      "SQL 注入",
+      "DNS 劫持"
+    ],
+    "answer": "B",
+    "analysis": "恶意代码随请求参数进入并在服务端响应中“反射”回浏览器，不落库、一次性生效，是典型的反射型 XSS，常通过钓鱼链接传播。",
+    "difficulty": 2,
+    "tag": "反射型XSS"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "以下哪段代码存在明显的 DOM 型 XSS 风险？",
+    "options": [
+      "const a = 1 + 2; console.log(a);",
+      "const img = new Image(); img.src = '/logo.png';",
+      "document.querySelector('#box').innerHTML = location.hash.slice(1);",
+      "localStorage.setItem('theme', 'dark');"
+    ],
+    "answer": "C",
+    "analysis": "把不可信的 location.hash 直接赋给 innerHTML，恶意 HTML/脚本会被浏览器解析执行，属于污染源到危险执行点的 DOM 型 XSS 典型写法。修复需用 textContent 或按上下文转义。",
+    "difficulty": 3,
+    "tag": "DOM型XSS"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "把用户输入插入到 <option> 标签内容时，若服务端未做任何处理，攻击者输入 </option><script>alert(1)</script> 即构成 XSS。下列哪项修复最直接有效？",
+    "options": [
+      "对用户输入过滤掉所有 < 和 > 字符",
+      "在输出前对数据按 HTML 上下文进行实体转义并加上 CSP 兜底",
+      "把 input 的 maxlength 改为 0",
+      "给页面加上 loading 动画"
+    ],
+    "answer": "B",
+    "analysis": "过滤 < > 无法覆盖所有编码绕过场景（如事件属性、URL、CSS 上下文），正确做法是上下文相关转义，并叠加 CSP 作为纵深防御。选项 C、D 与安全无关。",
+    "difficulty": 4,
+    "tag": "XSS防御"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "关于 CSP 的 'unsafe-inline'，正确的说法是？",
+    "options": [
+      "允许执行页面内联脚本/样式，但同时会削弱 CSP 对注入类攻击的防护",
+      "允许跨域加载任意脚本",
+      "允许 Service Worker 注册",
+      "允许读取用户 Cookie"
+    ],
+    "answer": "A",
+    "analysis": "'unsafe-inline' 会放行内联脚本与内联样式，而注入攻击最常见的落点就是内联执行，因此它会显著削弱 CSP 的防护效果，应尽量避免，可改用 nonce 或 hash 白名单。",
+    "difficulty": 4,
+    "tag": "CSP"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "使用 CSP 时，为内联脚本启用 nonce 机制的原理是？",
+    "options": [
+      "nonce 是随机值，每次响应变化，只有携带匹配 nonce 属性的内联脚本才被允许执行",
+      "nonce 是固定的服务器 IP 地址",
+      "nonce 对脚本进行键盘加密",
+      "nonce 会缓存所有脚本内容"
+    ],
+    "answer": "A",
+    "analysis": "nonce（一次性随机数）随响应下发，页面中带相同 nonce 属性的 script 标签才被放行，攻击者无法预知 nonce 值，因而无法注入可执行的脚本。注意 nonce 需每次响应变化才安全。",
+    "difficulty": 4,
+    "tag": "CSP"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "某网站在响应头下发了 CSP 白名单，把自家 CDN 域名加入 script-src。这主要防御的是？",
+    "options": [
+      "CSRF",
+      "SQL 注入",
+      "CDN 加速失效",
+      "XSS（阻断不可信来源脚本加载与执行）"
+    ],
+    "answer": "D",
+    "analysis": "CSP 通过资源来源白名单限制脚本加载与执行，是 XSS 的纵深防御手段。它既不验证请求来源（CSRF 由 Token/SameSite 应对），也不解决 SQL 注入（属于服务端职责）。",
+    "difficulty": 3,
+    "tag": "CSP"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "关于 CSRF 攻击，以下哪项场景描述正确？",
+    "options": [
+      "攻击者登录受害者账号后修改密码",
+      "攻击者诱骗已登录用户的浏览器向目标站点自动发起跨站伪造请求",
+      "攻击者把木马植入受害者电脑",
+      "攻击者把 Cookie 复制到自己的浏览器"
+    ],
+    "answer": "B",
+    "analysis": "CSRF 是利用用户浏览器自动携带 Cookie 的特性，在用户未感知的情况下发起跨站请求。它不需要窃取密码或凭证内容，也不需要在受害者机器上植入程序。",
+    "difficulty": 2,
+    "tag": "CSRF"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "CSRF Token 能防御 CSRF 的关键是？",
+    "options": [
+      "Token 内容就是用户名密码",
+      "Token 每次会话随机生成且对攻击者不可预知，服务端校验通过才处理请求",
+      "Token 会随每个请求自动发送，无需人工处理",
+      "Token 存储在 URL 中可被搜索引擎收录"
+    ],
+    "answer": "B",
+    "analysis": "CSRF Token 的核心是“不可预测性+服务端校验”。攻击者无法预知受害用户的 Token，伪造的请求必然校验失败。Token 若放在 URL 中会被日志/Referer 泄露，不是推荐做法。",
+    "difficulty": 3,
+    "tag": "CSRF防御"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "设置 SameSite=Strict 的 Cookie，以下哪种情况会出现？",
+    "options": [
+      "任何跨站请求（含顶层导航）都不携带该 Cookie",
+      "跨站 POST 请求一定携带",
+      "iframe 内的跨站请求一定携带",
+      "同站请求也不携带"
+    ],
+    "answer": "A",
+    "analysis": "Strict 表示任何跨站上下文（导航、子资源、iframe、fetch 等）都不发送 Cookie，防护最严但对跨站跳转登录态不友好。同站请求仍正常携带。",
+    "difficulty": 3,
+    "tag": "SameSite"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "关于 CSRF 防御中校验 Origin/Referer 的说法，错误的是？",
+    "options": [
+      "可以拒绝来源非本站的请求",
+      "Referer 可能因隐私设置缺失，需处理缺省情况",
+      "来源校验是一种有效的 CSRF 缓解手段",
+      "校验来源后就可以完全去掉 CSRF Token"
+    ],
+    "answer": "D",
+    "analysis": "来源校验存在缺失、空值与部分浏览器绕过风险，只能作为缓解而非唯一防线。业界最佳实践是把 Token 校验作为核心，来源校验等其他手段叠加纵深防御。",
+    "difficulty": 4,
+    "tag": "CSRF防御"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "哪种场景属于典型的 CSRF 攻击路径？",
+    "options": [
+      "访问恶意站点，恶意站点的 JS 直接读取目标站 Cookie",
+      "恶意站点自动提交表单，请求中携带受害者在目标站的登录 Cookie",
+      "攻击者通过字典暴力破解目标站密码",
+      "目标站数据库被注入获得全部用户数据"
+    ],
+    "answer": "B",
+    "analysis": "跨站自动提交表单时浏览器会携带目标站的 Cookie（若未设 SameSite 限制），服务端难辨真伪即构成 CSRF。跨域 JS 无法读取目标站 Cookie（同源策略），暴力破解与注入是其他攻击。",
+    "difficulty": 3,
+    "tag": "CSRF"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "为什么 HttpOnly Cookie 不能防御 CSRF？",
+    "options": [
+      "因为 CSRF 不需要读取 Cookie 内容，浏览器会自动携带",
+      "因为 HttpOnly 只对 GET 请求生效",
+      "因为 CSRF 是服务端漏洞",
+      "因为 Cookie 只存在于移动端"
+    ],
+    "answer": "A",
+    "analysis": "CSRF 利用的是浏览器自动携带 Cookie 的机制，攻击者从不读取 Cookie 内容，因此 HttpOnly（防止 JS 读取）对 CSRF 无效。HttpOnly 主要防 XSS 窃取会话。",
+    "difficulty": 4,
+    "tag": "HttpOnly"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "关于 Token 的存放位置，最安全且推荐的做法是？",
+    "options": [
+      "固定存放到 localStorage",
+      "存放到可读的 JS 变量并在控制台展示",
+      "存放到 HttpOnly 的 Cookie（或由服务端管理的会话）",
+      "让每个用户使用相同的固定 Token"
+    ],
+    "answer": "C",
+    "analysis": "HttpOnly Cookie 中的会话对 JS 不可读，即使发生 XSS 也不易被窃取。localStorage 对任何脚本开放，XSS 可直接读走，固定 Token 更是不安全的做法。",
+    "difficulty": 3,
+    "tag": "存储安全"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "以下哪种数据适合放入 localStorage？",
+    "options": [
+      "用户密码明文",
+      "支付密钥",
+      "主题偏好等非敏感 UI 设置",
+      "管理员权限 token"
+    ],
+    "answer": "C",
+    "analysis": "localStorage 对同源所有脚本可读，只适合存放主题、语言等低敏数据。密码、密钥、会话 token 都应放在服务端或 HttpOnly Cookie 中，不能落 localStorage。",
+    "difficulty": 2,
+    "tag": "存储安全"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "关于 Sec-Fetch-Site 等 Fetch Metadata 请求头，下列理解正确的是？",
+    "options": [
+      "可以用于服务端判断请求的跨站来源，作为 CSRF 纵深防御手段",
+      "可以直接读取用户浏览器历史",
+      "可以取代 HTTPS",
+      "可以绕过同源策略"
+    ],
+    "answer": "A",
+    "analysis": "Fetch Metadata（如 Sec-Fetch-Site: cross-site/no-site）由浏览器自动附加，服务端可据此识别跨站请求并拒绝，是 CSRF 的现代纵深防御手段之一。它不做加密、不改同源策略。",
+    "difficulty": 4,
+    "tag": "CSRF防御"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "某电商官网需要被搜索引擎大量收录商品详情页，且数据更新不频繁，下列架构最合适？",
+    "options": [
+      "纯 CSR SPA",
+      "SSG（静态化商品页 + CDN）或 SSR",
+      "纯 JSON 接口直接渲染",
+      "WebSocket 长连接页面"
+    ],
+    "answer": "B",
+    "analysis": "商品详情页需要良好 SEO 与快速首屏，SSG 静态化加 CDN 分发或 SSR 都是合适选择。纯 CSR 首屏慢、SEO 差，不符合电商详情页诉求。",
+    "difficulty": 3,
+    "tag": "架构选型"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "SSR 框架（如 Nuxt/Next 的 SSR 模式）中所谓“水合（hydration）”是指？",
+    "options": [
+      "在服务端下载静态资源",
+      "页面初始化时把服务端生成的 HTML 与客户端事件绑定/状态恢复相结合",
+      "把数据库备份",
+      "刷新浏览器缓存"
+    ],
+    "answer": "B",
+    "analysis": "水合是 SSR 的关键环节：HTML 已在服务端渲染，客户端脚本加载后将事件监听挂载到已有 DOM 并恢复交互状态，用户后续操作才生效。",
+    "difficulty": 4,
+    "tag": "SSR"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "SSG 构建后的产物最适合部署在哪里？",
+    "options": [
+      "CDN 或静态文件服务器",
+      "只能部署在数据库服务器",
+      "必须部署在 WebSocket 服务器",
+      "只能本地运行无法上线"
+    ],
+    "answer": "A",
+    "analysis": "SSG 产物是纯静态文件，可部署到 CDN/静态托管，具备极高缓存命中率与加载速度。它不需要服务端渲染能力，也与数据库、WebSocket 无强绑定。",
+    "difficulty": 1,
+    "tag": "SSG"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "关于 CSR、SSR、SSG 三者的对比，正确的是？",
+    "options": [
+      "三者都必须在服务端渲染 HTML",
+      "SSG 每次请求都重新生成页面",
+      "CSR 渲染在浏览器完成，SSR 渲染在每次请求时由服务端完成，SSG 在构建期生成静态 HTML",
+      "SSR 无法使用现代前端框架"
+    ],
+    "answer": "C",
+    "analysis": "CSR 由浏览器执行 JS 渲染，SSR 服务端按请求动态渲染，SSG 构建时一次性生成。现代框架（React/Vue 等）均可用于三种模式，SSR 每次请求渲染成本高但内容实时。",
+    "difficulty": 2,
+    "tag": "渲染模式"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "微前端中，子应用通常通过什么方式暴露给主应用加载？",
+    "options": [
+      "在主应用源码里复制子应用的业务代码",
+      "子应用提供独立入口（如 qiankun 的 HTML 入口），运行时由主应用挂载",
+      "强制合并成一个 git 仓库后一起打包",
+      "把子应用代码直接写进主应用组件"
+    ],
+    "answer": "B",
+    "analysis": "微前端各子应用提供独立入口和打包产物，主应用在运行时注册、加载并挂载子应用，从而保持独立开发部署。把代码合并进主应用就失去了微前端的意义。",
+    "difficulty": 2,
+    "tag": "微前端"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "微前端中子应用之间样式互相污染的问题，通常如何解决？",
+    "options": [
+      "无解，只能接受",
+      "使用同一个全局样式文件",
+      "把子应用做成 iframe，或使用 qiankun 等框架的样式隔离（如动态为 DOM 加前缀）",
+      "删除所有 CSS"
+    ],
+    "answer": "C",
+    "analysis": "qiankun 等框架在挂载时隔离子应用 CSS（如作用域化），iframe 本身天然隔离样式，都可以缓解污染。缺点是样式隔离可能影响部分全局样式（如 body 背景），需配置处理。",
+    "difficulty": 3,
+    "tag": "微前端"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "qiankun 的 setGlobalState 与 onGlobalStateChange 属于以下哪种通信机制？",
+    "options": [
+      "共享全局状态（全局状态仓库）",
+      "通过数据库同步",
+      "通过 CDN 分发",
+      "通过 CSS 变量传递"
+    ],
+    "answer": "A",
+    "analysis": "qiankun 提供 initGlobalState 创建的全局状态，主应用用 setGlobalState 更新，各应用用 onGlobalStateChange 订阅变化，是典型的主子共享全局状态通信。",
+    "difficulty": 2,
+    "tag": "主子通信"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "关于微前端与 iframe 的对比，正确的是？",
+    "options": [
+      "iframe 没有样式隔离能力",
+      "iframe 天然隔离 JS 与样式，但通信、布局、刷新状态同步等体验问题也多",
+      "iframe 加载的子应用可以无缝共享全局变量",
+      "iframe 不能跨域加载页面"
+    ],
+    "answer": "B",
+    "analysis": "iframe 隔离强、接入简单，但父子和跨域通信成本高、UI 布局受限、刷新丢状态等问题明显；微前端框架（如 qiankun）在同文档内实现加载与隔离，体验更统一，代价是实现复杂度高。",
+    "difficulty": 3,
+    "tag": "微前端"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "Service Worker 无法完成下列哪项工作？",
+    "options": [
+      "拦截页面请求并返回缓存",
+      "实现应用离线可访问",
+      "后台推送消息通知",
+      "直接操作 DOM 修改页面内容"
+    ],
+    "answer": "D",
+    "analysis": "Service Worker 运行在独立线程，没有 DOM 访问权限，只能通过 fetch 事件拦截请求、Cache API 缓存资源、Push API 接收推送。修改 DOM 属于主线程职责。",
+    "difficulty": 3,
+    "tag": "Service Worker"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "PWA 实现离线访问的关键机制是？",
+    "options": [
+      "浏览器磁盘缓存随机清理",
+      "Service Worker 配合 Cache API 预缓存与策略缓存",
+      "服务端保持长连接",
+      "仅靠 localStorage 保存页面"
+    ],
+    "answer": "B",
+    "analysis": "PWA 用 Service Worker 拦截网络请求并由 Cache API 管理静态资源缓存，配合 manifest 与 HTTPS，实现离线可用与可安装。localStorage 无法缓存页面资源，\"长连接\"与离线无关。",
+    "difficulty": 3,
+    "tag": "PWA"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "小程序中“渲染层”基于以下哪种技术实现？",
+    "options": [
+      "WebView",
+      "Node.js 服务端",
+      "数据库视图",
+      "浏览器插件"
+    ],
+    "answer": "A",
+    "analysis": "微信小程序渲染层由 WebView 承载（配合 WXML/WXSS），逻辑层运行 JS 脚本，双线程通过原生桥通信。渲染层不是服务端渲染，也非数据库视图。",
+    "difficulty": 2,
+    "tag": "小程序"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "小程序与 H5 的主要差异不包括？",
+    "options": [
+      "小程序使用 WXML/WXSS，没有标准 DOM/BOM",
+      "小程序存在双线程模型，H5 页面 JS 与 DOM 同线程",
+      "小程序运行在微信等宿主环境，审核与发布流程不同",
+      "小程序可以直接修改操作系统内核"
+    ],
+    "answer": "D",
+    "analysis": "小程序与 H5 在模板语言、线程模型、运行环境与发布机制上确有差异，但小程序运行在宿主 App 的 WebView/JS 引擎中，没有系统内核权限，选项 D 错误。",
+    "difficulty": 3,
+    "tag": "小程序"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "下列属于“编译到小程序”的跨端框架的是？",
+    "options": [
+      "qiankun",
+      "Taro 与 uni-app",
+      "Webpack",
+      "Vite"
+    ],
+    "answer": "B",
+    "analysis": "Taro（React 语法）与 uni-app（Vue 语法）都可把一套业务代码编译输出到小程序等多端。qiankun 是微前端方案，Webpack/Vite 是构建工具。",
+    "difficulty": 2,
+    "tag": "跨端方案"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "结合项目场景：老的中后台系统有多个团队维护、技术栈各异，需要各自独立发版，最合适的方案是？",
+    "options": [
+      "把全部代码重写成一个大单体应用",
+      "引入微前端架构，抽主应用并让各团队子应用独立开发部署",
+      "放弃前端改为服务端渲染模板",
+      "把子团队代码直接拷贝进主仓库"
+    ],
+    "answer": "B",
+    "analysis": "多团队、异构技术栈、独立发版正是微前端的典型适用场景：主应用做壳与调度，子应用各自维护。重写为单体或拷贝代码都会放大耦合与发布风险。",
+    "difficulty": 2,
+    "tag": "架构选型"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "某工具型站点需要离线可用、可安装到桌面、依赖 HTTPS，最合适的方案是？",
+    "options": [
+      "仅用 jQuery 页面",
+      "PWA（Service Worker + manifest）",
+      "SSG 每周构建一次纯静态页",
+      "强制用户安装原生 App"
+    ],
+    "answer": "B",
+    "analysis": "PWA 通过 Service Worker 缓存实现离线可用，manifest 提供安装能力，且要求 HTTPS。纯静态页无法自定义离线策略，SSG 也不提供安装与离线交互能力。",
+    "difficulty": 2,
+    "tag": "架构选型"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "「Content-Security-Policy-Report-Only」响应头的作用是？",
+    "options": [
+      "强制拦截所有违反策略的资源",
+      "对页面内容进行加密",
+      "提升静态资源的加载速度",
+      "只收集违规上报而不实际拦截，用于灰度验证策略是否过严"
+    ],
+    "answer": "D",
+    "analysis": "Report-Only 模式仅生成违规报告（发送到 report-uri/report-to），并不阻断资源，适合上线前验证 CSP 策略。真正拦截执行的是 Content-Security-Policy 头。",
+    "difficulty": 4,
+    "tag": "CSP"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "single",
+    "question": "Service Worker 中“缓存优先（Cache First）”策略最适合用于哪类资源？",
+    "options": [
+      "实时交易与支付接口",
+      "用户的敏感删除操作请求",
+      "更新不频繁的版本化静态资源（如带 hash 的 JS/CSS、图片）",
+      "所有 POST 请求"
+    ],
+    "answer": "C",
+    "analysis": "Cache First 命中缓存即返回、未命中再回源并缓存，适合内容稳定、版本化的静态资源。实时、敏感、写操作应使用网络优先或网络请求，避免返回过期或错误数据。",
+    "difficulty": 4,
+    "tag": "Service Worker"
+  }
+]

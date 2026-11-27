@@ -1,0 +1,332 @@
+[
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "下列属于 XSS 攻击类型的有？",
+    "options": [
+      "存储型 XSS",
+      "反射型 XSS",
+      "DOM 型 XSS",
+      "SQL 注入"
+    ],
+    "answer": "ABC",
+    "analysis": "XSS 按数据流划分为存储型、反射型和 DOM 型三类。SQL 注入是服务端数据库层面的注入攻击，不属于 XSS。",
+    "difficulty": 1,
+    "tag": "XSS"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "以下是 XSS 与 CSRF 正确描述的有？",
+    "options": [
+      "CSRF 需要利用用户已登录的会话凭证",
+      "HttpOnly 对防御 CSRF 无效",
+      "CSP 可以缓解 XSS 攻击",
+      "XSS 完全无法被防御"
+    ],
+    "answer": "ABC",
+    "analysis": "CSRF 依赖浏览器自动携带用户 Cookie 伪造请求；CSRF 不读取 Cookie 所以 HttpOnly 对它无效；CSP 白名单可拦截恶意脚本，属于 XSS 缓解手段。XSS 可通过转义、CSP 等有效防御。",
+    "difficulty": 3,
+    "tag": "XSS与CSRF"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "关于存储型 XSS 的特点，正确的有？",
+    "options": [
+      "恶意代码持久化存储在服务器数据库",
+      "所有访问该数据的用户都可能被攻击",
+      "只影响攻击者本人",
+      "一次注入，长期有效"
+    ],
+    "answer": "ABD",
+    "analysis": "存储型 XSS 把脚本写入服务端存储，任何访问该数据的用户都会中招，且持续生效，危害最大。只影响攻击者本人是反射型的局限，不是存储型的特征。",
+    "difficulty": 2,
+    "tag": "存储型XSS"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "以下属于防御 XSS 的有效手段的有？",
+    "options": [
+      "对不可信数据输出前按上下文转义",
+      "配置 CSP 限制脚本来源",
+      "为 Cookie 设置 HttpOnly 降低会话被窃取风险",
+      "把用户输入全部转为大写存储"
+    ],
+    "answer": "ABC",
+    "analysis": "输出转义是核心防线，CSP 提供纵深防御，HttpOnly 降低 XSS 成功后窃取会话的损失。转大写不改变脚本的可执行性，且可能破坏业务数据，无防御作用。",
+    "difficulty": 2,
+    "tag": "XSS防御"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "关于 CSP 的正确说法有？",
+    "options": [
+      "可通过 Content-Security-Policy 响应头配置",
+      "可通过 <meta http-equiv=\"Content-Security-Policy\"> 配置",
+      "可限制脚本、样式、图片等资源的加载来源",
+      "CSP 会对传输内容进行加密"
+    ],
+    "answer": "ABC",
+    "analysis": "CSP 支持响应头与 meta 两种下发方式，通过 script-src、style-src、img-src 等指令限制资源来源。加密传输是 HTTPS/TLS 的职责，CSP 不负责加密。",
+    "difficulty": 2,
+    "tag": "CSP"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "CSP 限制内联脚本执行的替代方案有？",
+    "options": [
+      "使用 nonce 随机数标注可信内联脚本",
+      "使用脚本 hash 白名单",
+      "开启 'unsafe-inline' 放行所有内联脚本",
+      "使用 CORS 跨域请求"
+    ],
+    "answer": "AB",
+    "analysis": "nonce 与 hash 是 CSP 3 中替代 'unsafe-inline' 的安全做法，只放行匹配的特定脚本。'unsafe-inline' 会弱化防护，CORS 与内联脚本执行无关。",
+    "difficulty": 5,
+    "tag": "CSP"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "以下属于 CSRF 常见防御手段的有？",
+    "options": [
+      "使用 CSRF Token 并服务端校验",
+      "Cookie 设置 SameSite 属性",
+      "校验请求的 Referer/Origin 来源",
+      "将密码改为更复杂的口令"
+    ],
+    "answer": "ABC",
+    "analysis": "Token 校验、SameSite（Lax/Strict）、来源头校验都是 CSRF 的标准防御。加强密码复杂度防的是撞库/暴力破解，与 CSRF 利用已登录会话的机制无关。",
+    "difficulty": 2,
+    "tag": "CSRF防御"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "Cookie 的 SameSite 属性取值包括？",
+    "options": [
+      "Strict",
+      "Lax",
+      "None",
+      "SecureOnly"
+    ],
+    "answer": "ABC",
+    "analysis": "SameSite 有三个取值：Strict（跨站一律不携带）、Lax（顶层导航 GET 放宽）、None（跨站都携带，必须配合 Secure）。不存在 SecureOnly 取值，Secure 是另一个独立属性。",
+    "difficulty": 3,
+    "tag": "SameSite"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "关于 HttpOnly 与 Secure Cookie 属性，说法正确的有？",
+    "options": [
+      "HttpOnly 阻止脚本通过 document.cookie 读取",
+      "Secure 要求 Cookie 仅在 HTTPS 连接传输",
+      "两者都可以防御 CSRF",
+      "两者都需服务端设置 Cookie 属性"
+    ],
+    "answer": "ABD",
+    "analysis": "HttpOnly 防 JS 窃取、Secure 限制 HTTPS 传输，均由服务端 Set-Cookie 下发。二者都不能阻止浏览器跨站自动携带 Cookie，因此对 CSRF 无效。",
+    "difficulty": 3,
+    "tag": "Cookie安全"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "以下属于敏感信息存储安全规范的有？",
+    "options": [
+      "令牌等凭证优先放 HttpOnly Cookie 或服务端会话",
+      "密码应使用服务端加盐哈希存储",
+      "避免把 API 密钥明文写在前端代码中",
+      "把用户密码明文存进 localStorage 便于读取"
+    ],
+    "answer": "ABC",
+    "analysis": "凭证防 JS 窃取、密码加盐哈希、密钥不放前端都是存储安全的基本要求。明文密码存 localStorage 既无防窃能力又违反安全规范，属于高危错误做法。",
+    "difficulty": 3,
+    "tag": "存储安全"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "关于 SSR 模式的正确说法有？",
+    "options": [
+      "首屏渲染更快",
+      "利于 SEO",
+      "服务器承担渲染压力",
+      "完全不需要 JavaScript"
+    ],
+    "answer": "ABC",
+    "analysis": "SSR 返回完整 HTML，首屏快且爬虫可抓取，但每次请求由服务端渲染，高并发压力大。SSR 仍需客户端 JavaScript 完成水合与交互，并非\"完全不需要 JS\"。",
+    "difficulty": 2,
+    "tag": "SSR"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "关于 SSG 的适用场景，正确的有？",
+    "options": [
+      "内容型网站、文档站",
+      "更新不频繁的营销官网",
+      "强实时数据看板",
+      "博客文章发布"
+    ],
+    "answer": "ABD",
+    "analysis": "SSG 构建期生成静态页，适合内容变化少、以读为主的站点。强实时看板需要频繁刷新数据，构建式静态化无法满足，不适合纯 SSG。",
+    "difficulty": 2,
+    "tag": "SSG"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "与纯 CSR 相比，SSR/SSG 的优势包括？",
+    "options": [
+      "SEO 更友好",
+      "首屏内容更快呈现",
+      "弱网环境下更早看到页面内容",
+      "服务器资源消耗更小"
+    ],
+    "answer": "ABC",
+    "analysis": "SSR/SSG 直接返回内容 HTML，利于 SEO 与首屏，弱网时无需等待 JS 包下载即可看到内容。SSR 会带来额外服务器渲染开销，SSG 则把开销转移到构建期，不能说整体消耗更小。",
+    "difficulty": 3,
+    "tag": "渲染模式"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "微前端架构的价值体现在？",
+    "options": [
+      "各子应用可独立开发、独立部署",
+      "子应用允许使用不同技术栈",
+      "团队之间可以按业务域自治",
+      "所有代码必须合并为单一 bundle"
+    ],
+    "answer": "ABC",
+    "analysis": "微前端让子应用独立开发部署、技术栈无关、团队自治，适合大型组织协作。合并单一 bundle 恰好是微前端要解决的痛点，违背其设计初衷。",
+    "difficulty": 1,
+    "tag": "微前端"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "常见的微前端落地技术方案有？",
+    "options": [
+      "qiankun",
+      "Module Federation（Webpack 5）",
+      "single-spa",
+      "jQuery 插件"
+    ],
+    "answer": "ABC",
+    "analysis": "qiankun、single-spa、Webpack 5 Module Federation 都是业界主流微前端方案。jQuery 插件只是普通库封装，不提供子应用加载与隔离能力。",
+    "difficulty": 3,
+    "tag": "微前端"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "微前端主应用与子应用之间的通信方式包括？",
+    "options": [
+      "通过 props/回调传入参数",
+      "通过 CustomEvent 自定义事件",
+      "通过共享的全局状态（如 qiankun initGlobalState）",
+      "直接修改子应用的构建产物代码"
+    ],
+    "answer": "ABC",
+    "analysis": "props 注入、自定义事件、共享全局状态与 URL 等都是主子和子应用通信的常见方式。修改对方构建产物既不可行也不属于运行时通信。",
+    "difficulty": 2,
+    "tag": "主子通信"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "PWA 的核心技术组成包括？",
+    "options": [
+      "Service Worker",
+      "manifest.json",
+      "HTTPS 安全上下文",
+      "WebSocket 长连接"
+    ],
+    "answer": "ABC",
+    "analysis": "PWA 由 Service Worker（离线/缓存）、manifest（可安装）、HTTPS（安全上下文）等构成。WebSocket 用于实时通信，不是 PWA 的必要组成。",
+    "difficulty": 2,
+    "tag": "PWA"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "关于 Service Worker 的正确说法有？",
+    "options": [
+      "可以拦截 fetch 请求返回缓存",
+      "运行在独立线程，不能直接操作 DOM",
+      "注册要求 HTTPS 或 localhost",
+      "可以访问 window 对象操作页面样式"
+    ],
+    "answer": "ABC",
+    "analysis": "Service Worker 能拦截网络请求、缓存资源，独立线程运行无 DOM 访问权，且受安全上下文限制。它通过 postMessage 与页面通信，不能直接操作 window/DOM。",
+    "difficulty": 3,
+    "tag": "Service Worker"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "关于小程序的正确说法有？",
+    "options": [
+      "页面使用 WXML/WXSS 编写",
+      "逻辑层与渲染层分离的双线程模型",
+      "setData 将逻辑层数据同步到渲染层",
+      "小程序中存在完整的标准 DOM 对象"
+    ],
+    "answer": "ABC",
+    "analysis": "小程序用 WXML/WXSS 描述结构与样式，逻辑层与渲染层分离，通过 setData 同步数据。小程序运行环境没有标准 DOM/BOM，不能直接操作 DOM。",
+    "difficulty": 2,
+    "tag": "小程序"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "小程序与 H5 的差异体现在？",
+    "options": [
+      "渲染模型：小程序双线程，H5 JS 与 DOM 同线程",
+      "发布流程：小程序需宿主平台审核",
+      "运行环境：小程序运行在宿主 App 提供的环境中",
+      "开发语言：两者都必须使用同一门语言"
+    ],
+    "answer": "ABC",
+    "analysis": "小程序双线程、需审核、运行于宿主环境，均与 H5 不同。H5 可使用任意主流 Web 技术，小程序则有规定的开发语言体系，并非“同一门语言”。",
+    "difficulty": 3,
+    "tag": "小程序"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "关于 Taro 与 uni-app，说法正确的有？",
+    "options": [
+      "Taro 使用 React 语法",
+      "uni-app 使用 Vue 语法",
+      "两者都能编译输出到小程序、H5 等多端",
+      "两者都是微前端框架"
+    ],
+    "answer": "ABC",
+    "analysis": "Taro 面向 React 语法，uni-app 面向 Vue 语法，二者都是把一套代码编译到多端的跨端框架。它们是跨端方案，不是微前端框架。",
+    "difficulty": 2,
+    "tag": "跨端方案"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "multiple",
+    "question": "结合项目场景选择前端架构，以下搭配合理的有？",
+    "options": [
+      "博客/文档站选 SSG",
+      "电商官网要求 SEO 选 SSR 或 SSG",
+      "强交互后台管理系统选 CSR SPA",
+      "实时 IM 聊天用纯 SSG"
+    ],
+    "answer": "ABC",
+    "analysis": "内容型站点适用 SSG，SEO 要求高的官网适用 SSR/SSG，交互密集的后台适用 CSR。实时 IM 需要 WebSocket 与动态渲染，纯 SSG 无法承载。",
+    "difficulty": 3,
+    "tag": "架构选型"
+  }
+]

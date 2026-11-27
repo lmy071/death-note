@@ -1,0 +1,497 @@
+[
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 webpack 的打包构建流程，下列说法正确的是？",
+    "options": [
+      "先执行完所有 Plugin 的生命周期钩子，再开始解析入口模块",
+      "从 entry 入口出发，对每个模块先经匹配的 Loader 转换，再解析其依赖并递归构建出完整依赖图，最后按配置生成 Chunk 并输出文件",
+      "Loader 在依赖图构建完成之后统一对全部产物进行转换",
+      "webpack 不解析 import/require 语句，只按文件扩展名直接拼接模块"
+    ],
+    "answer": "B",
+    "analysis": "webpack 以 entry 为起点开始编译：读取模块后先用匹配的 Loader 转换源码，再解析其中的 import/require 找出依赖并递归处理，形成模块依赖图；随后按 entry/output、splitChunks 等配置生成 Chunk，最终写出产物文件。Plugin 与 Loader 全程参与编译过程，并非先于入口解析执行。",
+    "difficulty": 3,
+    "tag": "打包流程"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "下列关于 webpack 中 Loader 与 Plugin 的说法，正确的是？",
+    "options": [
+      "Loader 可以监听打包的各个生命周期阶段，干预产物生成",
+      "Plugin 只能对特定类型的文件（如 .css、.png）做格式转换",
+      "Loader 的作用范围覆盖整个打包流程，包括优化代码分割",
+      "Loader 专注于将模块的源代码转换成其他形式（如将 TS 转成 JS），Plugin 则通过钩子机制参与打包全流程，能修改产物、优化输出"
+    ],
+    "answer": "D",
+    "analysis": "Loader 本质上是模块源代码的转换器，与文件类型一一匹配；Plugin 则利用 compiler/compilation 暴露的生命周期钩子在打包各阶段介入（如压缩、分包、生成额外文件），能力远大于 Loader。选项 A、B、C 均混淆了两者的职责边界。",
+    "difficulty": 2,
+    "tag": "Loader与Plugin"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "webpack 配置中某模块规则为 use: ['style-loader', 'css-loader']，处理 .css 文件时两个 Loader 的执行顺序是？",
+    "options": [
+      "先执行 style-loader，再执行 css-loader",
+      "两个 Loader 同时并行执行",
+      "先执行 css-loader，再执行 style-loader",
+      "顺序随机，由 webpack 内部调度决定"
+    ],
+    "answer": "C",
+    "analysis": "多个 Loader 在同一规则中按从右到左、从下到上的顺序执行（pitch 阶段顺序相反）。因此 css-loader 先被调用，把 CSS 转换为 JS 模块，之后 style-loader 再把样式注入页面。",
+    "difficulty": 2,
+    "tag": "Loader链"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 Babel 中 presets 与 plugins 的执行顺序，下列说法正确的是？",
+    "options": [
+      "plugins 中的配置项先于 presets 执行，且同类型内按书写顺序从前到后执行",
+      "plugins 先于 presets 执行，且同类型内按逆序（从后往前）执行",
+      "presets 先于 plugins 执行，且同类型内按书写顺序执行",
+      "plugins 与 presets 的执行顺序由代码量大小自动决定"
+    ],
+    "answer": "B",
+    "analysis": "Babel 的转换规则是：plugins 优先于 presets 执行；同为 plugins（或同为 presets）时按照从后往前的顺序执行。理解这一规则才能正确安排插件顺序，避免转换结果相互影响。",
+    "difficulty": 4,
+    "tag": "Babel"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "使用 @babel/preset-env 时，关于其与 polyfill（core-js）的关系，下列说法正确的是？",
+    "options": [
+      "preset-env 主要用于语法转换（如箭头函数、解构），而 Promise、Array.prototype.includes 等新 API 需要 core-js 等 polyfill 来补充",
+      "preset-env 会自动把浏览器缺失的新 API 全部补齐，无需引入 core-js",
+      "core-js 只负责语法转译，新 API 的补齐由 preset-env 完成",
+      "只要引入 core-js 就不需要 preset-env 做任何转换"
+    ],
+    "answer": "A",
+    "analysis": "@babel/preset-env 按 targets 配置做语法层面的转换；运行时新增 API（如 Promise、includes 等）属于运行环境能力，需要 core-js 等 polyfill 补齐。配置 useBuiltIns: 'usage' 可只按需引入用到的 polyfill，减小打包体积。",
+    "difficulty": 3,
+    "tag": "Polyfill"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "webpack 的 devtool 配置为 'eval' 时，下列说法正确的是？",
+    "options": [
+      "每个模块的代码以脚本标签形式加载，映射精度最高，适合生产环境",
+      "每个模块以 eval 包裹执行，构建速度最快，但定位精度只到模块级，且产物中内联完整源码，不适合生产使用",
+      "生成独立的 .map 文件，浏览器按需加载",
+      "不生成任何 source map 信息"
+    ],
+    "answer": "B",
+    "analysis": "'eval' 用 eval 包裹每个模块执行，构建与重构建都很快，但堆栈定位只精确到模块，且源码直接内联在产物中，通常仅用于开发调试。独立 .map 文件需要 source-map 类配置，'eval' 并不会生成外部 map 文件。",
+    "difficulty": 3,
+    "tag": "Sourcemap"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "生产环境需要在错误监控平台上报精确到行列的堆栈，同时又不希望用户通过控制台看到完整源码，应选择哪种 source map 策略？",
+    "options": [
+      "eval-source-map",
+      "inline-source-map",
+      "nosources-source-map",
+      "不生成 source map，仅压缩代码"
+    ],
+    "answer": "C",
+    "analysis": "nosources-source-map 生成包含行列映射的 map 文件，但 map 中不含 sourcesContent 源码内容，错误监控平台据此可定位行列，前端源码也不会泄露。eval 系与 inline 系都会把源码或映射内联进产物，不适合生产环境。",
+    "difficulty": 4,
+    "tag": "Sourcemap"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "为什么 webpack 的 tree shaking 对 ES Module 生效，而对 CommonJS 基本无效？",
+    "options": [
+      "CommonJS 模块加载速度更快，无需 tree shaking",
+      "webpack 不支持解析 CommonJS 语法",
+      "CommonJS 模块的导出内容无法被读取",
+      "ES Module 的 import/export 是静态的，编译期即可确定依赖关系并安全移除未使用代码；CommonJS 的 require/exports 是运行时动态执行的，无法静态分析"
+    ],
+    "answer": "D",
+    "analysis": "tree shaking 依赖编译期的静态分析：ESM 的 import/export 结构固定且必须位于模块顶层，因此编译期就能确定哪些导出未被使用并安全删除。CommonJS 的模块导出是运行时对象赋值，编译期无法判定，故无法可靠摇树。",
+    "difficulty": 3,
+    "tag": "TreeShaking"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "在 package.json 中把 sideEffects 声明为 false，其作用是？",
+    "options": [
+      "禁止代码中一切副作用，强制启用严格模式",
+      "让 webpack 将 CSS 等资源也排除在打包之外",
+      "声明该模块或包没有副作用，webpack 可放心删除未被引用的导出及其模块，从而充分执行 tree shaking",
+      "开启所有依赖的按需引入，自动摇树"
+    ],
+    "answer": "C",
+    "analysis": "sideEffects 字段告诉打包器该模块（或整个包）是否包含副作用，如修改全局、导入即执行等。设为 false 表示无副作用，未被使用且未被引入的模块可被安全剔除；若实际存在副作用却误设为 false，import './reset.css' 之类的样式可能被意外删除。",
+    "difficulty": 3,
+    "tag": "sideEffects"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "webpack 将 mode 配置为 'production' 时，默认会开启下列哪一组行为？",
+    "options": [
+      "代码压缩、tree shaking、将 NODE_ENV 置为 production 等优化",
+      "为每个入口模块单独生成一个 Chunk",
+      "禁用所有 Loader 与 Plugin",
+      "自动将内联资源全部转为 base64"
+    ],
+    "answer": "A",
+    "analysis": "production 模式默认启用 TerserPlugin 压缩、模块级 tree shaking、DefinePlugin 注入 process.env.NODE_ENV=production 等优化，产物体积更小；development 模式则偏重构建速度与调试友好度，两者策略不同。",
+    "difficulty": 2,
+    "tag": "模式配置"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 webpack 对动态 import() 的处理，下列说法正确的是？",
+    "options": [
+      "动态 import() 会被静态展开合并进主 bundle，与普通 import 无异",
+      "动态 import() 在浏览器不支持时自动降级为同步加载",
+      "动态 import() 返回 Promise，webpack 会将其依赖单独分割成异步 Chunk，运行时按需加载",
+      "动态 import() 只能用于加载第三方库，不能加载业务模块"
+    ],
+    "answer": "C",
+    "analysis": "动态 import() 是一个 Promise 化的加载表达式，webpack 解析到它时会把相关模块单独切分为异步 Chunk，页面运行到该语句时才通过脚本加载，从而实现路由级或组件级代码分割。React.lazy 与 Vue 异步组件均基于此机制。",
+    "difficulty": 2,
+    "tag": "代码分割"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "打包后的页面运行到动态 import() 语句、需要加载异步 Chunk 时，webpack 运行时采用的是哪种加载方式？",
+    "options": [
+      "通过 fetch 请求后使用 eval 执行",
+      "动态创建 <script> 标签（JSONP 方式）请求并执行该 Chunk 的脚本",
+      "通过 WebSocket 从开发服务器实时推送",
+      "将异步 Chunk 内容预先内联进 HTML"
+    ],
+    "answer": "B",
+    "analysis": "webpack 运行时会为异步 Chunk 生成加载逻辑，采用动态创建 script 标签（JSONP）的方式拉取 chunk 脚本，脚本加载后回调完成模块注册并 resolve 对应 Promise。开发时的 HMR 推送与生产环境的 Chunk 加载是两套独立机制。",
+    "difficulty": 3,
+    "tag": "Chunk加载"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 webpack 的 splitChunks（SplitChunksPlugin），下列说法正确的是？",
+    "options": [
+      "它是 webpack 2 时代的插件，webpack 5 中已废除",
+      "它只能手动指定 chunk 名称，无法自动提取公共代码",
+      "它的作用是压缩 Chunk 中的重复代码行",
+      "它在默认配置下会自动把多入口间共享的模块或体积较大的第三方依赖提取到公共或独立 Chunk，减少重复打包并利于缓存"
+    ],
+    "answer": "D",
+    "analysis": "SplitChunksPlugin 从 webpack 4 起默认启用（webpack 5 内置），按模块公共性、体积、被引用次数等规则自动拆分公共代码与第三方库到独立 chunk。这样多入口不再各自重复包含同一依赖，且不变的 vendor chunk 可长期命中浏览器缓存。",
+    "difficulty": 3,
+    "tag": "分包策略"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "webpack 输出文件命名中 hash、chunkhash、contenthash 三者的区别，正确的是？",
+    "options": [
+      "三者含义完全相同，只是写法不同",
+      "chunkhash 由单个文件内容计算，文件内容不变 hash 就不变",
+      "contenthash 在每次构建时都会变化，无法用于缓存",
+      "hash 与整次构建相关，构建内容变化即变；chunkhash 与具体 Chunk 相关；contenthash 按单个文件内容计算，最适合用于长效缓存"
+    ],
+    "answer": "D",
+    "analysis": "hash 基于整次编译生成，一次构建的所有产物相同，任何文件改动都会使其变化；chunkhash 基于所属 Chunk；contenthash 基于单个文件的内容。因此生产环境常给 JS 用 chunkhash、给 CSS 用 contenthash，避免样式与脚本相互牵连变化，提高缓存命中率。",
+    "difficulty": 4,
+    "tag": "缓存Hash"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "为了最大化利用浏览器缓存并保证更新生效，下列发布策略中更合理的是？",
+    "options": [
+      "文件名带上 contenthash，配合较长的强缓存过期时间；内容不变时命中缓存，内容变化时文件名改变、浏览器请求新文件",
+      "文件名固定不变，靠设置 Cookie 控制更新",
+      "每次发布随机改文件名，不管内容是否变化",
+      "所有资源使用协商缓存，不设置强缓存"
+    ],
+    "answer": "A",
+    "analysis": "contenthash 命名的核心价值在于：文件未变化时 URL 不变，可安全使用 max-age 等强缓存；文件一旦变化 URL 随之更新，浏览器会拉取新版本，两者互不干扰。文件名固定不变会导致更新后浏览器仍命中旧缓存。",
+    "difficulty": 3,
+    "tag": "缓存策略"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 webpack 5 的持久化缓存，下列说法正确的是？",
+    "options": [
+      "webpack 5 默认把所有模块内容缓存到内存，进程重启后失效",
+      "持久化缓存只对 loader 生效，与模块解析无关",
+      "持久化缓存会显著增大最终产物体积",
+      "在 webpack 5 中启用 filesystem 类型的持久化缓存，将模块编译中间结果写入磁盘，二次构建时可跳过未变化模块的重新编译，提升构建速度"
+    ],
+    "answer": "D",
+    "analysis": "webpack 5 内置持久化缓存：开启 cache 的 filesystem 类型后，模块的编译中间产物会落盘，下次构建命中缓存即直接复用，显著提升增量构建速度。它不影响最终产物大小，作用范围也不仅限于 loader。",
+    "difficulty": 3,
+    "tag": "构建缓存"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "webpack-bundle-analyzer 这类工具的主要作用是？",
+    "options": [
+      "自动修复 bundle 中的安全漏洞",
+      "将打包产物体积以可交互树状图可视化呈现，帮助定位体积过大的模块并评估优化空间",
+      "替代 TerserPlugin 完成代码压缩",
+      "自动把 bundle 拆分成多个小体积文件"
+    ],
+    "answer": "B",
+    "analysis": "webpack-bundle-analyzer 读取 stats 数据生成模块体积的可视化报告，开发者据此找出打包体积最大的依赖，进而决定按需引入、分包或使用 CDN 等优化手段。它只做静态分析与展示，不负责压缩或修复问题。",
+    "difficulty": 2,
+    "tag": "产物分析"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 Vite 开发服务器的运行原理，下列说法正确的是？",
+    "options": [
+      "开发时浏览器直接通过原生 ESM 按需请求模块，Vite 只对请求到的模块做实时转换，无需像 webpack 那样先全量打包",
+      "开发时 Vite 先用 Rollup 把整个项目打包成单个 bundle 再交给浏览器",
+      "Vite 开发服务器不处理 .vue、.ts 文件，需要额外单独配置",
+      "Vite 开发时把全部依赖合并打包为一个大文件以加快加载"
+    ],
+    "answer": "A",
+    "analysis": "Vite dev 的核心是利用浏览器原生 ESM：启动时不打包整个应用，浏览器按需请求模块，Vite 用 esbuild 预构建依赖，并通过插件（如 vue、ts 插件）实时转换被请求的文件，因此冷启动与热更新都很快。生产构建才由 Rollup 负责打包。",
+    "difficulty": 3,
+    "tag": "Vite原理"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "Vite 开发模式下使用 esbuild 对依赖进行预构建（pre-bundling）的目的，不包括下列哪一项？",
+    "options": [
+      "将 CommonJS/UMD 格式的依赖转换为浏览器可直接运行的 ESM",
+      "把大量小依赖合并为少数模块，减少开发时浏览器的模块请求数量",
+      "对业务源码做 tree shaking 以减小产物体积",
+      "统一依赖的规范化路径，减少重复加载"
+    ],
+    "answer": "C",
+    "analysis": "预构建针对 node_modules 依赖：esbuild 将其转为 ESM 并按体积合并（如把上百个 lodash 小模块合成一个），从而减少请求数与加载开销。tree shaking 是生产构建阶段对源码的处理，不属于预构建的目的，故 C 为不正确说法。",
+    "difficulty": 3,
+    "tag": "依赖预构建"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 Vite 的生产构建，下列说法正确的是？",
+    "options": [
+      "与开发模式一样由 esbuild 完成最终打包",
+      "不生成静态文件，依赖运行时服务器实时编译",
+      "生产构建会保留所有开发依赖不做任何处理",
+      "生产构建由 Rollup 负责打包，esbuild 主要用于依赖预构建以及 TS/JSX 的转译，产物为可部署的静态资源"
+    ],
+    "answer": "D",
+    "analysis": "Vite 采用双引擎策略：开发用 esbuild 与原生 ESM 保证速度；生产构建交给 Rollup（成熟稳定、插件生态丰富），负责打包、代码分割与压缩。esbuild 虽快，但目前主要用于预构建和转译，不承担生产打包。",
+    "difficulty": 3,
+    "tag": "Vite构建"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 webpack/Vite 的热更新（HMR）机制，下列说法正确的是？",
+    "options": [
+      "HMR 等同于整页刷新，只是速度更快",
+      "HMR 只能在生产环境使用",
+      "HMR 通过 HTTP 长轮询每秒检查一次文件变化",
+      "开发服务器通过 WebSocket 将模块更新增量推送到浏览器，模块被 accept 后无需刷新页面即可局部替换并保留运行状态"
+    ],
+    "answer": "D",
+    "analysis": "HMR 的核心是在不刷新页面的前提下替换模块：打包器监听文件变化，将更新后的模块通过 WebSocket 推送给浏览器端 runtime，runtime 依据模块间的 accept 关系决定如何替换、冒泡或降级为整页刷新。这能保留组件状态与调试上下文。",
+    "difficulty": 3,
+    "tag": "热更新"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "HMR 更新过程中，若某个模块发生了修改但没有注册 accept 处理，更新会如何传播？",
+    "options": [
+      "更新会沿依赖链向引用它的上游模块冒泡寻找 accept 处理；若一路上都没有模块接受更新，最终触发整页刷新",
+      "该模块的更新被直接丢弃，页面不会发生任何变化",
+      "浏览器会强制关闭当前页面并重新加载",
+      "只更新样式类模块，业务模块一律整页刷新"
+    ],
+    "answer": "A",
+    "analysis": "HMR 的边界处理：当前模块未 accept 时，runtime 沿引用链向上游（父模块）冒泡，逐级检查是否有 accept；直到根节点仍无人接受，则降级为 location.reload() 整页刷新。框架的 HMR 插件（如 @vitejs/plugin-vue、react-refresh）正是通过注入 accept 逻辑来避免整页刷新。",
+    "difficulty": 5,
+    "tag": "HMR边界"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于图片懒加载的实践，下列说法正确的是？",
+    "options": [
+      "对首屏 LCP 图片也设置 loading=\"lazy\"，能显著提升首屏速度",
+      "懒加载只对 CSS 背景图有效，对 <img> 无效",
+      "通常借助 IntersectionObserver 或 loading=\"lazy\" 属性让视口外的图片延迟加载，减少首屏请求与流量，但首屏关键图片不建议懒加载",
+      "懒加载会阻塞首屏渲染，应全局禁用"
+    ],
+    "answer": "C",
+    "analysis": "懒加载让图片进入视口附近时才加载，减少首屏并发请求与传输字节。首屏关键图（尤其 LCP 元素）应优先加载（可用 fetchpriority=\"high\"），若对其实施懒加载反而会推迟加载时机、恶化 LCP 指标。",
+    "difficulty": 2,
+    "tag": "懒加载"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 <link rel=\"preload\"> 与 <link rel=\"prefetch\"> 的区别，下列说法正确的是？",
+    "options": [
+      "二者完全相同，可以互换使用",
+      "preload 以较高优先级立即加载当前页面即将用到的关键资源；prefetch 在浏览器空闲时预取未来页面可能用到的资源、优先级较低",
+      "preload 用于预取下一个页面的资源，prefetch 用于当前页面资源",
+      "preload 只对字体生效，prefetch 只对脚本生效"
+    ],
+    "answer": "B",
+    "analysis": "preload 是提前加载当前导航的关键资源（如首屏字体、关键图片、关键 JS），优先级高；prefetch 则利用空闲带宽预取后续导航可能用到的资源，优先级低。两者的加载时机与用途不同，滥用 preload 会抢占带宽、适得其反。",
+    "difficulty": 3,
+    "tag": "预加载"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 LCP（Largest Contentful Paint）指标，下列说法正确的是？",
+    "options": [
+      "LCP 指的是页面首个元素开始绘制的时间",
+      "LCP 指视口内最大的内容元素（如图片、文本块）渲染完成的时间，优秀水平通常要求在约 2.5 秒内",
+      "LCP 只统计文本内容，不统计图片",
+      "LCP 反映的是用户点击交互的响应速度"
+    ],
+    "answer": "B",
+    "analysis": "LCP 衡量首屏最大可见内容出现的时机，是 Core Web Vitals 之一，优秀阈值约为 2.5s 以内。它与 FCP 不同：FCP 是首个任何内容绘制完成的时间，LCP 关注最大内容；LCP 度量加载渲染体验，而非点击响应速度。",
+    "difficulty": 2,
+    "tag": "性能指标"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "滚动监听场景中，要求无论滚动多频繁，每隔固定时间（如 200ms）至少执行一次处理函数，应使用哪种手段？",
+    "options": [
+      "节流（throttle）：按固定时间间隔限制执行频率",
+      "防抖（debounce）：事件停止后延迟执行",
+      "同时使用防抖与节流会直接报错，不可组合",
+      "把处理函数改为同步执行即可实现"
+    ],
+    "answer": "A",
+    "analysis": "节流保证一段时间内最多执行一次，适合滚动、resize 等高频事件；防抖则是等待事件停止触发一段时间后再执行，适合搜索联想等场景。题干强调固定间隔至少执行一次，对应节流。",
+    "difficulty": 2,
+    "tag": "防抖节流"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于骨架屏（Skeleton Screen），下列说法正确的是？",
+    "options": [
+      "骨架屏能减少页面的网络请求字节数",
+      "骨架屏以与最终内容结构近似的灰色占位块立即呈现在首屏，提升用户感知的加载体验，但不会缩短真实数据下载耗时",
+      "只有服务端渲染的项目才能实现骨架屏",
+      "骨架屏会显著降低 LCP 指标的真实数值"
+    ],
+    "answer": "B",
+    "analysis": "骨架屏属于感知性能优化：数据未就绪时先展示占位结构，减少白屏等待的焦虑感。它不减少网络传输量，也不改变真实下载完成时间（不会让 LCP 的真实耗时变小），但能改善用户的主观等待体验，常配合数据请求状态实现。",
+    "difficulty": 2,
+    "tag": "骨架屏"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "下列选项中，能直接减小 JS/CSS 资源传输体积且不改变内容语义的是？",
+    "options": [
+      "在服务器开启 gzip 或 brotli 压缩，并配合打包时的代码压缩",
+      "把 JS 文件的扩展名改成 .txt",
+      "用 display:none 隐藏未使用部分",
+      "增大 Cache-Control: max-age 数值"
+    ],
+    "answer": "A",
+    "analysis": "gzip/brotli 对文本资源的压缩率很高（通常可达 60% 以上），配合 minify（移除空白、缩短变量名等）能显著减小传输体积。改扩展名、隐藏元素或调整缓存时长都不会减小实际传输字节。",
+    "difficulty": 1,
+    "tag": "资源压缩"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 webpack 5 对图片等静态资源的处理，下列说法正确的是？",
+    "options": [
+      "webpack 5 已不支持图片资源，必须使用外部 CDN",
+      "只能通过 url-loader 将小图片转为 base64",
+      "webpack 5 内置 asset modules（asset/resource、asset/inline 等），asset 类型还可根据体积阈值自动决定内联或输出为独立文件",
+      "所有图片都必须手动在 HTML 中引用，无法用 import 导入"
+    ],
+    "answer": "C",
+    "analysis": "webpack 5 用 asset modules 取代了 file-loader/url-loader/raw-loader：asset/resource 输出独立文件，asset/inline 转为 data URI，asset 类型按 parser.dataUrlCondition.maxSize 阈值自动选择内联还是外链文件，配置更简洁。",
+    "difficulty": 3,
+    "tag": "资产模块"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "在 Jest 中，判断两个对象的内容（结构）是否完全一致，应使用哪个匹配器？",
+    "options": [
+      "toBe",
+      "toEqual",
+      "toThrow",
+      "toContain"
+    ],
+    "answer": "B",
+    "analysis": "toBe 使用 Object.is 做严格引用比较，只适合基本类型；toEqual 递归比较对象和数组的值是否相等，用于内容断言；toThrow 断言函数抛错，toContain 断言数组或字符串包含某值。比较对象结构应使用 toEqual。",
+    "difficulty": 2,
+    "tag": "Jest"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "下列关于 Vitest 的说法，错误的是？",
+    "options": [
+      "Vitest 需要先把测试代码打包成独立 bundle 再运行，因此无法使用 ESM",
+      "Vitest 基于 Vite，可直接复用 Vite 的配置与插件体系",
+      "Vitest 的测试 API（describe/it/expect 等）与 Jest 高度兼容，迁移成本低",
+      "Vitest 原生支持 TypeScript 与 ESM，无需额外转译配置"
+    ],
+    "answer": "A",
+    "analysis": "Vitest 复用 Vite 的能力，测试代码通过 Vite 转换后直接在 Node 中运行，无需产出 bundle，且原生支持 ESM 与 TS。A 选项说必须打包且无法使用 ESM，与事实相反，故选 A；其余选项均符合 Vitest 的特性。",
+    "difficulty": 3,
+    "tag": "Vitest"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于持续集成（CI）与持续交付/部署（CD），下列说法正确的是？",
+    "options": [
+      "CI 指手工把代码部署到生产环境的过程",
+      "CI 只负责代码压缩打包，不执行测试",
+      "CD 与 CI 无关，只涉及数据库迁移",
+      "CI 在代码合并或提交后自动执行构建与测试，尽早暴露集成问题；CD 在验证通过后自动化地交付或部署到目标环境"
+    ],
+    "answer": "D",
+    "analysis": "持续集成强调频繁合并代码并自动构建、测试，及时发现集成冲突与回归；持续交付/部署把通过验证的构建产物自动化发布。二者常组合成流水线（如 install→build→test→deploy），是现代前端工程化发布流程的基础。",
+    "difficulty": 2,
+    "tag": "CI/CD"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "webpack 配置中设置 externals: { react: 'React' } 的作用是？",
+    "options": [
+      "将 react 源码打进 bundle 并单独压缩",
+      "自动从 npm 下载 react 到 node_modules 并参与构建",
+      "构建时跳过对 react 的打包，代码中的 import react 在运行时从全局变量 React 取得，通常配合 CDN script 引入以减小 bundle 体积",
+      "把 react 的所有导出 API 重命名为短名字"
+    ],
+    "answer": "C",
+    "analysis": "externals 把指定模块标记为外部依赖：编译时不做解析与打包，import 保留为对全局变量（如 window.React）的引用，需在运行前通过 CDN script 等方式提供。常用来排除体积大且稳定不变的第三方库，降低 bundle 体积与构建负担，并借助 CDN 缓存。",
+    "difficulty": 3,
+    "tag": "Externals"
+  }
+]

@@ -1,0 +1,497 @@
+[
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "下列关于 Vue 3 响应式系统实现的说法，正确的是（ ）。",
+    "options": [
+      "与 Vue 2 相同，通过 `Object.defineProperty` 逐个劫持属性",
+      "通过深拷贝数据副本并在修改后替换整个对象来触发更新",
+      "只对 `data` 中的顶层属性做劫持，嵌套对象不具备响应性",
+      "基于 `Proxy` 代理对象，能够侦测新增属性、删除属性等操作"
+    ],
+    "answer": "D",
+    "analysis": "Vue 3 的 `reactive` 基于 ES6 的 `Proxy` 对整个对象进行代理，新增、删除属性以及数组索引变化都能被侦测到，这是与 Vue 2 的核心差异之一。Vue 2 使用 `Object.defineProperty` 逐个定义属性，无法侦测新增属性和删除属性。",
+    "difficulty": 3,
+    "tag": "响应式原理"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "Vue 2 中，运行 `this.user.age = 18` 这类「给响应式对象新增属性」的操作后，下列说法正确的是（ ）。",
+    "options": [
+      "新增属性立即具备响应式，视图会自动更新",
+      "新增属性默认不具响应式，可借助 `Vue.set`（或 `this.$set`）使其具备响应式",
+      "新增属性不具响应式，且没有任何补救手段",
+      "新增属性不具响应式，但修改它的值会触发视图更新"
+    ],
+    "answer": "B",
+    "analysis": "`Object.defineProperty` 只能在初始化时对已存在的属性做劫持，运行时新增的属性无法被侦测，视图不会更新。此时需要调用 `Vue.set(obj, key, value)`（实例上为 `this.$set`）显式添加响应式属性。",
+    "difficulty": 3,
+    "tag": "响应式原理"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "在 Vue 3 组合式 API 中，用 `const count = ref(0)` 创建响应式变量，下列说法正确的是（ ）。",
+    "options": [
+      "`count` 本身就是数字，可直接执行 `count = 1`",
+      "修改必须写成 `count.value = 1`，模板中同样必须写 `count.value`",
+      "修改必须写成 `count.value = 1`，而在模板中 `count` 会被自动解包，直接写 `count` 即可",
+      "`ref` 创建的变量只能被读取，无法修改"
+    ],
+    "answer": "C",
+    "analysis": "`ref` 会把基本类型包装成带 `value` 属性的响应式对象，因此在脚本中修改必须通过 `count.value`。但在模板中 `ref` 会自动解包，直接写 `count` 即可渲染其值，二者并不冲突。",
+    "difficulty": 2,
+    "tag": "ref"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 `shallowRef`，下列说法正确的是（ ）。",
+    "options": [
+      "与 `ref` 的行为完全一致",
+      "修改 `shallowRef` 所持有对象的深层嵌套属性会触发更新",
+      "只有整体替换 `.value` 才会触发更新，深层属性的修改不会触发",
+      "只能存放基本类型，不能存放对象"
+    ],
+    "answer": "C",
+    "analysis": "`shallowRef` 只对 `.value` 这一层做响应式处理，对象内部深层属性的修改不会被侦测，只有整体替换 `.value` 才会触发更新。它与 `ref` 的深层响应行为不同，且可以持有对象。",
+    "difficulty": 3,
+    "tag": "shallowRef"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 `computed` 计算属性，下列说法正确的是（ ）。",
+    "options": [
+      "具有缓存特性，依赖的响应式数据不变时，多次访问不会重复执行计算函数",
+      "每次访问都会重新执行计算函数，与普通方法没有区别",
+      "只能在模板插值中使用，不能在 JavaScript 逻辑中调用",
+      "计算函数内可以随意修改其他响应式变量的值而不影响缓存"
+    ],
+    "answer": "A",
+    "analysis": "`computed` 的核心特性是基于依赖的缓存：只要依赖的响应式数据没有变化，多次访问都直接返回缓存结果，不会重复执行计算函数。普通方法则每次调用都会重新执行，这是二者最主要的区别。",
+    "difficulty": 3,
+    "tag": "computed"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 `watchEffect` 与 `watch`，下列说法正确的是（ ）。",
+    "options": [
+      "`watchEffect` 必须显式指定监听的数据源，否则无法工作",
+      "`watchEffect` 不会立即执行，只有依赖变化后才触发",
+      "`watchEffect` 与 `watch` 的用法和触发时机完全一致",
+      "`watchEffect` 会立即执行一次，并自动收集函数内用到的响应式依赖，依赖变化时再次执行"
+    ],
+    "answer": "D",
+    "analysis": "`watchEffect` 不需要手动指定数据源，它默认立即执行一次，并在执行过程中自动收集用到的响应式依赖，之后任一依赖变化都会重新执行。而 `watch` 需要显式指定监听源，默认惰性执行。",
+    "difficulty": 4,
+    "tag": "watch"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "在 Vue 模板中书写插值表达式 `{{ message }}`，其作用是（ ）。",
+    "options": [
+      "将 `message` 的值按 HTML 解析后插入页面",
+      "声明一个名为 `message` 的全局变量",
+      "将 `message` 作为文本插入该位置，并随其变化自动更新",
+      "把 `message` 作为 props 传递到根组件"
+    ],
+    "answer": "C",
+    "analysis": "插值表达式 `{{ message }}` 会把表达式的值作为纯文本渲染到该位置，且当 `message` 变化时视图自动更新。它不会解析 HTML 标签，也不用于声明变量或传递 props。",
+    "difficulty": 1,
+    "tag": "插值"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "Vue 3 中，同一元素上同时使用 `v-if` 与 `v-for` 时，二者的处理顺序是（ ）。",
+    "options": [
+      "`v-for` 优先级更高，`v-if` 在每次循环迭代中执行",
+      "`v-if` 优先级更高，且在 `v-if` 中无法访问 `v-for` 的循环变量",
+      "二者优先级相同，按书写顺序依次执行",
+      "编译器直接报错，禁止二者同时出现"
+    ],
+    "answer": "B",
+    "analysis": "Vue 3 中 `v-if` 的优先级高于 `v-for`，因此 `v-if` 无法访问 `v-for` 的循环变量，同时使用会得到开发警告。这一行为与 Vue 2（`v-for` 优先）相反，官方建议避免在同一元素上同时使用，可用 `template` 包裹或改用计算属性过滤。",
+    "difficulty": 5,
+    "tag": "v-if/v-for"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于指令 `v-bind`，下列说法正确的是（ ）。",
+    "options": [
+      "`v-bind:href` 不能简写为 `:href`",
+      "`<div v-bind=\"obj\">` 会把 `obj` 中的键值对合并成一个字符串属性",
+      "`v-bind` 只能绑定原生 HTML 属性，不能绑定组件 props",
+      "对 `class` 与 `style` 绑定对象或数组时，会得到特殊处理并合并到最终值"
+    ],
+    "answer": "D",
+    "analysis": "`v-bind` 可以简写为 `:`，且 `v-bind=\"obj\"` 会把 `obj` 中的键值对展开为多个属性，同时它也能用于绑定组件 props。`class` 与 `style` 支持对象、数组语法并会合并计算，这是它们独有的特殊处理。",
+    "difficulty": 3,
+    "tag": "v-bind"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于事件绑定 `v-on` 及其简写，下列说法正确的是（ ）。",
+    "options": [
+      "`.stop` 修饰符用于阻止元素默认行为",
+      "`.prevent` 修饰符用于阻止事件冒泡",
+      "`@click` 只能绑定组件方法名，不能写内联表达式",
+      "`@click=\"fn\"` 是 `v-on:click=\"fn\"` 的简写形式，二者等价"
+    ],
+    "answer": "D",
+    "analysis": "`v-on` 可用 `@` 简写，`@click=\"fn\"` 与 `v-on:click=\"fn\"` 完全等价，且支持绑定内联表达式。`.stop` 用于阻止事件冒泡，`.prevent` 用于阻止默认行为，两者恰好相反，属于常见混淆点。",
+    "difficulty": 2,
+    "tag": "v-on"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "Vue 3 中自定义组件上使用 `v-model`，默认对应的 prop 名与事件名是（ ）。",
+    "options": [
+      "`value` 与 `input`",
+      "`modelValue` 与 `update:modelValue`",
+      "`value` 与 `update:value`",
+      "`model` 与 `change`"
+    ],
+    "answer": "B",
+    "analysis": "Vue 3 中组件上的 `v-model` 默认为 `modelValue` prop 配合 `update:modelValue` 事件，且一个组件可绑定多个 `v-model` 并指定参数名。`value` 与 `input` 是 Vue 2 中的默认约定，切记区分两个版本的差异。",
+    "difficulty": 3,
+    "tag": "v-model"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "下列 class 绑定写法中，能正确实现「`isActive` 为真时添加 `active` 类」的是（ ）。",
+    "options": [
+      "<div :class=\"['active', isActive]\"></div>",
+      "<div :class=\"active || isActive\"></div>",
+      "<div class=\":class { active: isActive }\"></div>",
+      "<div :class=\"{ active: isActive }\"></div>"
+    ],
+    "answer": "D",
+    "analysis": "`:class=\" { active: isActive } \"` 是对象语法，键为类名、值为布尔条件，`isActive` 为真时添加 `active` 类，这是标准写法。数组语法会无条件加入 `'active'`，布尔表达式与拼接字符串均无法实现按条件添加。",
+    "difficulty": 2,
+    "tag": "class绑定"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "Vue 3 选项式 API 中，组件首次挂载过程中生命周期钩子的执行顺序是（ ）。",
+    "options": [
+      "`created → beforeCreate → mounted → beforeMount`",
+      "`beforeMount → created → beforeCreate → mounted`",
+      "`beforeCreate → created → beforeMount → mounted`",
+      "`beforeCreate → beforeMount → created → mounted`"
+    ],
+    "answer": "C",
+    "analysis": "组件首次挂载的顺序为 `beforeCreate → created → beforeMount → mounted`：先初始化实例与响应式数据，再编译模板、挂载 DOM。组合式 API 中没有 `beforeCreate` 与 `created`，可直接在 `setup` 中编写对应逻辑。",
+    "difficulty": 1,
+    "tag": "生命周期"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "组件被 `<keep-alive>` 缓存后，每次从缓存中重新激活时触发的新生命周期钩子是（ ）。",
+    "options": [
+      "`mounted`",
+      "`created`",
+      "`activated`",
+      "`updated`"
+    ],
+    "answer": "C",
+    "analysis": "被 `<keep-alive>` 缓存的组件首次挂载只执行一次 `mounted`，之后每次重新进入都会触发 `activated`，离开时触发 `deactivated`。这两个钩子专用于缓存组件，可用于代替重复的初始化逻辑。",
+    "difficulty": 3,
+    "tag": "keep-alive"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于组件 props 的数据流，下列说法正确的是（ ）。",
+    "options": [
+      "子组件可以直接修改 props 并同步回父组件的数据源",
+      "props 遵循单向数据流，子组件不应直接修改，应通过 `$emit` 事件通知父组件修改",
+      "props 是只读的，不能赋值给 data、computed 或作为初始值",
+      "父组件只能向子组件传数据，无法传函数"
+    ],
+    "answer": "B",
+    "analysis": "props 遵循单向数据流，父组件通过 props 向下传递数据，子组件应通过 `$emit` 触发事件，由父组件修改源头数据。props 可以赋给 data 或 computed 作为初始值，也允许传递函数，但直接修改 props 会破坏单向数据流并触发警告。",
+    "difficulty": 2,
+    "tag": "props"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "子组件中执行 `this.$emit('update-num', 5)` 之后，父组件正确的监听写法是（ ）。",
+    "options": [
+      "<Child :update-num=\"handleNum\" />",
+      "<Child v-model=\"update-num\" />",
+      "<Child on-update-num=\"handleNum\" />",
+      "<Child @update-num=\"handleNum\" />"
+    ],
+    "answer": "D",
+    "analysis": "`$emit('update-num', 5)` 触发的是自定义事件，父组件应使用 `@update-num=\"handleNum\"`（即 `v-on:update-num`）监听。冒号形式是绑定 prop，`on-` 前缀是原生事件写法，`v-model` 则对应固定的 `update:modelValue` 事件，都不匹配自定义事件名。",
+    "difficulty": 2,
+    "tag": "$emit"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 `provide` 与 `inject`，下列说法正确的是（ ）。",
+    "options": [
+      "`provide` 只能在应用根组件中使用",
+      "注入进来的数据一定具备响应式",
+      "主要用于跨多层组件传递数据：上层组件 `provide` 提供，任意后代组件 `inject` 注入使用",
+      "`inject` 只能注入 `data` 选项里声明的数据"
+    ],
+    "answer": "C",
+    "analysis": "`provide`/`inject` 用于跨多层组件传递数据，解决 props 逐层透传的问题，任意祖先组件都可以提供、任意后代组件都可以注入。注入的数据默认不一定是响应式的，若要响应式需显式提供响应式对象或 ref。",
+    "difficulty": 3,
+    "tag": "provide/inject"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 Vue 3 中的事件总线，下列说法正确的是（ ）。",
+    "options": [
+      "仍然可以使用 `this.$on` / `this.$off` 进行全局事件收发",
+      "Vue 3 已移除 `$emit`，组件之间无法再通过事件通信",
+      "Vue 3 移除了 `$on`、`$off` 等实例方法，事件总线需借助 `mitt` 等第三方库或自行实现",
+      "事件总线是官方推荐的组件通信首选方案"
+    ],
+    "answer": "C",
+    "analysis": "Vue 3 移除了实例方法 `$on`、`$off`、`$once`，原有的全局事件总线模式不再直接可用，需要借助 `mitt` 等库或自行实现发布订阅。但 `$emit` 仍用于父组件与子组件之间的自定义事件通信，并未被移除。",
+    "difficulty": 3,
+    "tag": "事件总线"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于具名插槽的用法，下列说法正确的是（ ）。",
+    "options": [
+      "子组件用 `<slot header />` 定义，父组件用 `<template slot-header>` 填充",
+      "子组件用 `<slot name=\"header\" />` 定义，父组件只能使用 `#default` 填充",
+      "具名插槽必须配合 props 才能使用",
+      "子组件用 `<slot name=\"header\" />` 定义，父组件可用 `<template v-slot:header>`（或简写 `#header`）填充"
+    ],
+    "answer": "D",
+    "analysis": "具名插槽在子组件中用 `name` 属性命名，父组件通过 `<template v-slot:header>`（简写 `#header`）向对应插槽填充内容，未命名的 `default` 插槽则接收所有未指定名称的内容。",
+    "difficulty": 2,
+    "tag": "具名插槽"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "子组件模板中书写 `<slot :item=\"item\"></slot>`，父组件要接收 `item` 数据，正确的写法是（ ）。",
+    "options": [
+      "父组件通过 props 直接接收 `item`",
+      "插槽内的数据一律无法传给父组件",
+      "父组件使用 `<template v-slot=\"slotProps\">`，再通过 `slotProps.item` 访问",
+      "父组件使用 `<template #item>{{ item }}</template>`"
+    ],
+    "answer": "C",
+    "analysis": "插槽上的属性会以对象形式传递给插槽内容，父组件通过 `v-slot=\"slotProps\"` 声明接收整个对象，再以 `slotProps.item` 访问具体字段。插槽数据不走 props 通道，`#item` 是具名插槽引用而非作用域数据。",
+    "difficulty": 4,
+    "tag": "作用域插槽"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于组件的全局注册与局部注册，下列说法正确的是（ ）。",
+    "options": [
+      "全局注册通过 `app.component('MyComp', MyComp)` 完成，注册后任意组件模板中都可直接使用",
+      "局部注册的组件可以在任何其他组件中使用",
+      "全局注册的组件在每个使用时仍需重新 import",
+      "注册后的组件只能以单标签 `<MyComp />` 形式使用"
+    ],
+    "answer": "A",
+    "analysis": "`app.component` 进行全局注册，注册后应用内所有组件模板均可直接使用，无需重复引入；局部注册则在 `components` 选项中声明，仅对当前组件生效。全局注册会增加打包体积，因此大型项目更推荐按需局部注册。",
+    "difficulty": 2,
+    "tag": "组件注册"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "根据数据 `currentComponent` 在运行时切换渲染不同组件，正确的写法是（ ）。",
+    "options": [
+      "<component :is=\"currentComponent\" />",
+      "<dynamic :name=\"currentComponent\" />",
+      "<template :component=\"currentComponent\" />",
+      "<view :is=\"currentComponent\" />"
+    ],
+    "answer": "A",
+    "analysis": "内置组件 `<component>` 通过 `:is` 属性动态绑定组件名或组件对象，即可在运行时切换渲染目标，常与 `keep-alive` 配合缓存切换状态。其他写法都不是 Vue 内置的动态组件语法。",
+    "difficulty": 1,
+    "tag": "动态组件"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于内置组件 `<keep-alive>`，下列说法正确的是（ ）。",
+    "options": [
+      "被包裹组件的真实 DOM 永远保留在页面中，从不销毁",
+      "用于缓存组件实例，避免切换时重复创建销毁，可通过 `include` / `exclude` 控制缓存范围",
+      "被包裹后组件不再执行任何生命周期钩子",
+      "它是 Vue Router 专属组件，普通页面中不能使用"
+    ],
+    "answer": "B",
+    "analysis": "`keep-alive` 以虚拟节点方式缓存组件实例，切换时不会销毁，而是触发 `deactivated`/`activated`，其真实 DOM 并不常驻页面。它可配合 `include`、`exclude` 按组件名控制缓存范围，并且不是 Vue Router 的专属组件。",
+    "difficulty": 3,
+    "tag": "keep-alive"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 mixin 的合并策略，下列说法正确的是（ ）。",
+    "options": [
+      "mixin 与组件的 `data` 冲突时，mixin 中的数据优先",
+      "生命周期钩子合并执行时，组件自身钩子先于 mixin 钩子执行",
+      "mixin 只能全局注册，无法混入单个组件",
+      "组件自身的 `data`、`methods` 等选项优先级高于 mixin 中的同名选项"
+    ],
+    "answer": "D",
+    "analysis": "mixin 合并时，`data`、`methods` 等选项发生同名冲突以组件自身优先；生命周期钩子则都会执行，且 mixin 的钩子先于组件自身钩子调用。mixin 既可以全局注册（`app.mixin`）也可以局部混入单个组件。",
+    "difficulty": 4,
+    "tag": "mixin"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 `nextTick`，下列说法正确的是（ ）。",
+    "options": [
+      "Vue 采用同步更新策略，修改数据后 DOM 立即更新，无需 `nextTick`",
+      "修改响应式数据后，`nextTick` 的回调会在本次 DOM 更新完成后执行，常用于获取更新后的 DOM",
+      "`nextTick` 只能用于获取 DOM，不能配合 `await` 使用",
+      "`nextTick` 会强制重建整个组件，性能差，应尽量避免使用"
+    ],
+    "answer": "B",
+    "analysis": "Vue 的 DOM 更新是异步的，修改响应式数据后 DOM 并不会立刻变化，`nextTick` 的回调会在本次更新队列 flush 之后执行，此时可安全获取最新 DOM。它返回 Promise，可配合 `await nextTick()` 使用，且并非强制重建组件。",
+    "difficulty": 3,
+    "tag": "nextTick"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "路由定义为 `{ path: '/user/:id', component: User }`，当浏览器访问 `/user/10086` 时，在组件中获取 `id` 的正确方式是（ ）。",
+    "options": [
+      "`this.$route.query.id`，值为 `\"10086\"`",
+      "`this.$router.params.id`，值为 `\"10086\"`",
+      "`this.$route.params.id`，值为 `\"10086\"`",
+      "`this.$route.path.id`，值为 `\"10086\"`"
+    ],
+    "answer": "C",
+    "analysis": "动态路由段 `:id` 的值会放入当前路由的 `params` 中，通过 `this.$route.params.id` 获取，且值为字符串。`query` 存放查询字符串参数，`$router` 是路由器实例而非路由信息，`path` 则是完整路径字符串。",
+    "difficulty": 3,
+    "tag": "路由传参"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "项目要求「用户未登录访问受保护页面时跳转到登录页」，最合适的实现是（ ）。",
+    "options": [
+      "在全局前置守卫 `router.beforeEach` 中判断登录状态，未登录时 `next('/login')`",
+      "在每个组件的 `mounted` 钩子里用 `window.location.href` 跳转",
+      "在路由配置对象中直接写页面跳转逻辑",
+      "用 `v-if` 把未登录用户的页面全部隐藏"
+    ],
+    "answer": "A",
+    "analysis": "全局前置守卫 `router.beforeEach` 会在每次路由跳转前执行，适合统一做登录鉴权，未登录时调用 `next('/login')`（或直接返回重定向地址）即可拦截访问。把校验逻辑分散到组件或模板中难以覆盖所有路由，也不够集中可控。",
+    "difficulty": 3,
+    "tag": "路由守卫"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "下列写法中，能正确跳转到 `/list` 并携带查询参数 `page=2` 的是（ ）。",
+    "options": [
+      "`router.replace({ name: 'list', params: { page: 2 } })`",
+      "`router.push({ path: '/list', params: { page: 2 } })`",
+      "`router.push({ path: '/list', query: 'page=2' })`",
+      "`router.push({ path: '/list', query: { page: 2 } })`"
+    ],
+    "answer": "D",
+    "analysis": "编程式导航中查询参数应放在 `query` 对象中：`router.push({ path: '/list', query: { page: 2 } })`，生成的 URL 为 `/list?page=2`。`params` 只对动态路由段生效，与 `path` 同用时会被忽略，且 `query` 必须是对象而非字符串。",
+    "difficulty": 3,
+    "tag": "编程式导航"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于虚拟 DOM，下列说法正确的是（ ）。",
+    "options": [
+      "虚拟 DOM 在任何场景下都比直接操作真实 DOM 性能更高",
+      "虚拟 DOM 是用 JavaScript 对象描述真实 DOM 结构，变化时先对比差异（diff）再最小化更新真实 DOM",
+      "引入虚拟 DOM 后就不再需要真实 DOM",
+      "每次数据变化，虚拟 DOM 都会重建整个页面"
+    ],
+    "answer": "B",
+    "analysis": "虚拟 DOM 是一个描述结构的 JavaScript 对象树，数据变化后先在新旧虚拟 DOM 之间做 diff，计算出最小变更集再批量更新真实 DOM。它并非在任何场景都更快，渲染层最终仍需落到真实 DOM 上，且 diff 也不等于重建整个页面。",
+    "difficulty": 3,
+    "tag": "虚拟DOM"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "`v-for` 渲染列表时，为什么通常要求为每一项指定唯一的 `key`，下列说法正确的是（ ）。",
+    "options": [
+      "帮助 diff 算法精确识别节点的复用、移动与变化，避免状态错乱并提升更新性能",
+      "用于给列表项定位 class 样式",
+      "用于为 `style` 绑定提供依据",
+      "用于强制组件在数据不变时也重新渲染"
+    ],
+    "answer": "A",
+    "analysis": "`key` 让 diff 算法能精确匹配新旧列表中对应的节点，正确复用它而避免不必要的重建，同时防止列表中间插入或乱序时状态错乱。`key` 与样式、强制渲染无关，它本质上是节点身份的标识。",
+    "difficulty": 3,
+    "tag": "diff算法"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 Vuex，下列说法正确的是（ ）。",
+    "options": [
+      "修改 `state` 必须通过提交 mutation（`commit`），且 mutation 中应保持同步",
+      "可以直接给 `state` 赋值，mutation 可有可无",
+      "action 中可以直接修改 `state`，无需经过 mutation",
+      "Vuex 的 `state` 只能在模块外部读取，组件内无法访问"
+    ],
+    "answer": "A",
+    "analysis": "Vuex 规定修改 `state` 的唯一途径是提交 mutation（`store.commit`），mutation 必须是同步函数，以保证状态变化可被 DevTools 追踪。action 用于处理异步逻辑，最终仍要通过提交 mutation 修改状态，组件内则可借助 `mapState` 或 `useStore` 读取。",
+    "difficulty": 3,
+    "tag": "Vuex"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "关于 Pinia 状态管理，下列说法正确的是（ ）。",
+    "options": [
+      "同时支持选项式与组合式两种定义方式，修改 `state` 可以直接赋值，无需 mutation",
+      "必须依赖 Vuex 才能运行",
+      "修改 `state` 必须通过提交 mutation",
+      "仅支持 Vue 2，不支持 Vue 3"
+    ],
+    "answer": "A",
+    "analysis": "Pinia 基于 Composition API 设计，同时支持选项式与组合式两种 Store 写法，是 Vuex 的官方继任者，完全移除 mutation，可直接对 `state` 赋值修改，也可在 action 中修改。它默认支持 Vue 3，独立于 Vuex 运行。",
+    "difficulty": 3,
+    "tag": "Pinia"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "single",
+    "question": "组件选项中要求 `data` 必须是一个返回对象的函数（而不是普通对象），其主要原因是（ ）。",
+    "options": [
+      "便于在模板中通过 `this` 访问数据",
+      "保证每个组件实例都拥有独立的数据副本，避免多个实例共享同一份引用导致互相污染",
+      "函数形式可以显著节省内存占用",
+      "普通对象无法进行响应式转换"
+    ],
+    "answer": "B",
+    "analysis": "组件可被多次实例化，若 `data` 写成普通对象，所有实例会共享同一份引用，一个实例修改数据会波及全部实例。写成函数后每次实例化都会执行函数返回一份全新的数据对象，从而隔离各实例状态。",
+    "difficulty": 4,
+    "tag": "选项API"
+  }
+]

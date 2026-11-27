@@ -1,0 +1,332 @@
+[
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `typeof` 的返回值与其他三项不同的是（　）？\n```js\nvar a = typeof undefined;\nvar b = typeof null;\nvar c = typeof 1;\nvar d = typeof function(){};\n```",
+    "options": ["b 的值", "a 的值", "c 的值", "d 的值"],
+    "answer": "A",
+    "analysis": "typeof null 返回 \"object\"，这是 JavaScript 历史遗留 bug；而 typeof undefined 返回 \"undefined\"、typeof 1 返回 \"number\"、typeof function(){} 返回 \"function\"，与其他三项结果不同，故选 A。",
+    "difficulty": 1,
+    "tag": "typeof"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "执行 `console.log(typeof typeof 1)`，控制台输出的结果是（　）？",
+    "options": ["\"number\"", "\"string\"", "\"object\"", "\"undefined\""],
+    "answer": "B",
+    "analysis": "先计算内层 typeof 1 得到字符串 \"number\"，外层 typeof 作用于字符串，始终返回 \"string\"，故选 B。此考点考查 typeof 返回值的类型恒为字符串。",
+    "difficulty": 2,
+    "tag": "typeof"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码的打印结果为（　）？\n```js\nfunction isObject(v) {\n  return typeof v === 'object';\n}\nconsole.log(isObject(null), isObject([]), isObject({}));\n```",
+    "options": ["true false true", "false true true", "true true true", "false true false"],
+    "answer": "C",
+    "analysis": "typeof null 返回 \"object\"，typeof [] 与 typeof {} 也都返回 \"object\"，因此三项结果均为 true，故选 C。注意 typeof 无法区分 null、数组与普通对象。",
+    "difficulty": 2,
+    "tag": "typeof"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "执行 `console.log(1 instanceof Number)` 的输出结果是（　）？",
+    "options": ["true", "undefined", "抛出 TypeError", "false"],
+    "answer": "D",
+    "analysis": "instanceof 检查的是对象的原型链，而 1 是基本类型，不存在原型链，因此返回 false（并不会报错），故选 D。只有通过 new Number(1) 创建的对象，instanceof Number 才为 true。",
+    "difficulty": 2,
+    "tag": "instanceof"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "`Object.prototype.toString.call([]) === '[object Array]'` 与 `Object.prototype.toString.call({})` 分别合法执行，后者返回（　）？",
+    "options": ["\"[object Object]\"", "\"[object Array]\"", "\"object\"", "\"[object Function]\""],
+    "answer": "A",
+    "analysis": "Object.prototype.toString 是类型判定的可靠手段：对普通对象调用返回 \"[object Object]\"，对数组返回 \"[object Array]\"，对函数返回 \"[object Function]\"，故选 A。它可以区分 typeof 无法区分的 null、数组、Date 等。",
+    "difficulty": 2,
+    "tag": "Object.prototype.toString"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列变量判断方式中，能正确区分 `null`、数组与普通对象的是（　）？",
+    "options": ["typeof v === 'object'", "Object.prototype.toString.call(v)", "v == null", "v instanceof Object"],
+    "answer": "B",
+    "analysis": "Object.prototype.toString.call 对 null 返回 \"[object Null]\"、对数组返回 \"[object Array]\"、对普通对象返回 \"[object Object]\"，可精确区分三者，故选 B。typeof 与 instanceof 都会把 null/数组/对象混为一谈。",
+    "difficulty": 3,
+    "tag": "类型判断"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "表达式 `[] + []` 的结果是（　）？",
+    "options": ["undefined", "0", "\"\"（空字符串）", "[][]"],
+    "answer": "C",
+    "analysis": "二元 + 运算符遇到数组会先将其转换为原始值：空数组转字符串得到 \"\"，两个空字符串相加仍为空字符串，故选 C。这是隐式类型转换（ToPrimitive）与字符串拼接共同作用的结果。",
+    "difficulty": 4,
+    "tag": "类型转换"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "表达式 `[] + {}` 的结果是（　）？",
+    "options": ["\"undefined\"", "NaN", "{}", "\"[object Object]\""],
+    "answer": "D",
+    "analysis": "+ 运算中数组与对象都会先转为字符串：[] 转为 \"\"，{} 转为 \"[object Object]\"，拼接结果为 \"[object Object]\"，故选 D。注意 `{} + []` 因花括号被解析为代码块，结果是 0，两者易混淆。",
+    "difficulty": 5,
+    "tag": "类型转换"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码的输出结果是（　）？\n```js\nconsole.log(0.1 + 0.2 === 0.3);\n```",
+    "options": ["true", "NaN", "undefined", "false"],
+    "answer": "A",
+    "analysis": "二进制浮点数无法精确表示 0.1 与 0.2，0.1 + 0.2 实际为 0.30000000000000004，不等于 0.3，因此输出 false，故选 A。这也是实践中常用 (a+b).toFixed 或乘以整数倍比较的原因。",
+    "difficulty": 3,
+    "tag": "浮点运算"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "表达式 `1 == '1'` 与 `1 === '1'` 的结果分别是（　）？",
+    "options": ["true 与 true", "true 与 false", "false 与 true", "false 与 false"],
+    "answer": "B",
+    "analysis": "宽松相等 == 会做隐式类型转换，数字 1 与字符串 \"1\" 比较时字符串被转为数字，结果为 true；严格相等 === 要求类型与值都相同，因此为 false，故选 B。",
+    "difficulty": 2,
+    "tag": "==与==="
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "执行 `console.log(null == undefined, null === undefined)` 的输出结果是（　）？",
+    "options": ["true true", "false true", "true false", "false false"],
+    "answer": "C",
+    "analysis": "根据规范，null 与 undefined 在宽松相等 == 下相等（返回 true），但在严格相等 === 下因类型不同（Null 与 Undefined）而返回 false，故选 C。这是面试中的高频陷阱。",
+    "difficulty": 2,
+    "tag": "==与==="
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列表达式中结果为 `true` 的是（　）？",
+    "options": ["NaN === NaN", "0 === false", "\"\" == null", "[] == false"],
+    "answer": "D",
+    "analysis": "[] == false 比较时 [] 先转为数字 0，false 也转为数字 0，二者相等返回 true，故选 D。NaN 与自身不相等；0 与 false 类型不同；\"\" 与 null 宽松相等为 false（null 只与 undefined 宽松相等）。",
+    "difficulty": 4,
+    "tag": "类型转换"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中变量提升的结果是（　）？\n```js\nconsole.log(a);\nvar a = 1;\n```",
+    "options": ["1", "ReferenceError", "null", "undefined"],
+    "answer": "A",
+    "analysis": "var 声明的变量会被提升到作用域顶部并初始化为 undefined，声明语句 a = 1 在打印之后才执行，因此输出 undefined，故选 A。注意题中未开启严格模式，否则也不影响此结果。",
+    "difficulty": 1,
+    "tag": "变量提升"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码的执行结果为（　）？\n```js\nvar x = 1;\nfunction f() {\n  console.log(x);\n  var x = 2;\n}\nf();\n```",
+    "options": ["2", "undefined", "1", "ReferenceError"],
+    "answer": "B",
+    "analysis": "函数内部 var x 会提升到函数作用域顶部，使外层全局 x 被遮蔽，打印时内部 x 尚未赋值，故输出 undefined，故选 B。这是 var 变量提升作用于函数作用域的经典例子。",
+    "difficulty": 3,
+    "tag": "变量提升"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码运行时（　）？\n```js\nconsole.log(a);\nlet a = 1;\n```",
+    "options": ["输出 1", "输出 undefined", "抛出 ReferenceError", "输出 null"],
+    "answer": "C",
+    "analysis": "let 声明的变量存在暂时性死区：从进入作用域到声明语句执行前访问该变量都会抛出 ReferenceError，故选 C。这正是 let 与 var 在变量提升行为上的根本区别。",
+    "difficulty": 2,
+    "tag": "暂时性死区"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列关于 `var`、`let`、`const` 的说法正确的是（　）？",
+    "options": ["const 声明的对象属性不可修改", "let 声明的变量存在变量提升且可在声明前访问", "var 声明的变量是块级作用域", "let 与 const 存在暂时性死区，声明前访问会报错"],
+    "answer": "D",
+    "analysis": "let 与 const 都有暂时性死区，声明前访问抛出 ReferenceError，故选 D。const 只是保证绑定不可重新赋值，对象内部属性仍可修改；let 存在提升但不可提前访问；var 是函数作用域而非块级作用域。",
+    "difficulty": 2,
+    "tag": "var/let/const"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码的执行结果为（　）？\n```js\nconst o = { n: 1 };\no.n = 2;\nconsole.log(o.n);\n```",
+    "options": ["1", "报 TypeError", "2", "undefined"],
+    "answer": "C",
+    "analysis": "const 限制的是变量与值的绑定关系，不允许重新赋值整个引用；但对象内部的属性可以自由修改，因此 o.n = 2 合法，输出 2，故选 C。若执行 o = {} 才会抛出 TypeError。",
+    "difficulty": 1,
+    "tag": "const"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码的输出结果是（　）？\n```js\nfor (var i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}\n```",
+    "options": ["0 0 0", "3 3 3", "0 1 2", "undefined 三次"],
+    "answer": "B",
+    "analysis": "var i 是函数作用域变量（全局），循环结束后 i 已为 3，三个定时器回调共享同一个 i，因此都输出 3，故选 B。改用 let 声明 i（每次循环独立绑定）才会依次输出 0、1、2。",
+    "difficulty": 3,
+    "tag": "闭包"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "若希望下列代码输出 `0 1 2`，循环变量应使用（　）？\n```js\nfor (___ i = 0; i < 3; i++) {\n  setTimeout(() => console.log(i), 0);\n}\n```",
+    "options": ["function", "const", "let", "var"],
+    "answer": "C",
+    "analysis": "let 声明的循环变量在每次迭代都会创建新的词法绑定，闭包捕获各自的 i，因此输出 0、1、2，故选 C。var 共享同一变量，const 无法在循环中递增。",
+    "difficulty": 2,
+    "tag": "闭包"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列关于闭包的说法，最准确的是（　）？",
+    "options": ["闭包只在 ES6 中可用", "闭包会立刻释放捕获的变量", "定义闭包必须在函数外部使用 return", "闭包是内部函数访问外部函数变量的能力，且外部函数执行完后变量仍存在"],
+    "answer": "D",
+    "analysis": "闭包指内部函数能访问外部函数作用域中的变量，即使外部函数已经结束，其变量仍被内部函数持有，故选 D。闭包是 JS 函数一等公民的天然特性，并非 ES6 新特性；被引用的变量不会立即释放；return 只是常用的暴露形式而非必须。",
+    "difficulty": 2,
+    "tag": "闭包"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中函数 `counter` 返回的闭包实现了计数器功能，第二次调用 `g()` 的输出是（　）？\n```js\nfunction counter() {\n  var count = 0;\n  return function() {\n    count++;\n    return count;\n  };\n}\nvar g = counter();\ng();\nconsole.log(g());\n```",
+    "options": ["0", "1", "2", "undefined"],
+    "answer": "C",
+    "analysis": "闭包持续持有 count 变量：第一次调用 g() 使 count 变为 1，第二次调用 g() 后 count 变为 2 并返回，故选 C。闭包使局部变量逃逸出函数生命周期而得以长期保存。",
+    "difficulty": 2,
+    "tag": "闭包"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `console.log(a.x)` 的输出结果是（　）？\n```js\nvar a = { x: 1 };\nvar b = a;\nb.x = 2;\nconsole.log(a.x);\n```",
+    "options": ["1", "2", "undefined", "报错"],
+    "answer": "B",
+    "analysis": "对象是引用类型，b = a 使 b 与 a 指向同一对象，通过 b 修改属性等价于修改 a 指向的对象，因此 a.x 为 2，故选 B。这是引用类型赋值的核心特征。",
+    "difficulty": 1,
+    "tag": "引用类型"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `console.log(a, b)` 的输出是（　）？\n```js\nvar a = 1;\nvar b = a;\nb = 2;\nconsole.log(a, b);\n```",
+    "options": ["1 1", "2 2", "1 2", "undefined 2"],
+    "answer": "C",
+    "analysis": "数字是基本类型，b = a 是值的拷贝，之后 b = 2 只改变 b 本身，不影响 a，因此输出 1 2，故选 C。基本类型按值传递，与引用类型的共享引用行为不同。",
+    "difficulty": 1,
+    "tag": "基本类型"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码的执行结果是（　）？\n```js\nfunction foo(a, b) {\n  a = 10;\n  b.name = 'x';\n}\nvar num = 1;\nvar obj = { name: 'y' };\nfoo(num, obj);\nconsole.log(num, obj.name);\n```",
+    "options": ["10 x", "10 y", "1 y", "1 x"],
+    "answer": "D",
+    "analysis": "函数参数按值传递：基本类型 num 传入的是副本，函数内修改不影响外部，因此 num 仍为 1；对象 obj 传入的是引用副本，通过它修改属性会作用到原对象，因此 obj.name 变为 'x'，故选 D。",
+    "difficulty": 3,
+    "tag": "参数传递"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码的输出结果是（　）？\n```js\nvar arr = [1, 2, 3];\nvar r = arr.slice(1);\nconsole.log(arr.length, r);\n```",
+    "options": ["3 与 [2,3]", "2 与 [2,3]", "3 与 [1,2]", "2 与 [1,2]"],
+    "answer": "A",
+    "analysis": "slice 返回从指定下标开始的新数组，不修改原数组，因此 arr 长度仍为 3，r 为 [2, 3]，故选 A。slice 与 splice 的重要区别之一就是 splice 会修改原数组。",
+    "difficulty": 2,
+    "tag": "数组slice"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `arr` 的最终值为（　）？\n```js\nvar arr = [1, 2, 3, 4];\narr.splice(1, 2);\n```",
+    "options": ["[1, 2, 3, 4]", "[1, 4]", "[1, 3, 4]", "报错"],
+    "answer": "B",
+    "analysis": "splice(1, 2) 表示从下标 1 开始删除 2 个元素，即删除 2 和 3，原数组就地修改为 [1, 4]，故选 B。注意 splice 会改变原数组，与 slice 不同。",
+    "difficulty": 2,
+    "tag": "数组splice"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "`[1, 2, 3].map(item => item * 2)` 的返回值是（　）？",
+    "options": ["[1, 2, 3]", "[6, 4, 2]", "[2, 4, 6]", "6"],
+    "answer": "C",
+    "analysis": "map 对每个元素调用回调并把返回值收集成新数组，1、2、3 分别乘以 2 得到 [2, 4, 6]，故选 C。map 不修改原数组且返回等长新数组，不是求和结果。",
+    "difficulty": 1,
+    "tag": "数组map"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码的输出结果是（　）？\n```js\nvar arr = [1, 2, 3, 4];\nvar r = arr.filter(n => n % 2 === 0);\nconsole.log(r);\n```",
+    "options": ["[1, 3]", "[1, 2, 3, 4]", "[4, 2]", "[2, 4]"],
+    "answer": "D",
+    "analysis": "filter 保留回调返回真值的元素，偶数 2 和 4 被保留，返回新数组 [2, 4]，故选 D。filter 同样不修改原数组，且结果顺序与原数组一致。",
+    "difficulty": 1,
+    "tag": "数组filter"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "执行 `var s = [1, [2, 3], 4].join('-')` 后，`s` 的值为（　）？",
+    "options": ["\"1-2,3-4\"", "\"1,2,3,4\"", "\"1-[2,3]-4\"", "\"1-2-3-4\""],
+    "answer": "A",
+    "analysis": "join 会把每个元素转为字符串并用分隔符拼接，嵌套数组 [2, 3] 转字符串时得到 \"2,3\"，因此整体为 \"1-2,3-4\"，故选 A。join 不会递归展开嵌套数组。",
+    "difficulty": 3,
+    "tag": "数组join"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `index` 的值为（　）？\n```js\nvar index = [10, 20, 30].indexOf(20);\n```",
+    "options": ["2", "1", "20", "-1"],
+    "answer": "B",
+    "analysis": "indexOf 返回指定元素在数组中首次出现的下标，元素 20 位于下标 1，故选 B。若元素不存在则返回 -1；这里不是返回值本身。",
+    "difficulty": 1,
+    "tag": "数组indexOf"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中变量 `sum` 的值为（　）？\n```js\nvar sum = [1, 2, 3, 4].reduce((acc, cur) => acc + cur, 0);\n```",
+    "options": ["24", "1234", "10", "6"],
+    "answer": "C",
+    "analysis": "reduce 以初始值 0 开始依次累加 1、2、3、4，最终得到 10，故选 C。若省略初始值则以首元素为初始值，但这里显式传入了 0，结果仍为 10。",
+    "difficulty": 2,
+    "tag": "数组reduce"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `arr` 的长度为（　）？\n```js\nvar arr = [1, 2, 3];\narr.push(4);\narr.unshift(0);\n```",
+    "options": ["4", "6", "3", "5"],
+    "answer": "D",
+    "analysis": "push 在末尾追加元素，unshift 在头部插入元素，每次操作都会使数组长度加 1，原长度为 3，两次操作后长度为 5，故选 D。最终数组为 [0, 1, 2, 3, 4]。",
+    "difficulty": 1,
+    "tag": "数组push"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `v` 的值为（　）？\n```js\nvar arr = [1, 2, 3];\nvar v = arr.pop();\n```",
+    "options": ["3", "2", "1", "undefined"],
+    "answer": "A",
+    "analysis": "pop 删除并返回数组最后一个元素，因此 v 为 3，同时原数组变为 [1, 2]，故选 A。pop 与 push 都是修改原数组并涉及返回值的方法，注意区分。",
+    "difficulty": 1,
+    "tag": "数组pop"
+  }
+]

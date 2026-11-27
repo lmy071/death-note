@@ -1,0 +1,332 @@
+[
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "在 package.json 中，「scripts」字段的作用是？",
+    "options": ["声明项目运行时依赖的第三方包及其版本", "定义可通过 npm run <名称> 执行的命令行脚本", "指定 Node.js 运行的入口文件", "记录项目的名称与版本号等元信息"],
+    "answer": "B",
+    "analysis": "scripts 字段定义命令别名，例如把 build 映射为构建命令，之后用 npm run build 执行；依赖版本声明在 dependencies/devDependencies 中，入口文件由 main 字段指定，name/version 是项目元信息。",
+    "difficulty": 1,
+    "tag": "package.json"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "某项目安装了 webpack-cli 仅用于本地构建打包，按规范应放入 devDependencies，原因是？",
+    "options": ["devDependencies 中的包会被一并打包进最终产物", "dependencies 中的包在 npm install 时不会被下载", "构建工具只在开发阶段需要，生产环境运行时不需要", "devDependencies 中的包不参与 npm install 安装"],
+    "answer": "C",
+    "analysis": "devDependencies 存放构建、测试、代码检查等开发期工具，生产部署使用 --production 或 CI 裁剪时不会被安装；运行时必需的库放 dependencies。A 与事实相反，B、D 说法不准确（两类依赖默认都会被安装，只是生产安装可跳过开发依赖）。",
+    "difficulty": 2,
+    "tag": "依赖管理"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "package.json 中依赖声明 \u0022vue\u0022: \u0022^3.2.0\u0022 的含义是？",
+    "options": ["精确锁定在 3.2.0 版本", "允许安装 3.2.0 及以上且小于 4.0.0 的版本", "允许安装任意大于 3.2.0 的版本，包括 4.x", "只允许安装补丁版本 3.2.x 的最新版"],
+    "answer": "B",
+    "analysis": "^ 允许对最左侧非零版本号保持不变的前提下更新，^3.2.0 即允许 >=3.2.0 且 <4.0.0 的版本；~3.2.0 才限定在 3.2.x 内更新，不带符号的精确版本则完全锁定。",
+    "difficulty": 2,
+    "tag": "semver"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 pnpm 的依赖管理机制，下列说法正确的是？",
+    "options": ["pnpm 与 npm 相同，依赖直接平铺在 node_modules 根目录", "pnpm 不支持多包 workspace 管理", "pnpm 通过硬链接与符号链接复用全局内容寻址存储，节省磁盘空间", "pnpm 安装依赖时必须联网校验哈希，速度最慢"],
+    "answer": "C",
+    "analysis": "pnpm 将包内容存放在全局 store，项目中通过硬链接指向 store，依赖之间的引用用符号链接组织，避免重复下载并显著节省磁盘，同时抑制幽灵依赖；A 是 npm/yarn 早期扁平结构，B、D 与事实不符。",
+    "difficulty": 3,
+    "tag": "pnpm"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "项目提交代码时通常把 package-lock.json（或 yarn.lock）纳入版本控制，其主要作用是？",
+    "options": ["加速 npm 安装包的下载速度", "免除维护 package.json 的必要", "代替 node_modules 参与项目打包", "锁定依赖树中每个包的精确版本，保证不同环境安装一致"],
+    "answer": "D",
+    "analysis": "锁文件记录解析后的精确版本、依赖树结构与校验信息，使团队、CI 与本地安装结果一致可复现；它不加速下载、不能替代 package.json，也与最终打包产物无关。",
+    "difficulty": 2,
+    "tag": "锁文件"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 ES Module 与 CommonJS 的区别，下列说法正确的是？",
+    "options": ["ES Module 是静态结构、可在编译期分析，CommonJS 是运行时动态加载", "ES Module 默认支持在任意位置动态 require 模块", "CommonJS 的 import 语句必须写在文件顶部", "ES Module 只能用于浏览器环境，Node.js 中无法使用"],
+    "answer": "A",
+    "analysis": "ESM 的 import/export 是静态声明，构建工具可在编译期分析依赖关系，从而支持 tree shaking；CommonJS 的 require 是运行时执行的函数，支持条件与动态加载。CommonJS 的写法是 require，Node.js 通过 .mjs 或 type 为 module 的配置同样支持 ESM。",
+    "difficulty": 4,
+    "tag": "ES Module"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "下列关于 CommonJS 模块规范的描述，正确的是？",
+    "options": ["浏览器端原生支持 CommonJS，无需任何打包转换", "模块加载是同步的，require 在运行时解析模块路径", "模块导出使用 export default 语法", "同一模块被多次 require 时每次都会重新执行模块代码"],
+    "answer": "B",
+    "analysis": "CommonJS 是 Node.js 采用的规范，require 同步加载并在运行时解析模块；浏览器没有原生支持，需要打包器转换。导出用 module.exports/exports，export default 是 ESM 语法；模块首次 require 后会被缓存，重复 require 直接返回缓存结果。",
+    "difficulty": 3,
+    "tag": "CommonJS"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "webpack 配置中 entry 字段的主要作用是？",
+    "options": ["指定打包的入口模块，webpack 从它开始递归构建依赖图", "定义打包结果输出文件的路径与文件名", "配置模块的转换规则，如处理 CSS、图片", "指定开发服务器的监听端口与静态目录"],
+    "answer": "A",
+    "analysis": "entry 是模块依赖图的起点，webpack 从入口出发递归解析所有依赖并生成 chunk；output 决定产物路径与文件名，module.rules 配置 loader 转换规则，端口等由 devServer 配置控制。",
+    "difficulty": 3,
+    "tag": "webpack"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "webpack 配置中 output.filename 设为固定字符串（如 bundle.js）会导致什么结果？",
+    "options": ["每次构建前自动清空旧产物", "只有首次构建能够生成文件", "内容变化后文件名不变，不利于浏览器缓存更新", "构建后的文件无法被浏览器加载执行"],
+    "answer": "C",
+    "analysis": "固定文件名时，即使模块内容变化产物文件名也不变，浏览器可能命中旧缓存导致更新不生效；搭配 [contenthash] 占位符让文件名随内容变化，内容不变时文件名稳定，实现长缓存与失效更新的平衡。",
+    "difficulty": 2,
+    "tag": "webpack"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 webpack 的 loader，下列说法正确的是？",
+    "options": ["loader 是构建过程中的钩子，可影响整个打包流程", "loader 在配置中的执行顺序是从左到右的", "loader 只能用于处理 JavaScript 文件", "loader 本质是导出函数，用于将模块源代码转换为 webpack 可处理的模块"],
+    "answer": "D",
+    "analysis": "loader 是导出函数的模块，通过 module.rules 按规则匹配文件并做转换，如 babel-loader、css-loader、sass-loader；多个 loader 串联时自右向左依次执行。A 描述的钩子机制属于 plugin，B、C 说法错误。",
+    "difficulty": 3,
+    "tag": "Loader"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "以下 webpack 功能中，通常由 plugin 实现的是？",
+    "options": ["将 ES6 语法转换为 ES5", "自动生成 HTML 文件并注入打包后的资源引用", "解析并合并 CSS 文件中的 @import", "把 Sass 源码编译为浏览器可用的 CSS"],
+    "answer": "B",
+    "analysis": "plugin 通过订阅 webpack 编译生命周期钩子完成资源管理、优化与产物加工等任务，html-webpack-plugin 是典型代表；语法转换、Sass 编译、CSS 合并分别由 babel-loader、sass-loader、css-loader 等 loader 完成。",
+    "difficulty": 3,
+    "tag": "Plugin"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 webpack 中 loader 与 plugin 的关系，下列说法错误的是？",
+    "options": ["loader 负责模块代码的转换，plugin 负责更广的构建流程任务", "plugin 通过 apply 方法注册并访问 webpack 的编译钩子", "loader 在 module.rules 中按匹配规则对文件进行配置", "loader 与 plugin 职责相近，可以互相替代使用"],
+    "answer": "D",
+    "analysis": "loader 是文件级的转换函数，plugin 是基于钩子的构建流程扩展（压缩、注入、清理、分包等），二者职责不同、不可互换；A、B、C 描述均正确，D 为错误说法。",
+    "difficulty": 4,
+    "tag": "Loader"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "webpack 5 配置 mode 为 production 时，默认会启用以下哪项行为？",
+    "options": ["开启便于调试的 source map 且不做任何压缩", "自动启动内置开发服务器", "压缩代码并默认启用 tree shaking 等生产优化", "关闭一切缓存，每次全量重新构建"],
+    "answer": "C",
+    "analysis": "production 模式默认启用代码压缩、tree shaking 等优化，产物体积更小、运行更快；development 模式提供 source map、更快的构建与友好的错误提示。两种模式都不会自动启动开发服务器，production 同样可利用构建缓存。",
+    "difficulty": 3,
+    "tag": "mode"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "使用 webpack-dev-server 开发时，修改组件代码后页面无需整页刷新即可更新且能保留组件状态，其实现原理是？",
+    "options": ["开发服务器通过 WebSocket 通知浏览器，HMR runtime 仅请求并替换发生变化的模块", "浏览器定时轮询服务器文件状态，发现变化后重新执行全部脚本", "devServer 每次变更都把新打包的完整 bundle 注入页面", "服务端将整个 node_modules 重新编译后推送给浏览器"],
+    "answer": "A",
+    "analysis": "HMR 依赖 devServer 与浏览器之间的 WebSocket 通道推送模块变更信号，浏览器端 HMR runtime 只拉取变化模块做增量替换，配合模块自身的 accept 处理来保留页面状态；B、C 属于整页或全量更新方案，D 与事实不符。",
+    "difficulty": 5,
+    "tag": "HMR"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "webpack 生产构建中 tree shaking 能够生效的前提是？",
+    "options": ["项目所有模块都用 CommonJS 编写", "模块采用 ES Module 的静态 import/export 语法", "使用了 css-loader 处理样式文件", "关闭代码压缩后才能进行 tree shaking"],
+    "answer": "B",
+    "analysis": "tree shaking 依赖 ESM 的静态可分析性，构建器能在编译期识别未被引用的导出并剔除；CommonJS 的 require 是运行时动态行为，无法可靠静态分析。代码压缩与 tree shaking 可同时开启（production 默认均启用），与 css-loader 无关。",
+    "difficulty": 4,
+    "tag": "tree shaking"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "webpack 中通过动态 import() 实现代码分割时，下列说法正确的是？",
+    "options": ["import() 是纯同步操作，返回的模块立即可用", "动态 import 的模块会被一并打包进主 bundle", "import() 返回 Promise，分割出的 chunk 在运行时按需加载执行", "代码分割只适用于第三方库，业务代码无法被分割"],
+    "answer": "C",
+    "analysis": "import() 是动态导入语法，webpack 会把它拆分为独立 chunk，运行时才异步请求并执行，常用于路由与组件级懒加载以减小首屏体积；A 中同步的说法错误，B 与分割目的相反，D 不正确。",
+    "difficulty": 4,
+    "tag": "代码分割"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "webpack 输出文件名使用 [contenthash] 占位符（如 main.[contenthash].js）的主要作用是？",
+    "options": ["每次构建都强制清空浏览器缓存", "增大打包产物的文件体积", "把多个入口的模块合并进同一个文件", "文件名随模块内容变化，内容不变时文件名稳定，利于浏览器长缓存"],
+    "answer": "D",
+    "analysis": "contenthash 根据模块内容生成哈希，内容未变则文件名不变，浏览器可命中缓存；内容变化则生成新文件名，访问新地址从而避免陈旧缓存。它与清理缓存、增大体积、合并入口等均无关。",
+    "difficulty": 3,
+    "tag": "缓存优化"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 Babel 的作用，下列说法正确的是？",
+    "options": ["将 ES6+ 新语法转换为旧环境可执行的语法，但默认不转换 Promise 等新 API", "Babel 会自动为代码注入所有 ES 新 API 的 polyfill，无需额外配置", "Babel 是运行时库，页面加载时才进行语法转换", "经 Babel 转换后代码体积必然增大一倍以上"],
+    "answer": "A",
+    "analysis": "Babel 负责语法层面的转换（箭头函数、解构、可选链等），而 Promise、Array.includes 等新 API 默认不处理，需要结合 core-js 按需注入 polyfill；Babel 在构建期执行，C 错误，D 的说法没有依据且过于绝对。",
+    "difficulty": 3,
+    "tag": "Babel"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "TypeScript 代码要运行在浏览器或 Node.js 中，构建时主要经过什么过程？",
+    "options": ["由浏览器直接解释执行 .ts 文件", "经 tsc 编译（含类型擦除）后输出 JavaScript 代码", "无需编译，模块导入时自动完成转换", "由 HTML 的 type 属性设置为 module 后浏览器原生解析"],
+    "answer": "B",
+    "analysis": "TypeScript 是 JavaScript 的超集，浏览器与 Node.js 无法直接执行 .ts，需要通过 tsc 等工具编译为 JS，编译过程会擦除类型注解；原生 .ts 执行与自动转换的机制都不存在。",
+    "difficulty": 2,
+    "tag": "TypeScript"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "Sass、Less 等 CSS 预处理器的主要作用是？",
+    "options": ["在运行时动态计算样式，替代浏览器样式解析", "把 CSS 编译为 JavaScript 对象存储", "提供变量、嵌套、混入（mixin）等能力，编译后输出标准 CSS", "只用于压缩 CSS 文件的体积"],
+    "answer": "C",
+    "analysis": "预处理器在构建期扩展 CSS 的编写能力，如变量、嵌套规则、mixin、运算与函数，经 sass-loader 等工具编译为浏览器可识别的普通 CSS；它不参与运行时渲染，也不仅用于压缩。",
+    "difficulty": 2,
+    "tag": "CSS预处理器"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "Vite 开发服务器启动快、资源按需编译的核心原因是？",
+    "options": ["启动时对全部源码执行完整打包", "基于浏览器原生 ES Module，仅对请求到的模块即时转换，并用 esbuild 预构建依赖", "把依赖与业务代码合并成一个文件后整体缓存", "使用 webpack 的持久化缓存机制实现增量编译"],
+    "answer": "B",
+    "analysis": "Vite 开发态利用浏览器原生 ESM，源码不做整体打包，而是按浏览器请求即时转换（用 esbuild 处理 TS/JSX）；node_modules 依赖通过 esbuild 预构建为 ES Module 并缓存。A 与按需相反，C 描述不成立，D 是 webpack 机制而非 Vite 核心。",
+    "difficulty": 4,
+    "tag": "Vite"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "Vite 生产环境构建（vite build）默认使用哪个打包器？",
+    "options": ["Rollup", "仅由 esbuild 完成全部打包", "webpack", "无需打包，直接部署源码"],
+    "answer": "A",
+    "analysis": "Vite 生产构建默认使用 Rollup 进行打包，并完成 tree shaking、代码分割等优化；esbuild 主要用于开发期的依赖预构建与语法转译。生产环境不能直接部署未打包的源码，也不使用 webpack。",
+    "difficulty": 3,
+    "tag": "Vite"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "在 webpack 项目中按环境区分配置（如 NODE_ENV），下列说法正确的是？",
+    "options": ["浏览器端代码可以直接访问 process.env，无需构建参与", "DefinePlugin 会把 process.env 的内容原样暴露给浏览器运行时", "通过 DefinePlugin 或 mode 设置，构建时将 NODE_ENV 等变量内联替换为实际值，实现按环境优化", "环境变量只能写在 .env 文件中，无法通过命令行设置"],
+    "answer": "C",
+    "analysis": "浏览器环境不存在 process 对象，需借助 DefinePlugin 等插件在构建期把变量静态内联替换进代码，从而区分开发与生产并进行按需裁剪；环境变量既可在命令行设置，也可通过 .env 文件管理，D 错误。",
+    "difficulty": 3,
+    "tag": "环境变量"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "前端 SPA 的 hash 路由（如 #/home）的核心原理是？",
+    "options": ["每次路由变化都向服务器发起新的页面请求", "监听 hashchange 事件，根据 URL 中 # 后的部分切换视图，不触发页面刷新", "依赖服务端将所有路径重写到 index.html 才能工作", "必须配合 SSR 渲染才能正常使用"],
+    "answer": "B",
+    "analysis": "URL 中 # 之后的部分变化不会产生新的网络请求，浏览器会触发 hashchange 事件，前端据此渲染对应视图；A 与 hash 路由特性相反，C 是 history 模式的部署要求，SSR 与 hash 路由并无必然关系。",
+    "difficulty": 3,
+    "tag": "前端路由"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "使用 history 模式的 SPA 路由（如 /user/1），刷新页面时返回 404，最可能的原因是？",
+    "options": ["页面未监听 popstate 事件", "hash 路由与服务端配置产生了冲突", "服务端未配置将未匹配路径重写（fallback）到 index.html", "浏览器不支持 History API"],
+    "answer": "C",
+    "analysis": "history 模式用 pushState 改变 URL，浏览器侧不发起请求，但直接刷新或输入 URL 时浏览器会向服务器请求真实路径，服务端需把未匹配路径统一重写到 index.html 交给前端路由接管；A、D 不是 404 的直接原因，B 描述与 hash 模式矛盾。",
+    "difficulty": 4,
+    "tag": "前端路由"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "路由懒加载（如 Vue 中 component 配置为 () => import(./Home.vue)）的主要收益是？",
+    "options": ["将对应组件拆分为独立 chunk，访问该路由时才加载，减小首屏资源体积", "加速路由切换时的视图渲染动画", "减少项目中的代码行数", "让所有组件在后台预先渲染完毕"],
+    "answer": "A",
+    "analysis": "动态 import 让组件按需加载，首页只请求首屏必需的 chunk，配合代码分割能明显降低首屏资源体积与加载时间；B、C 与懒加载无关，D 恰好与懒加载的延迟加载特性相反。",
+    "difficulty": 3,
+    "tag": "懒加载"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于函数防抖（debounce），下列说法正确的是？",
+    "options": ["典型效果是高频触发期间按固定时间间隔至少执行一次", "每次触发后都延迟执行，执行次数与触发次数一致", "防抖只适用于延时执行，无法处理输入类高频事件", "连续触发时不断重置定时器，只在最后一次触发后的等待期结束后执行一次"],
+    "answer": "D",
+    "analysis": "防抖的核心是合并高频触发：每次触发都会重置定时器，仅最后一次触发后的等待期结束才执行，适合输入搜索建议、窗口缩放收尾等场景；A 描述的是节流，B、C 与防抖机制不符。",
+    "difficulty": 3,
+    "tag": "防抖"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "对滚动事件处理函数应用节流（throttle）后，其行为是？",
+    "options": ["停止滚动后延迟执行一次", "每次滚动都执行，只是延迟了执行", "只执行最后一次，之前的触发全部取消", "在固定时间间隔内至多执行一次，降低高频触发频率"],
+    "answer": "D",
+    "analysis": "节流保证一段时间内至多执行一次，适合滚动、resize、mousemove 等高频事件，防止回调执行过于密集；A、C 描述的是防抖行为，B 对节流的理解不准确。",
+    "difficulty": 3,
+    "tag": "节流"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "将 JS、CSS、图片等静态资源部署到 CDN 的主要作用是？",
+    "options": ["替代应用服务器处理业务逻辑", "通过分布式边缘节点就近提供资源，降低延迟并分担源站压力", "自动把资源内容转换为图片格式", "让静态资源不再需要浏览器缓存"],
+    "answer": "B",
+    "analysis": "CDN 把内容缓存到各地的边缘节点，用户从距离最近的节点获取资源，从而降低访问延迟并减轻源站带宽压力；它不处理业务逻辑、不做格式转换，也常与浏览器缓存策略配合使用而不是取代缓存。",
+    "difficulty": 2,
+    "tag": "CDN"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "以下哪项措施不能有效减少首屏加载时间？",
+    "options": ["对 JS、CSS 进行压缩与合并", "开启 gzip 或 Brotli 传输压缩", "首屏关键 CSS 内联，非关键样式异步加载", "把页面所用图片以无压缩原图形式直接引入"],
+    "answer": "D",
+    "analysis": "代码压缩、传输层压缩与关键 CSS 内联都能减小传输体积、加快首屏渲染；未压缩的原图会显著增大资源量拖慢首屏，应先压缩、裁切或采用懒加载。A、B、C 均为有效优化手段。",
+    "difficulty": 3,
+    "tag": "首屏优化"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "Lighthouse 性能指标 FCP（First Contentful Paint）衡量的是什么？",
+    "options": ["页面首次绘制出文本、图片等任何内容的时间点", "页面最大内容元素绘制完成的时间", "用户可以与页面进行交互的时间", "DNS 域名解析完成的时间"],
+    "answer": "A",
+    "analysis": "FCP 记录首个文本、图片、SVG 等内容渲染出来的时刻，反映首屏从空白到出现内容的进度；B 是 LCP，C 是 TTI，CLS 衡量布局偏移，均与 FCP 定义不同，D 属于网络阶段而非绘制指标。",
+    "difficulty": 3,
+    "tag": "FCP"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "关于 LCP（Largest Contentful Paint），下列说法正确的是？",
+    "options": ["LCP 的数值一定小于 FCP", "LCP 指用户首次可以点击页面的时间", "LCP 只统计文本内容，不计入图片", "LCP 是视口内最大内容元素渲染完成的时间，可受图片加载影响"],
+    "answer": "D",
+    "analysis": "LCP 统计视口内最大可见元素（大图、主标题等）完成绘制的时间，图片资源往往是常见瓶颈，可通过预加载关键图片、懒加载非首屏图、CDN 加速等方式优化；LCP 一般不会早于 FCP，B 是 TTI 的定义，LCP 同样计入图片元素。",
+    "difficulty": 4,
+    "tag": "LCP"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "single",
+    "question": "大型项目中为了提升 webpack 构建速度，下列做法合理的是？",
+    "options": ["对体积大的第三方依赖开启持久化缓存（cache），并利用 thread-loader 等并行编译", "去掉 mode 配置，让 webpack 自行决定优化策略", "取消 module.rules 的 include 限制，让 loader 处理全部文件", "把所有模块合并进单一入口以降低依赖图复杂度"],
+    "answer": "A",
+    "analysis": "持久化缓存（filesystem cache）、thread-loader 多进程构建、合理缩小 loader 的匹配范围（include/exclude）等都能显著加快构建；B 无法解决问题，C 会让 loader 处理无关文件反而变慢，D 并不能减少依赖图的总规模。",
+    "difficulty": 3,
+    "tag": "构建优化"
+  }
+]

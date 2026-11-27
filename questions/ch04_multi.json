@@ -1,0 +1,332 @@
+[
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于 ES6 的 Set 数据结构，下列说法正确的是？",
+    "options": [
+      "Set 中的值是唯一的，重复添加相同的值会被忽略",
+      "Set 会按照元素插入的顺序进行迭代",
+      "Set 支持通过下标直接访问元素，如 set[0]",
+      "可以使用 for...of 循环遍历 Set"
+    ],
+    "answer": "ABD",
+    "analysis": "Set 存储唯一值，重复添加相同的值会被忽略；其迭代顺序与插入顺序一致，且可迭代，支持 for...of 遍历。Set 没有索引概念，不能通过下标取值，选项 C 说法错误。",
+    "difficulty": 2,
+    "tag": "Set"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于 ES6 的 Map 数据结构，下列说法正确的是？",
+    "options": [
+      "Map 的键只能是字符串或数值类型",
+      "Map 的键可以是任意类型的值，包括对象、函数等",
+      "用 for...of 遍历 Map 时，默认拿到的每一项是单独的键",
+      "Map 实例的 size 属性表示键值对的个数"
+    ],
+    "answer": "BD",
+    "analysis": "Map 的键可以是任意类型（对象、函数、NaN 等），不同于普通对象的字符串键限制；size 属性记录键值对的总数。for...of 遍历 Map 默认产出的是 [key, value] 数组而非单独的键，选项 A、C 均错误。",
+    "difficulty": 2,
+    "tag": "Map"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于 WeakMap，下列说法正确的是？",
+    "options": [
+      "WeakMap 可以像 Map 一样用 for...of 循环遍历所有键值对",
+      "WeakMap 的键必须是对象，不能是基本类型",
+      "WeakMap 支持 size 属性和 for...of 遍历",
+      "WeakMap 对键持有弱引用，不会阻止键被垃圾回收"
+    ],
+    "answer": "CD",
+    "analysis": "WeakMap 的键必须是对象（也可以是函数），对键是弱引用，不影响垃圾回收；正因如此它不可枚举，既不提供 size 属性，也没有 forEach、for...of 等遍历能力。选项 A、C 都错误地认为 WeakMap 可以遍历。",
+    "difficulty": 4,
+    "tag": "WeakMap"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于 ES6 解构赋值，下列说法正确的是？",
+    "options": [
+      "const {a} = null 会得到 a 为 undefined",
+      "const [x, y] = [1, 2]，解构后 x 的值为 1",
+      "const {a = 1} = {}，解构后 a 的值为 1，默认值生效",
+      "字符串不能进行数组解构，否则会抛出错误"
+    ],
+    "answer": "BC",
+    "analysis": "数组解构按位置取值，x 为 1；对象解构支持默认值，属性不存在时使用默认值 1。null 或 undefined 不可解构，会抛出 TypeError；字符串是可迭代对象，可以进行数组解构（如 const [s] = 'hi'），故 A、D 错误。",
+    "difficulty": 2,
+    "tag": "解构赋值"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于扩展运算符（...），下列说法正确的是？",
+    "options": [
+      "[...arr] 可以用于数组的浅拷贝",
+      "Math.max(...nums) 可以将数组展开为函数参数",
+      "[...arr1, ...arr2] 可以合并两个数组",
+      "{...obj} 得到的是对象的深拷贝"
+    ],
+    "answer": "ABC",
+    "analysis": "扩展运算符可以把可迭代对象展开：数组浅拷贝、函数传参、数组合并都可以实现。但 {...obj} 只是浅拷贝，嵌套对象仍共享引用，修改内层对象会影响原对象，选项 D 错误。",
+    "difficulty": 2,
+    "tag": "扩展运算符"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于箭头函数，下列说法正确的是？",
+    "options": [
+      "箭头函数没有自己的 this，this 继承自定义时所在的外层作用域",
+      "箭头函数内部可以直接使用 arguments 对象",
+      "箭头函数体为单个表达式时，必须显式写 return 才能返回值",
+      "箭头函数不能作为构造函数，不能使用 new 调用"
+    ],
+    "answer": "AD",
+    "analysis": "箭头函数不绑定自己的 this 和 arguments，this 按词法继承外层作用域；它不是构造器，new 调用会抛出错误。arguments 指向外层函数的 arguments，单表达式函数体可省略 return 并隐式返回结果，B、C 错误。",
+    "difficulty": 2,
+    "tag": "箭头函数"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于 Symbol，下列说法正确的是？",
+    "options": [
+      "每次调用 Symbol() 生成的值都是唯一的",
+      "Symbol 值可以作为对象的属性键",
+      "可以使用 new Symbol() 来创建 Symbol 实例",
+      "Symbol.for('name') 与 Symbol.for('name') 返回同一个 Symbol"
+    ],
+    "answer": "ABD",
+    "analysis": "Symbol() 每次调用都会生成唯一值，可作为对象属性名且不会出现在 for...in 枚举中。Symbol.for 基于全局注册表，相同描述符返回同一个 Symbol。Symbol 不是构造函数，new Symbol() 会抛出 TypeError，选项 C 错误。",
+    "difficulty": 3,
+    "tag": "Symbol"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于 Promise 的状态及其转换，下列说法正确的是？",
+    "options": [
+      "fulfilled 状态的 Promise 可以再变回 pending 状态",
+      "Promise 可以从 pending 状态转换为 fulfilled 状态",
+      "fulfilled 与 rejected 状态之间可以直接相互转换",
+      "Promise 可以从 pending 状态转换为 rejected 状态"
+    ],
+    "answer": "BD",
+    "analysis": "Promise 只有三种状态：pending、fulfilled、rejected。状态只能从 pending 单向转换为 fulfilled 或 rejected，且一旦转变便不可逆，fulfilled 与 rejected 之间不能互相转换。A、C 均违背了 Promise 状态机的单向转换规则。",
+    "difficulty": 3,
+    "tag": "Promise状态"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于 Promise.all，下列说法正确的是？",
+    "options": [
+      "Promise.all 的结果中会包含每个 Promise 的成功或失败状态",
+      "全部 Promise 成功时，Promise.all 返回 fulfilled 的 Promise，结果按传入顺序排列",
+      "只要有一个 Promise 失败，Promise.all 立即以该失败原因 reject",
+      "Promise.all([]) 传入空数组时，返回的 Promise 会立即成功，结果为 []"
+    ],
+    "answer": "BCD",
+    "analysis": "Promise.all 采用\"全成功才成功、一个失败即失败\"的策略，成功时结果数组与传入顺序一致；空数组没有可等待的 Promise，会立即 resolve 为 []。all 只在全部成功时返回值数组，不会包含各 Promise 的状态信息，那是 allSettled 的行为，选项 A 错误。",
+    "difficulty": 3,
+    "tag": "Promise.all"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于 Promise.allSettled，下列说法正确的是？",
+    "options": [
+      "Promise.allSettled 会等待所有 Promise 完成，无论成功还是失败",
+      "只要有一个 Promise 失败，Promise.allSettled 就会整体 reject",
+      "结果数组中每一项都包含 status 字段，取值为 \"fulfilled\" 或 \"rejected\"",
+      "Promise.allSettled 接受一个可迭代对象作为参数"
+    ],
+    "answer": "ACD",
+    "analysis": "allSettled 会等待所有 Promise 结束，从不因某个失败而整体 reject；结果数组中的每一项都包含 status 字段以及 value 或 reason。它接受可迭代对象（如数组）。选项 B 描述的是 Promise.all 的一失败即失败行为，与 allSettled 相反，错误。",
+    "difficulty": 3,
+    "tag": "allSettled"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于 Promise.race，下列说法正确的是？",
+    "options": [
+      "Promise.race 的结果由第一个进入 settled 状态（fulfilled 或 rejected）的 Promise 决定",
+      "Promise.race 会等待所有 Promise 完成并把结果汇总成数组",
+      "Promise.race([]) 传入空数组时，返回的 Promise 将一直处于 pending",
+      "Promise.race 要求所有 Promise 都成功才会成功"
+    ],
+    "answer": "AC",
+    "analysis": "race 以\"竞速\"方式工作，哪个 Promise 先决定状态（成功或失败）就以哪个为准；传入空数组时没有可竞争的 Promise，因此永远 pending。选项 B 是 all/allSettled 的汇总行为，D 是 all 的全成功策略，均错误。",
+    "difficulty": 3,
+    "tag": "Promise.race"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于 Promise.any，下列说法正确的是？",
+    "options": [
+      "只要有一个 Promise 失败，Promise.any 就立即整体拒绝",
+      "Promise.any 在第一个 Promise 变为 fulfilled 时立即成功并返回该结果",
+      "所有 Promise 都 rejected 时，Promise.any 会以一个 AggregateError 拒绝",
+      "Promise.any([]) 传入空数组时，会立即以 AggregateError 拒绝"
+    ],
+    "answer": "BCD",
+    "analysis": "any 的策略是\"首个成功即成功\"，与 race 不同，单个失败不会立即整体拒绝；只有全部失败时才以 AggregateError 拒绝，空数组同样会立即以 AggregateError 拒绝。选项 A 描述的是单个失败即整体拒绝，与 any 的语义矛盾，错误。",
+    "difficulty": 4,
+    "tag": "Promise.any"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于 async 函数，下列说法正确的是？",
+    "options": [
+      "async 函数总是返回一个 Promise 对象",
+      "async 函数中没有使用 await 时，函数返回的是普通值而非 Promise",
+      "async 函数体内抛出异常时，返回的 Promise 会以该异常 reject",
+      "async 函数中 return 3，返回的 Promise 会 resolve 为 3"
+    ],
+    "answer": "ACD",
+    "analysis": "async 函数无论内部是否使用 await，返回的始终是 Promise：返回值会被包装为 fulfilled 的结果，抛出的异常会使返回的 Promise 以该异常 reject。选项 B 认为没有写 await 就返回普通值，与 async 的包装规则不符，错误。",
+    "difficulty": 3,
+    "tag": "async/await"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于 await 关键字，下列说法正确的是？",
+    "options": [
+      "使用 await 会阻塞整个页面线程，等待期间无法执行其他代码",
+      "await 只能用于 async 函数中（ES2022 起模块顶层也支持）",
+      "await 一个非 Promise 值时，会直接得到该值",
+      "await 后面只能跟 Promise，跟普通值会抛出语法错误"
+    ],
+    "answer": "BC",
+    "analysis": "await 会暂停当前 async 函数的执行并把控制权交回事件循环，不会阻塞主线程；非 Promise 值会被直接返回使用。await 后跟普通值是合法的，选项 A、D 错误。",
+    "difficulty": 3,
+    "tag": "await"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "分析以下代码的输出结果：`console.log('a'); setTimeout(() => console.log('b'), 0); Promise.resolve().then(() => console.log('c')); console.log('d');` 下列说法正确的是？",
+    "options": [
+      "同步代码 a、d 最先输出",
+      "c 会在 b 之前输出，因为微任务优先于宏任务执行",
+      "完整输出顺序为 a、d、b、c",
+      "完整输出顺序为 a、d、c、b"
+    ],
+    "answer": "ABD",
+    "analysis": "同步代码 a、d 先执行；Promise.then 注册的是微任务，setTimeout 是宏任务。当前宏任务执行完毕后先清空微任务队列（输出 c），再执行下一个宏任务（输出 b），因此完整顺序为 a、d、c、b。选项 C 颠倒了这两者的先后关系，错误。",
+    "difficulty": 4,
+    "tag": "事件循环"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于宏任务与微任务，下列说法正确的是？",
+    "options": [
+      "requestAnimationFrame 的回调属于微任务",
+      "Promise.then、catch、finally 注册的回调属于微任务",
+      "setTimeout、setInterval 的回调属于宏任务",
+      "MutationObserver 触发的回调属于微任务"
+    ],
+    "answer": "BCD",
+    "analysis": "Promise 回调与 MutationObserver 回调都在微任务阶段执行；setTimeout 与 setInterval 是典型的宏任务。requestAnimationFrame 的回调在渲染帧的绘制之前执行，属于独立的帧任务而不是微任务，选项 A 错误。",
+    "difficulty": 2,
+    "tag": "宏微任务"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于浏览器事件循环对宏任务与微任务的处理，下列说法正确的是？",
+    "options": [
+      "每执行完一个宏任务，事件循环会先清空整个微任务队列，再继续取下一个宏任务",
+      "setTimeout(fn, 0) 注册的回调会与同步代码一起立即执行",
+      "微任务只在所有宏任务都执行完毕后才会统一执行",
+      "微任务执行过程中新产生的微任务会在本轮继续执行，直到队列为空"
+    ],
+    "answer": "AD",
+    "analysis": "事件循环在处理下一个宏任务之前会先清空微任务队列，且微任务执行中新增的微任务也会排入当前队列继续执行，直到队列清空。setTimeout(fn, 0) 至少会延迟到下一轮宏任务；宏任务与微任务是交替执行的，故 B、C 错误。",
+    "difficulty": 4,
+    "tag": "微任务队列"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于 Promise 的链式调用，下列说法正确的是？",
+    "options": [
+      "then 的回调只能返回 Promise，不能返回普通值",
+      "Promise 一旦被 catch 处理过，后续的 then 就永远不会执行",
+      "then 回调中抛出异常，会使该 Promise 进入 rejected，可被后续的 catch 捕获",
+      "catch 处理完异常后，仍可继续链式调用 then"
+    ],
+    "answer": "CD",
+    "analysis": "then 会返回一个新的 Promise，回调中抛出的异常会使新 Promise rejected，并交由后续的 catch 处理；catch 与 then 一样返回新 Promise，可以继续链式调用。then 的回调可以返回任意值，普通值会被包装为 fulfilled 的 Promise，故 A、B 错误。",
+    "difficulty": 3,
+    "tag": "Promise链"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于可选链运算符 ?.，下列说法正确的是？",
+    "options": [
+      "obj?.a = 1 是合法的赋值写法",
+      "当 obj 为 null 或 undefined 时，obj?.a 返回 undefined，不会抛出 TypeError",
+      "obj?.a?.b 与 obj.a.b 在所有情况下行为完全一致",
+      "当 obj 为 null 时，obj?.a.b 整个表达式会短路，返回 undefined 而不报错"
+    ],
+    "answer": "BD",
+    "analysis": "可选链 ?. 在左侧为 null 或 undefined 时短路并返回 undefined，且短路会跳过链中的其余部分。可选链不能用于赋值表达式的左侧（属语法错误）；当 obj 为 null 时 obj.a.b 会抛出 TypeError，两者行为不同，故 A、C 错误。",
+    "difficulty": 3,
+    "tag": "可选链"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于空值合并运算符 ?? 与逻辑或 ||，下列表达式结果说法正确的是？",
+    "options": [
+      "0 || 1 的结果为 1",
+      "0 ?? 1 的结果为 0",
+      "'' ?? 'x' 的结果为 ''（空字符串）",
+      "null ?? 'x' 的结果为 null"
+    ],
+    "answer": "ABC",
+    "analysis": "?? 只对 null 或 undefined 生效，0、''、false 都不是 nullish，所以 0 ?? 1 仍为 0、'' ?? 'x' 仍为 ''。|| 按 falsy 判断，0 || 1 得到 1；而 null 属于 nullish，null ?? 'x' 应得到 'x'，选项 D 错误。",
+    "difficulty": 3,
+    "tag": "空值合并"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "关于箭头函数与参数解构的组合用法，下列说法正确的是？",
+    "options": [
+      "({a}) => a 是合法的箭头函数写法，表示对对象参数进行解构",
+      "箭头函数参数解构时不能设置默认值",
+      "箭头函数只有一个参数时可以省略括号，x => x 与 (x) => x 都合法",
+      "箭头函数体内有多条语句时，也必须省略 return"
+    ],
+    "answer": "AC",
+    "analysis": "箭头函数支持参数解构，解构对象参数时必须加括号，以避免与函数体的大括号混淆；只有一个参数时可以省略括号。解构参数可以携带默认值，如 ({a = 1}) => a；体内有多条语句时需要加 {} 并显式 return，故 B、D 错误。",
+    "difficulty": 2,
+    "tag": "参数解构"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "multiple",
+    "question": "分析以下代码的输出结果：`async function f() { console.log(1); await Promise.resolve(); console.log(2); } console.log(3); f(); console.log(4);` 下列说法正确的是？",
+    "options": [
+      "同步执行的输出顺序为 3、1、4",
+      "console.log(2) 在微任务阶段执行，因此排在 4 之后输出",
+      "完整输出顺序为 3、4、1、2",
+      "完整输出顺序为 3、1、4、2"
+    ],
+    "answer": "ABD",
+    "analysis": "调用 f() 时先同步执行 console.log(1)，遇到 await 后函数挂起，后续代码排入微任务队列；主线程继续输出 4。同步代码执行完毕后执行微任务，输出 2，因此完整输出顺序为 3、1、4、2，选项 C 错误。",
+    "difficulty": 4,
+    "tag": "异步输出"
+  }
+]

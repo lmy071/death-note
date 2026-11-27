@@ -1,0 +1,497 @@
+[
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "关于浏览器渲染流程中的「渲染树（Render Tree）」，下列说法正确的是？",
+    "options": [
+      "由 DOM 树与 CSSOM 合并生成，且只包含页面中的可见元素",
+      "由 DOM 树单独生成，与 CSSOM 无关",
+      "与 DOM 树一一对应，包含 <head> 在内的所有节点",
+      "在 HTML 解析完成之前就已构建完毕"
+    ],
+    "answer": "A",
+    "analysis": "渲染树由 DOM 树与 CSSOM 合并生成，只包含需要显示的可见元素，如 display:none 的元素、<head> 及 <meta> 等不可见节点都不会进入渲染树。因此渲染树与 DOM 树并非一一对应，且必须等 CSSOM 构建完成后才能生成。",
+    "difficulty": 2,
+    "tag": "渲染树"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "在浏览器渲染流水线的「布局（Layout）」阶段，主要完成的工作是什么？",
+    "options": [
+      "将元素内容绘制成位图",
+      "计算可见元素的几何位置与尺寸",
+      "计算元素的层叠顺序 z-index",
+      "解析 CSS 选择器并匹配元素"
+    ],
+    "answer": "B",
+    "analysis": "布局（又称回流）阶段根据渲染树计算每个可见元素在页面上的几何信息，包括宽高、坐标、边距等。绘制（Paint）阶段才负责生成位图，选择器匹配发生在样式计算阶段。",
+    "difficulty": 1,
+    "tag": "布局layout"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "CSSOM 构建完成之后，渲染进程的渲染流水线正确顺序是？",
+    "options": [
+      "布局 → 样式计算 → 绘制 → 合成",
+      "绘制 → 布局 → 样式计算 → 合成",
+      "样式计算 → 布局 → 绘制 → 合成",
+      "样式计算 → 绘制 → 布局 → 合成"
+    ],
+    "answer": "C",
+    "analysis": "标准渲染流水线为：解析 HTML/CSS 生成 DOM 与 CSSOM，随后依次进行样式计算、布局、绘制，最后由合成器将各图层合成输出。布局必须在绘制之前完成，因为绘制需要几何数据。",
+    "difficulty": 2,
+    "tag": "渲染流水线"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "页面渲染过程中，下列哪种资源会阻塞 HTML 文档的解析？",
+    "options": [
+      "带 defer 属性的脚本",
+      "带 async 属性的脚本",
+      "<img> 图片资源",
+      "无 defer/async 属性的同步 <script>"
+    ],
+    "answer": "D",
+    "analysis": "普通同步 <script> 在下载并执行完成前会暂停 HTML 解析，从而阻塞文档解析。defer 脚本延迟到解析完成后执行、async 脚本下载不阻塞解析，图片等资源也不会阻塞解析。",
+    "difficulty": 3,
+    "tag": "文档解析"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "下列哪个操作一定会触发浏览器的重排（Reflow/Layout）？",
+    "options": [
+      "修改元素的 width",
+      "修改元素的 color",
+      "修改元素的 visibility",
+      "修改元素的 background-color"
+    ],
+    "answer": "A",
+    "analysis": "修改 width 会改变元素几何尺寸，必然引起重排并影响其他元素的布局。color、visibility（隐藏但不改变所占空间）、background-color 等只影响外观，仅触发重绘而不触发重排。",
+    "difficulty": 2,
+    "tag": "重排"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "关于重排（Reflow）与重绘（Repaint）的关系，下列说法正确的是？",
+    "options": [
+      "重绘一定会导致重排，重排不一定导致重绘",
+      "重排一定会导致重绘，重绘不一定导致重排",
+      "重排与重绘互不影响，完全独立",
+      "重排与重绘是同一概念的不同叫法"
+    ],
+    "answer": "B",
+    "analysis": "重排会改变几何信息，之后必然要重新绘制图层，所以重排一定导致重绘。而仅改变颜色等外观属性的重绘不需要重新计算布局，因此重绘不一定导致重排。",
+    "difficulty": 2,
+    "tag": "重排重绘"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "下列哪种写法最容易引起「强制同步布局（Layout Thrashing）」性能问题？",
+    "options": [
+      "使用 requestAnimationFrame 集中批量修改样式",
+      "用 CSS class 一次性切换多个样式",
+      "在循环中交替读取 offsetWidth 等布局属性并修改样式",
+      "动画中使用 transform 代替 top/left"
+    ],
+    "answer": "C",
+    "analysis": "读取 offsetWidth、clientHeight 等布局属性会强制浏览器立即执行布局以返回准确值，若与样式修改交替进行，每次循环都要重新同步布局，造成 Layout Thrashing。批量修改样式和用 transform 做动画都是规避该问题的常见手段。",
+    "difficulty": 4,
+    "tag": "性能优化"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "下列哪种做法能有效减少页面重排带来的性能损耗？",
+    "options": [
+      "频繁读取 offsetWidth 后再修改样式",
+      "逐条修改元素 style 上的多个属性",
+      "在动画循环中每次修改元素 width",
+      "用 transform 改变元素位置代替修改 top/left"
+    ],
+    "answer": "D",
+    "analysis": "transform 等合成属性不会触发重排与重绘，由合成器直接处理，动画性能更好。频繁读取布局属性、逐条改 style、每帧改 width 都会反复触发布局计算，加重重排开销。",
+    "difficulty": 3,
+    "tag": "重排优化"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "下列哪组属性的变化可以由合成器（Compositor）独立处理，从而避免触发重排与重绘？",
+    "options": [
+      "transform 与 opacity",
+      "width 与 height",
+      "color 与 background-color",
+      "display 与 position"
+    ],
+    "answer": "A",
+    "analysis": "transform 与 opacity 的变化可在单独的合成层上直接由 GPU 合成，不经过布局和绘制阶段。改变 width、height 会触发重排，color、background-color 会触发重绘，display 的变化同样影响布局。",
+    "difficulty": 3,
+    "tag": "GPU合成"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "关于 GPU 合成与合成层，下列说法正确的是？",
+    "options": [
+      "页面中所有元素默认都拥有独立的合成层",
+      "will-change: transform 可提前通知浏览器为该元素创建独立合成层",
+      "合成层的数量越多，页面渲染性能越好",
+      "合成层由 JavaScript 引擎创建并管理"
+    ],
+    "answer": "B",
+    "analysis": "will-change 属性提示浏览器提前做优化，可为元素创建独立合成层，避免动画启动时才临时分层。合成层增多会占用 GPU 内存并增加合成开销，并非越多越好；合成层的管理属于渲染进程中的合成器线程，而非 JS 引擎。",
+    "difficulty": 4,
+    "tag": "合成层"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "关于 JavaScript 的单线程模型与事件循环，下列说法正确的是？",
+    "options": [
+      "JavaScript 是多线程语言，可同时并行执行多个任务",
+      "浏览器会为每个 setTimeout 单独开辟一个线程",
+      "JavaScript 执行层面是单线程的，异步任务通过事件循环调度",
+      "事件循环完全运行在 JavaScript 引擎内部，与浏览器宿主无关"
+    ],
+    "answer": "C",
+    "analysis": "JavaScript 在同一时刻只能执行一段代码，是单线程模型，异步回调依靠宿主环境（浏览器/Node）提供的事件循环队列机制调度。setTimeout 不会另开线程，事件循环由宿主环境而非引擎自身实现。",
+    "difficulty": 2,
+    "tag": "单线程"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "执行以下代码，控制台的输出顺序是？\nconsole.log('sync'); setTimeout(() => console.log('timeout'), 0); Promise.resolve().then(() => console.log('promise'));",
+    "options": [
+      "timeout → sync → promise",
+      "sync → timeout → promise",
+      "promise → sync → timeout",
+      "sync → promise → timeout"
+    ],
+    "answer": "D",
+    "analysis": "同步代码最先执行输出 sync；Promise 回调属于微任务，在当前宏任务结束后、下一个宏任务开始前被清空，因此先输出 promise；setTimeout 回调属于宏任务，最后输出 timeout。",
+    "difficulty": 3,
+    "tag": "事件循环"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "关于 setTimeout 的回调执行时机，下列说法正确的是？",
+    "options": [
+      "回调不保证在指定时间后立即执行，可能被队列中更早的任务延后",
+      "定时时间一到回调必定立即执行，与任务队列无关",
+      "setTimeout 的回调属于微任务",
+      "延迟时间设为 0 时回调会同步立即执行"
+    ],
+    "answer": "A",
+    "analysis": "setTimeout 只是把回调在设定时间后插入宏任务队列，实际执行还需等待当前任务及队列中前面任务完成，因此时间不精确。延迟 0 也不会同步执行，回调仍属于宏任务。",
+    "difficulty": 3,
+    "tag": "定时器"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "页面 HTML 文档解析完成后、且无需等待图片等外部资源加载完成时触发的事件是？",
+    "options": [
+      "load",
+      "DOMContentLoaded",
+      "beforeunload",
+      "unload"
+    ],
+    "answer": "B",
+    "analysis": "DOMContentLoaded 在文档 DOM 解析完成后触发，脚本可在此事件中安全操作 DOM，此时图片、样式表、iframe 等外部资源可能尚未加载完。beforeunload 与 unload 是页面卸载阶段的事件。",
+    "difficulty": 2,
+    "tag": "DOMContentLoaded"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "页面 load 事件在什么时机触发？",
+    "options": [
+      "HTML 文档刚解析完成时",
+      "DOMContentLoaded 事件触发之前",
+      "页面及其所有资源（图片、样式等）加载完成后",
+      "用户首次点击页面时"
+    ],
+    "answer": "C",
+    "analysis": "load 事件在页面及页面内所有资源，包括图片、样式表、脚本、字体等全部加载完成后触发，晚于 DOMContentLoaded。因此 load 适合做依赖完整资源就绪的初始化。",
+    "difficulty": 2,
+    "tag": "load事件"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "DNS（域名系统）解析的核心作用是什么？",
+    "options": [
+      "将 IP 地址解析为对应的 MAC 地址",
+      "为网页内容提供加密传输",
+      "将端口号映射为具体的服务进程",
+      "将域名解析为对应的 IP 地址"
+    ],
+    "answer": "D",
+    "analysis": "DNS 负责把人类易记的域名转换为机器可用的 IP 地址，浏览器据此建立网络连接。IP 到 MAC 地址的转换由 ARP 协议完成，加密传输由 TLS/SSL 负责，属于不同层次的功能。",
+    "difficulty": 1,
+    "tag": "DNS解析"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "浏览器发起域名解析时，各缓存与服务器的查询顺序正确的是？",
+    "options": [
+      "浏览器缓存 → 系统 hosts 与系统缓存 → 本地 DNS 服务器 → 各级权威 DNS 服务器",
+      "系统缓存 → 本地 DNS 服务器 → 浏览器缓存",
+      "只查询 hosts 文件，未命中则直接报错",
+      "每次浏览器都直接向权威服务器发起查询"
+    ],
+    "answer": "A",
+    "analysis": "域名解析按由近及远的层次进行：先查浏览器 DNS 缓存，再查操作系统 hosts 文件与系统缓存，随后由本地 DNS 服务器接力，必要时逐级向根、顶级和权威服务器发起递归查询。",
+    "difficulty": 3,
+    "tag": "DNS解析流程"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "关于 DNS 记录类型，下列说法正确的是？",
+    "options": [
+      "CNAME 记录：将域名解析为 IPv4 地址",
+      "A 记录：将域名解析为 IPv4 地址",
+      "MX 记录：指定网站的 Web 服务器地址",
+      "TXT 记录：为域名建立反向代理"
+    ],
+    "answer": "B",
+    "analysis": "A 记录存储域名到 IPv4 地址的映射，AAA 记录对应 IPv6 地址。CNAME 用于域名别名指向另一域名，MX 记录指定邮件交换服务器，TXT 记录用于存放任意文本信息，各有不同用途。",
+    "difficulty": 3,
+    "tag": "DNS记录"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "TCP 三次握手中，第二次握手时服务器发送的报文是？",
+    "options": [
+      "客户端发起 ACK 报文",
+      "服务器单独发送 SYN 报文",
+      "服务器返回 SYN+ACK 报文",
+      "客户端发送 FIN 报文"
+    ],
+    "answer": "C",
+    "analysis": "第二次握手由服务器向客户端返回 SYN+ACK 报文，既表示收到客户端的连接请求，也携带自己的初始序号请求建立连接。FIN 报文用于连接关闭阶段的四次挥手。",
+    "difficulty": 2,
+    "tag": "TCP三次握手"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "TCP 建立连接时采用三次握手的主要目的是什么？",
+    "options": [
+      "传输应用层数据",
+      "完成身份认证并交换密钥",
+      "为应用进程分配端口",
+      "确认双方收发能力正常并同步初始序号，建立可靠连接"
+    ],
+    "answer": "D",
+    "analysis": "三次握手通过双方各发送并确认一次 SYN/ACK，验证双方的发送与接收能力正常，同时同步初始序列号，为后续可靠、按序的数据传输做好准备。密钥交换属于 TLS 握手阶段的工作。",
+    "difficulty": 2,
+    "tag": "TCP连接"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "TCP 三次握手的报文交互顺序正确的是？",
+    "options": [
+      "客户端发 SYN → 服务器回 SYN+ACK → 客户端回 ACK",
+      "客户端发 ACK → 服务器回 SYN → 客户端回 SYN+ACK",
+      "服务器发 SYN → 客户端回 ACK → 服务器回 SYN+ACK",
+      "任意顺序均可，只要发送三个报文即可"
+    ],
+    "answer": "A",
+    "analysis": "标准流程为：客户端发送 SYN 请求建立连接，服务器返回 SYN+ACK 表示同意并携带自身序号，客户端再发送 ACK 完成确认，此后连接建立成功。顺序颠倒或由服务器先发起都不符合协议规定。",
+    "difficulty": 2,
+    "tag": "TCP三次握手"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "一条 TCP 连接通常由什么唯一标识？",
+    "options": [
+      "仅目标 IP 与目标端口",
+      "源 IP、源端口、目标 IP、目标端口组成的四元组",
+      "发起进程的 PID 号",
+      "访问所使用的域名"
+    ],
+    "answer": "B",
+    "analysis": "一条 TCP 连接由两端的 IP 地址与端口组成的四元组（源 IP、源端口、目标 IP、目标端口）唯一标识，同一台主机可通过不同端口同时维持多条连接。域名只出现在应用层，不是连接的标识成分。",
+    "difficulty": 3,
+    "tag": "TCP连接标识"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "当浏览器命中强缓存（缓存未过期）时，请求的处理方式是？",
+    "options": [
+      "每次都向服务器发送完整请求并重新下载资源",
+      "向服务器发送条件请求（如 If-Modified-Since）验证后再决定",
+      "直接使用本地缓存副本，不再向服务器发送请求",
+      "强制清空所有本地存储后重新发起请求"
+    ],
+    "answer": "C",
+    "analysis": "强缓存生效时，浏览器直接读取本地缓存副本，完全不发网络请求，响应速度最快。发送 If-Modified-Since、If-None-Match 等条件请求属于协商缓存的流程，命中时服务器返回 304。",
+    "difficulty": 2,
+    "tag": "强缓存"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "下列哪个 Cache-Control 指令表示响应可被 CDN、反向代理等共享缓存存储？",
+    "options": [
+      "private",
+      "no-cache",
+      "no-store",
+      "public"
+    ],
+    "answer": "D",
+    "analysis": "public 表示响应可被浏览器及 CDN、代理等任何中间缓存存储；private 只允许浏览器私有的用户缓存；no-cache 表示使用前必须先向服务器验证；no-store 则完全禁止缓存。",
+    "difficulty": 3,
+    "tag": "Cache-Control"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "当响应头同时携带 Cache-Control: max-age 与 Expires 字段时，浏览器以哪个为准？",
+    "options": [
+      "Cache-Control 优先，以 max-age 为准",
+      "Expires 优先，忽略 Cache-Control",
+      "两者取较早过期的时间",
+      "两个字段都无效，需要重新请求"
+    ],
+    "answer": "A",
+    "analysis": "Cache-Control 属于 HTTP/1.1 标准，优先级高于 HTTP/1.0 的 Expires；两者同时存在时以 Cache-Control 的 max-age 等指令为准。Expires 基于本地时间判断，存在时钟偏差问题。",
+    "difficulty": 3,
+    "tag": "缓存优先级"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "协商缓存验证后，服务器返回 304 Not Modified 状态码的含义是？",
+    "options": [
+      "资源已过期，必须重新下载全部内容",
+      "资源未修改，浏览器可继续使用本地缓存副本",
+      "服务器发生内部错误",
+      "缓存已损坏且无法恢复"
+    ],
+    "answer": "B",
+    "analysis": "304 表示客户端缓存资源仍然有效，服务器不返回响应体，浏览器继续使用本地副本，从而节省带宽。若资源有更新则返回 200 及最新的内容。500 才是服务器内部错误。",
+    "difficulty": 2,
+    "tag": "协商缓存"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "当响应同时带有 ETag 与 Last-Modified 时，协商缓存以哪个为准？",
+    "options": [
+      "Last-Modified 一定优先",
+      "两者取修改时间较早者",
+      "优先使用 ETag（对应请求头 If-None-Match）验证",
+      "由浏览器随机选择一种验证方式"
+    ],
+    "answer": "C",
+    "analysis": "ETag 是基于资源内容生成的实体标识，精确度高于基于时间的 Last-Modified，因此优先使用 ETag 配合 If-None-Match 请求头进行验证。Last-Modified 配合 If-Modified-Since 只能在 ETag 缺失时作为备选。",
+    "difficulty": 4,
+    "tag": "ETag"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "关于 CDN（内容分发网络）的核心原理，下列说法正确的是？",
+    "options": [
+      "仅在源站服务器上做缓存",
+      "用加密隧道替代源站服务器",
+      "把域名替换成 IP 直接访问",
+      "将内容缓存到分布各地的边缘节点，并把用户请求调度到就近节点"
+    ],
+    "answer": "D",
+    "analysis": "CDN 把内容复制缓存到多个地域的边缘节点，并通过调度将用户请求导向距离近、负载低的节点，从而缩短响应时间、减轻源站压力。仅靠源站缓存或简单替换 IP 都无法实现这一效果。",
+    "difficulty": 2,
+    "tag": "CDN"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "当 CDN 边缘节点未命中缓存（回源）时，处理流程通常是？",
+    "options": [
+      "边缘节点向源站服务器发起请求获取内容，缓存到本地后再返回给用户",
+      "直接返回 404 错误",
+      "丢弃该请求并记录日志",
+      "随机返回其他用户请求过的内容"
+    ],
+    "answer": "A",
+    "analysis": "缓存未命中时，边缘节点会回源向源站请求完整内容，将内容缓存到本地节点后返回给用户，之后相同请求即可直接命中。直接报错或返回他人内容是错误的做法。",
+    "difficulty": 2,
+    "tag": "CDN回源"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "HTTPS 与 HTTP 相比，在协议栈上最本质的区别是什么？",
+    "options": [
+      "只改变了默认端口，并无加密",
+      "在 HTTP 与 TCP 之间增加了 TLS/SSL 加密层",
+      "只是把请求方法改成了加密格式",
+      "在应用层用 Base64 编码代替加密"
+    ],
+    "answer": "B",
+    "analysis": "HTTPS 的本质是 HTTP 运行在 TLS/SSL 协议之上，TLS 位于应用层与传输层之间，提供数据机密性、完整性校验与服务器身份认证。Base64 编码只是可逆的编码方案，不提供任何安全性。",
+    "difficulty": 2,
+    "tag": "HTTPS原理"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "关于 HTTP 与 HTTPS 的端口及加密特性，下列说法正确的是？",
+    "options": [
+      "HTTPS 默认使用 80 端口",
+      "HTTPS 的报文与 HTTP 完全一致，仅端口不同",
+      "HTTPS 默认端口为 443，传输内容经 TLS 加密",
+      "HTTP 默认使用 443 端口"
+    ],
+    "answer": "C",
+    "analysis": "HTTPS 默认监听 443 端口，传输内容经 TLS 加密保证机密性、完整性与身份认证；HTTP 默认使用 80 端口且明文传输。二者报文格式兼容但安全性与端口不同。",
+    "difficulty": 1,
+    "tag": "HTTP/HTTPS"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "关于 Cookie 的存储位置与发送机制，下列说法正确的是？",
+    "options": [
+      "Cookie 仅存储在服务器端",
+      "Cookie 只能由 JavaScript 创建",
+      "浏览器每次请求都会携带所有 Cookie，不受域名限制",
+      "Cookie 存储在客户端，浏览器在满足域名路径条件时自动随请求发送"
+    ],
+    "answer": "D",
+    "analysis": "Cookie 保存在客户端浏览器中，浏览器会根据 Cookie 的 Domain 与 Path 属性决定是否在请求中自动携带，从而维持会话状态。服务器端通过 Set-Cookie 响应头也能设置 Cookie，且不同域的 Cookie 不会被随意携带。",
+    "difficulty": 2,
+    "tag": "Cookie"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "single",
+    "question": "为 Cookie 设置 HttpOnly 属性的作用是？",
+    "options": [
+      "使脚本无法通过 document.cookie 读取该 Cookie，可降低 XSS 窃取风险",
+      "让 Cookie 只能通过明文 HTTP 传输",
+      "删除浏览器中所有同名的 Cookie",
+      "禁止浏览器发送任何网络请求"
+    ],
+    "answer": "A",
+    "analysis": "HttpOnly 属性禁止 document.cookie 等脚本 API 访问该 Cookie，即使页面存在 XSS 漏洞，攻击者也无法直接窃取会话凭证。它不影响浏览器在满足条件时自动携带 Cookie，也不影响服务端设置 Cookie。",
+    "difficulty": 3,
+    "tag": "Cookie安全"
+  }
+]

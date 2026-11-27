@@ -1,0 +1,497 @@
+[
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 HTML 文档的基本结构，下列说法正确的是？",
+    "options": [
+      "`<!DOCTYPE html>` 文档类型声明必须位于文档最前面",
+      "`<head>` 中定义的内容会直接显示在页面主体区域",
+      "`<title>` 标签必须放在 `<body>` 内部",
+      "省略 `<!DOCTYPE html>` 不影响浏览器的解析模式"
+    ],
+    "answer": "A",
+    "analysis": "DOCTYPE 声明必须置于文档最顶端，用于告知浏览器按标准模式解析文档，缺失会使浏览器进入怪异模式（quirks mode），盒模型等表现不一致。head 中的内容不会显示在页面主体；title 应位于 head 内。",
+    "difficulty": 1,
+    "tag": "文档结构"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "下列关于语义化标签的说法，正确的是？",
+    "options": [
+      "语义化标签会显著降低页面加载速度",
+      "语义化标签让页面结构更清晰，对搜索引擎和屏幕阅读器更友好",
+      "使用 `<div>` 是唯一推荐的布局方式",
+      "语义化标签只在移动端有效"
+    ],
+    "answer": "B",
+    "analysis": "语义化标签为内容赋予含义，使页面结构更清晰，搜索引擎能更好地理解主题，屏幕阅读器也能按结构朗读与导航。语义化不会明显影响加载速度，也并非移动端专属。",
+    "difficulty": 2,
+    "tag": "语义化标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "在 HTML5 中，适合用来表示「独立成篇、可以被单独发布或复用」的内容块（如一篇博文、一条新闻、一条评论）的标签是？",
+    "options": [
+      "`<section>`",
+      "`<aside>`",
+      "`<article>`",
+      "`<div>`"
+    ],
+    "answer": "C",
+    "analysis": "article 表示能独立成篇、可单独发布或复用的内容，如文章、新闻、评论。section 只是主题分组，aside 是侧边补充内容，div 无语义，因此应选 article。",
+    "difficulty": 2,
+    "tag": "article"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 `<header>` 标签的用法，说法正确的是？",
+    "options": [
+      "一个页面中只能出现一个 `<header>`",
+      "`<header>` 必须紧跟在 `<body>` 之后",
+      "`<header>` 与 `<h1>` 的功能相同",
+      "页面可以有多个 `<header>`，每个 `<article>` 或 `<section>` 内部也可以有自己的头部"
+    ],
+    "answer": "D",
+    "analysis": "header 表示所在区块的头部信息（标题、logo、导航等），每个分节单元（article、section 等）都可以有自己的 header，因此一个页面允许有多个。header 不是必须紧跟 body，也不等同标题标签 h1。",
+    "difficulty": 3,
+    "tag": "header"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "`<nav>` 标签最适合用于标记哪类内容？",
+    "options": [
+      "页面中的主导航链接集合",
+      "页面的广告位",
+      "版权声明区域",
+      "正文中的图片描述"
+    ],
+    "answer": "A",
+    "analysis": "nav 专用于标记页面中的主要导航区块（如主导航、面包屑）。广告、版权、图片描述等都不属于导航语义，不应使用 nav 包裹。",
+    "difficulty": 1,
+    "tag": "nav"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 `<main>` 标签，说法正确的是？",
+    "options": [
+      "一个页面可以包含多个 `<main>` 以提升性能",
+      "一个文档中 `<main>` 只能出现一次，用于标记页面的主要内容区域",
+      "`<main>` 与 `<div>` 完全等价",
+      "`<main>` 必须嵌套在 `<article>` 内部"
+    ],
+    "answer": "B",
+    "analysis": "main 用于标记文档中独一无二的主要内容，一个文档只能有一个 visible main，且不应嵌套在 article、aside、footer、header、nav 之内。main 具有语义含义，与 div 不完全等价。",
+    "difficulty": 2,
+    "tag": "main"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "语义化标签对无障碍（可访问性）最主要的意义是？",
+    "options": [
+      "自动为页面添加图片的 alt 文本",
+      "加快 JavaScript 的执行速度",
+      "让屏幕阅读器等辅助技术能够识别页面的结构、标题层级和地标区域，方便视障用户导航",
+      "减少网络带宽消耗"
+    ],
+    "answer": "C",
+    "analysis": "语义化标签提供了页面大纲和地标角色（landmark），屏幕阅读器用户可以按标题、按区域跳转浏览，这是无障碍的基础之一。它不会自动补 alt、加速 JS 或减少带宽。",
+    "difficulty": 1,
+    "tag": "无障碍"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "为了让浏览器和辅助技术识别整个页面使用的语言，推荐的做法是？",
+    "options": [
+      "`<meta charset=\"zh-CN\">`",
+      "`<title lang=\"zh-CN\">网页标题</title>`",
+      "`<style lang=\"zh-CN\">`",
+      "`<html lang=\"zh-CN\">`"
+    ],
+    "answer": "D",
+    "analysis": "页面语言应在根元素 html 上通过 lang 属性声明，例如 lang=\"zh-CN\"，浏览器和屏幕阅读器据此选择发音方式、断词规则与翻译行为。charset、title 或 style 上声明语言均无效。",
+    "difficulty": 2,
+    "tag": "无障碍"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 `<img>` 标签的 alt 属性，说法正确的是？",
+    "options": [
+      "图片无法加载时显示该替代文本，屏幕阅读器也会朗读它帮助视障用户理解",
+      "alt 属性只能填写英文内容",
+      "设置 alt 属性会降低图片的搜索引擎权重",
+      "alt 与 width、height 属性的功能相同"
+    ],
+    "answer": "A",
+    "analysis": "alt 提供图片的替代文本：图片加载失败时在页面上显示，屏幕阅读器朗读给视障用户，同时也有助于搜索引擎理解图片内容。纯装饰性图片推荐写空 alt（alt=\"\"）以让辅助技术跳过。",
+    "difficulty": 3,
+    "tag": "alt属性"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 `<title>` 标签，说法正确的是？",
+    "options": [
+      "title 的内容会显示在页面正文顶部",
+      "title 的内容显示在浏览器标签页或窗口标题栏，并常被搜索引擎用作搜索结果标题",
+      "title 必须写在 body 中",
+      "一个页面可以同时写多个 title 标签"
+    ],
+    "answer": "B",
+    "analysis": "title 位于 head 中，其内容显示在浏览器标签页/标题栏，常被搜索引擎作为搜索结果标题，对 SEO 和用户体验都很重要。title 不会渲染在页面正文，一个文档只应有一个 title。",
+    "difficulty": 1,
+    "tag": "title元信息"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "下列哪个 meta 标签用于声明文档的字符编码，以防止中文乱码？",
+    "options": [
+      "`<meta name=\"viewport\" content=\"width=device-width\">`",
+      "`<meta name=\"description\" content=\"...\">`",
+      "`<meta charset=\"UTF-8\">`",
+      "`<meta name=\"author\" content=\"...\">`"
+    ],
+    "answer": "C",
+    "analysis": "charset 声明文档编码，UTF-8 应尽量写在 head 靠前位置（前 1024 字节内），浏览器才能正确解码中文等字符，避免乱码。viewport、description、author 分别是视口、描述与作者配置。",
+    "difficulty": 1,
+    "tag": "meta元信息"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "下列哪个 meta 标签为页面提供内容摘要，搜索引擎可能将其显示在搜索结果中？",
+    "options": [
+      "`<meta charset=\"UTF-8\">`",
+      "`<meta name=\"viewport\" content=\"width=device-width\">`",
+      "`<meta http-equiv=\"refresh\" content=\"...\">`",
+      "`<meta name=\"description\" content=\"...\">`"
+    ],
+    "answer": "D",
+    "analysis": "description 用于描述页面内容摘要，搜索引擎可能展示在搜索结果摘要中，是常见的 SEO 元信息。charset 声明编码，viewport 控制移动端视口，refresh 用于定时刷新或跳转。",
+    "difficulty": 1,
+    "tag": "meta元信息"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 `<script defer>`（延迟脚本），说法正确的是？",
+    "options": [
+      "在文档解析完成后、DOMContentLoaded 事件触发之前按文档顺序执行",
+      "解析器遇到该标签时立即阻塞并执行",
+      "该属性对行内脚本同样生效，会将行内脚本延迟执行",
+      "页面中多个 defer 脚本的执行顺序无法保证"
+    ],
+    "answer": "A",
+    "analysis": "defer 指示脚本在 HTML 解析完成后、DOMContentLoaded 触发之前按文档顺序执行，且不会阻塞解析。defer 只对外部脚本（带 src）有效，对行内脚本无效；多个 defer 脚本保持文档顺序执行。",
+    "difficulty": 3,
+    "tag": "defer"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 `<script async>`（异步脚本），说法正确的是？",
+    "options": [
+      "脚本下载完成之前会一直阻塞 HTML 解析",
+      "脚本在后台下载、不阻塞解析，下载完成后立即执行，多个 async 脚本的执行顺序不按文档顺序保证",
+      "async 脚本一定会执行在 DOMContentLoaded 之前",
+      "async 与 defer 的行为完全相同"
+    ],
+    "answer": "B",
+    "analysis": "async 脚本在后台下载，不阻塞解析；下载完成后立刻执行（执行瞬间可能短暂阻塞解析）。多个 async 脚本按下载完成的先后执行，顺序不保证，且可能晚于 DOMContentLoaded，与 defer 行为不同。",
+    "difficulty": 3,
+    "tag": "async"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "下列关于 defer 与 async 两者区别的说法，正确的是？",
+    "options": [
+      "async 保证按文档顺序执行，defer 不保证",
+      "两者都会在脚本加载期间完全阻塞 HTML 解析",
+      "defer 按文档顺序执行且位于 DOMContentLoaded 之前，async 下载完立即执行且顺序不保证",
+      "defer 只能用于行内脚本"
+    ],
+    "answer": "C",
+    "analysis": "defer 与 async 都能避免脚本阻塞解析：defer 在解析完成后按文档顺序执行并先于 DOMContentLoaded；async 下载完成即执行，顺序不保证。defer 只对外部脚本有效，不能用于行内脚本。",
+    "difficulty": 4,
+    "tag": "脚本加载"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 `<script type=\"module\">`（ES 模块脚本），说法正确的是？",
+    "options": [
+      "模块脚本下载完成后立即同步执行",
+      "模块脚本自动拥有全局作用域",
+      "模块脚本不使用严格模式",
+      "模块脚本默认延迟执行（行为类似 defer），且自动处于严格模式、每个模块拥有独立作用域"
+    ],
+    "answer": "D",
+    "analysis": "type=\"module\" 的脚本默认延迟执行，类似 defer：在文档解析完成后按顺序执行；同时自动启用严格模式，模块拥有独立的模块作用域，不会向全局声明变量。",
+    "difficulty": 4,
+    "tag": "模块脚本"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 ES Module（`type=\"module\"`）脚本的加载，下列说法错误的是？",
+    "options": [
+      "从跨域 CDN 加载模块脚本不受同源策略限制，无需任何额外配置",
+      "模块脚本从跨域地址加载时，服务器必须返回正确的 CORS 响应头",
+      "模块脚本默认延迟执行，不会阻塞文档解析",
+      "模块脚本自动处于严格模式"
+    ],
+    "answer": "A",
+    "analysis": "模块脚本受同源策略约束，从跨域地址加载时必须由服务器返回允许该来源的 CORS 响应头（如 Access-Control-Allow-Origin），否则会被拒绝执行。选项 B、C、D 均为模块脚本的正确特性。",
+    "difficulty": 4,
+    "tag": "模块加载"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 localStorage，说法正确的是？",
+    "options": [
+      "浏览器关闭后数据立即被清除",
+      "数据会自动随每次 HTTP 请求发送到服务器",
+      "数据持久保存在客户端，同一源（协议+域名+端口）下的所有页面均可访问",
+      "只能存储数字类型"
+    ],
+    "answer": "C",
+    "analysis": "localStorage 将数据持久保存在客户端，关闭浏览器不丢失（除非主动清除或浏览器清理），同一源下的页面共享数据。它只能存储字符串（对象需 JSON 序列化），且不会自动随请求发送——自动携带是 Cookie 的特性。",
+    "difficulty": 2,
+    "tag": "localStorage"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 sessionStorage，说法正确的是？",
+    "options": [
+      "数据永久保存，从不自动清除",
+      "数据保留在当前标签页会话期间，标签页关闭即被清除，且不会随请求自动发送",
+      "数据在所有标签页之间实时共享",
+      "数据会随每次 HTTP 请求自动发送到服务器"
+    ],
+    "answer": "B",
+    "analysis": "sessionStorage 的生命周期是当前标签页的会话，关闭标签页即清除；不同标签页之间不共享。它同样不会随请求自动发送到服务器，这是 Cookie 才有的行为。",
+    "difficulty": 2,
+    "tag": "sessionStorage"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 Cookie 与 Web Storage（localStorage/sessionStorage）的区别，说法正确的是？",
+    "options": [
+      "两者的容量相同且都能直接存储对象",
+      "Cookie 只保存在客户端，不会随请求发送",
+      "localStorage 的数据会随请求自动发送到服务器",
+      "Cookie 通常约 4KB 且随请求自动携带，Web Storage 通常约 5MB、纯客户端存储不随请求自动发送"
+    ],
+    "answer": "D",
+    "analysis": "Cookie 容量小（约 4KB），每次请求都会自动携带，主要用于会话维持；localStorage/sessionStorage 通常约 5MB（各浏览器实现不同），纯客户端存储、不随请求自动发送。两者都只能存储字符串。",
+    "difficulty": 3,
+    "tag": "存储机制"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "移动端适配中，`<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">` 的主要作用是？",
+    "options": [
+      "让布局视口宽度等于设备屏幕宽度并设置初始缩放为 1，避免移动浏览器按桌面宽度渲染后再缩放",
+      "提高页面图片的清晰度",
+      "强制页面使用桌面端 PC 布局",
+      "关闭页面的触摸事件"
+    ],
+    "answer": "A",
+    "analysis": "该配置让布局视口的宽度等于设备屏幕宽度（width=device-width），并把初始缩放设为 1，配合 CSS 媒体查询即可实现响应式布局。它不负责图片清晰度、不强制桌面布局，也不会关闭触摸事件。",
+    "difficulty": 2,
+    "tag": "viewport"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "移动浏览器在没有设置 viewport meta 标签时，通常会如何渲染页面？",
+    "options": [
+      "按设备实际宽度直接渲染页面",
+      "按约 980px 的桌面视口宽度渲染页面，再整体缩放以适屏，导致文字偏小、需要手动放大",
+      "拒绝渲染任何页面",
+      "自动将页面文字放大两倍"
+    ],
+    "answer": "B",
+    "analysis": "多数移动浏览器默认按 980px 左右的布局视口宽度渲染页面（模拟桌面），再整体缩小以适配屏幕，导致文字过小。设置 viewport meta 让布局宽度等于设备宽度即可避免该问题。",
+    "difficulty": 3,
+    "tag": "viewport"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于移动端 viewport 中 `user-scalable=no` 或 `maximum-scale=1` 的配置，说法正确的是？",
+    "options": [
+      "这是移动端适配的必备配置，缺失会导致页面报错",
+      "它能显著提升页面加载性能",
+      "它会禁用用户缩放页面，可能损害低视力用户的可访问性体验，目前主流站点已不推荐使用",
+      "它会强制页面启用深色模式"
+    ],
+    "answer": "C",
+    "analysis": "禁用缩放（user-scalable=no 或 maximum-scale=1）会阻止低视力用户放大页面，损害可访问性，已被 WCAG 等无障碍规范反对，主流站点不再推荐。它与性能、深色模式无关，也不是必需配置。",
+    "difficulty": 2,
+    "tag": "移动端适配"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于浏览器默认样式（User Agent 样式表），说法正确的是？",
+    "options": [
+      "各浏览器（Chrome、Firefox、Safari 等）的默认样式完全相同",
+      "默认样式的优先级高于开发者书写的样式",
+      "默认样式只作用于 `<body>` 元素",
+      "默认样式为不同元素提供初始呈现，例如 `<body>` 默认有外边距、`<ul>` 有缩进和项目符号、`<h1>` 字号较大且加粗"
+    ],
+    "answer": "D",
+    "analysis": "UA 样式表为每个元素提供初始呈现：body 默认 margin 约 8px，ul 有缩进和项目符号，h1 字号较大且加粗等。各浏览器的默认样式大同小异但不完全一致，且优先级低于开发者样式。",
+    "difficulty": 3,
+    "tag": "默认样式"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 reset.css 与 Normalize.css 的作用，说法正确的是？",
+    "options": [
+      "reset 将各元素默认样式统一归零以抹平浏览器差异，Normalize 保留有价值的默认样式并修正各浏览器不一致之处",
+      "两者都能提高 JavaScript 代码的运行速度",
+      "引入 reset 后页面一定比不引入时更美观",
+      "Normalize.css 无法覆盖浏览器的默认样式"
+    ],
+    "answer": "A",
+    "analysis": "reset 把所有元素默认样式全部归一，提供统一的起点；Normalize 则保留有用默认值（如标题字号、列表缩进），只修正浏览器间不一致的细节。两者都只是样式手段，与 JS 性能无关，也不保证更美观。",
+    "difficulty": 3,
+    "tag": "样式重置"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于浏览器解析 HTML 并构建 DOM 树的过程，说法正确的是？",
+    "options": [
+      "必须等整个 HTML 文档下载完成后才开始解析",
+      "HTML 解析器是流式的，边下载边解析并逐步构建 DOM 树",
+      "HTML 解析完成后才会开始下载 CSS 和 JS",
+      "解析过程不会生成任何中间结构，直接进行渲染"
+    ],
+    "answer": "B",
+    "analysis": "HTML 解析器是流式的：数据边到达边分词、生成节点并构建 DOM 树，不必等全部下载完。CSS 和 JS 的下载可能在解析过程中就并行开始，而渲染还需依赖 CSSOM 构建完成。",
+    "difficulty": 3,
+    "tag": "解析流程"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "当 HTML 解析器遇到一个普通（未加 defer/async）的外部 `<script>` 标签时，会发生什么？",
+    "options": [
+      "解析器跳过该脚本，继续正常解析",
+      "脚本会被浏览器直接丢弃而不执行",
+      "解析器暂停，先下载并执行该脚本后再继续解析剩余文档，因此脚本位置会影响首屏渲染",
+      "脚本自动转为异步加载"
+    ],
+    "answer": "C",
+    "analysis": "普通外部脚本是同步的：HTML 解析器遇到它时会暂停，等待脚本下载并执行完毕后才能继续解析。因此脚本常放在 body 末尾或使用 defer/async，避免阻塞首屏渲染。",
+    "difficulty": 3,
+    "tag": "解析流程"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 CSS 对文档解析与渲染的影响，说法正确的是？",
+    "options": [
+      "CSS 会阻塞 DOM 树的构建",
+      "CSS 与页面渲染完全无关",
+      "只要存在 CSS 文件，无论媒体类型如何都必须加载完才能渲染首帧",
+      "外部 CSS 会阻塞渲染（需要等待 CSSOM 构建完成），但通常不阻塞 HTML 的 DOM 解析"
+    ],
+    "answer": "D",
+    "analysis": "渲染需要同时具备 DOM 和 CSSOM，因此外部 CSS 是渲染阻塞资源；但它通常不阻塞 DOM 的解析（解析器可以继续构建 DOM）。不匹配当前媒体类型的样式表不会阻塞渲染，开发者样式也总是覆盖默认样式。",
+    "difficulty": 5,
+    "tag": "解析流程"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "下列哪项是防御 XSS 攻击的正确做法？",
+    "options": [
+      "使用 textContent 插入用户输入文本，或先将用户输入进行 HTML 转义再写入，避免直接拼接 innerHTML",
+      "只要网站启用了 HTTPS 就完全免疫 XSS",
+      "用 innerHTML 直接拼接用户输入以提升渲染性能",
+      "XSS 只影响老版本浏览器，现代浏览器不存在该风险"
+    ],
+    "answer": "A",
+    "analysis": "XSS 的核心是利用未过滤的用户输入注入 HTML/JS。用 textContent 插入文本或对输入做转义、使用白名单过滤，可避免被当作可执行代码解析。HTTPS 只保证传输加密，不能防注入，现代浏览器同样面临 XSS 风险。",
+    "difficulty": 3,
+    "tag": "HTML安全"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "在 HTML 文本中把 `<` 写作 `&lt;`、把 `&` 写作 `&amp;`，其目的是？",
+    "options": [
+      "减小文件体积",
+      "防止特殊字符被浏览器当作标签或实体起点解析，从而避免结构破坏与注入风险",
+      "让这些文字在页面上不显示",
+      "提高图片加载速度"
+    ],
+    "answer": "B",
+    "analysis": "HTML 解析器会把 `<` 当作标签开始、把 `&` 当作实体的开始。转义成 &lt; 和 &amp; 后，它们会被安全地作为普通字符显示，同时避免页面结构被破坏或产生注入漏洞。转义会增加字节数，与图片加载无关。",
+    "difficulty": 2,
+    "tag": "HTML安全"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 `<footer>` 标签，说法正确的是？",
+    "options": [
+      "一个页面只能存在一个 footer",
+      "footer 内部不允许出现任何链接",
+      "footer 通常放置版权、联系方式、备案等文档尾部信息，一个页面可以有多个 footer（如每个 article 内部各有一个）",
+      "footer 与 header 的功能完全相同"
+    ],
+    "answer": "C",
+    "analysis": "footer 表示所在区块的尾部信息（版权、联系信息、备案等），每个分节单元（如 article）都可以有自己的 footer，因此一个页面可存在多个。footer 内可以正常包含链接，其语义也与 header 不同。",
+    "difficulty": 2,
+    "tag": "footer"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于标题层级（`<h1>`~`<h6>`）与无障碍，说法正确的是？",
+    "options": [
+      "标题层级只是字号问题，与无障碍无关",
+      "页面必须从 `<h6>` 开始书写标题",
+      "使用多个 `<h1>` 会导致页面无法显示",
+      "屏幕阅读器用户常依靠标题层级进行跳转导航，使用单一 `<h1>` 描述页面主题、标题层级不跳级是推荐做法"
+    ],
+    "answer": "D",
+    "analysis": "屏幕阅读器可提供「按标题跳转」的导航，清晰有序的标题大纲是页面无障碍的关键。推荐用单一 h1 表达页面主题，标题按 h1→h2→h3 逐级递进不跳级；用多个 h1 不会导致页面无法显示，但会造成大纲混乱。",
+    "difficulty": 3,
+    "tag": "标题层级"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 `<section>` 标签的使用场景，说法正确的是？",
+    "options": [
+      "用于对内容进行主题分组（如章节、页签内容），一般建议带上标题；若仅为样式需求则优先使用 `<div>`",
+      "section 与 div 完全等价，没有任何语义",
+      "section 只能出现在 `<body>` 的直接子级",
+      "使用 section 会自动为页面生成 SEO 关键词"
+    ],
+    "answer": "A",
+    "analysis": "section 表示有主题内容的通用分节，通常应包含标题；article 语义更强、用于独立可复用的内容块，而纯样式容器应使用 div。section 可嵌套任意层级，也不会自动生成 SEO 关键词。",
+    "difficulty": 2,
+    "tag": "section"
+  }
+]

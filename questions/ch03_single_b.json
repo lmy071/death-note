@@ -1,0 +1,332 @@
+[
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `r` 的值为（　）？\n```js\nvar r = 'hello'.slice(1, 3);\n```",
+    "options": ["\"el\"", "\"he\"", "\"ell\"", "\"lo\""],
+    "answer": "A",
+    "analysis": "slice(1, 3) 截取下标 1 到 3（不含 3）之间的字符，即 'el'，故选 A。slice 不修改原字符串，与数组 slice 行为一致。",
+    "difficulty": 1,
+    "tag": "字符串slice"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "执行 `'JavaScript'.charAt(2)` 的返回值是（　）？",
+    "options": ["'a'", "'v'", "'J'", "NaN"],
+    "answer": "B",
+    "analysis": "charAt(index) 返回指定下标处的字符，索引从 0 开始，'JavaScript' 下标 2 的字符是 'v'，故选 B。charAt 越界时返回空字符串，而不会抛错。",
+    "difficulty": 1,
+    "tag": "字符串charAt"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码的执行结果是（　）？\n```js\nvar s = 'a-b-c';\nconsole.log(s.replace('-', '+'));\n```",
+    "options": ["\"a+b+c\"", "\"a-b+c\"", "\"a+b-c\"", "\"a-b-c\""],
+    "answer": "C",
+    "analysis": "replace 的第一个参数若为字符串，只会替换第一个匹配项，因此 '-' 第一次出现被替换为 '+'，输出 'a+b-c'，故选 C。若希望全部替换需使用正则 /-/g 或 replaceAll。",
+    "difficulty": 3,
+    "tag": "字符串replace"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "执行 `var arr = '1,2,3'.split(',')` 后，`arr` 的值为（　）？",
+    "options": ["[1, 2, 3]", "\"1,2,3\"", "[\"1,2,3\"]", "[\"1\", \"2\", \"3\"]"],
+    "answer": "D",
+    "analysis": "split 按分隔符把字符串拆成字符串数组，元素保持字符串类型，因此结果为 [\"1\", \"2\", \"3\"]，故选 D。split 不会把数字字符串转成数字。",
+    "difficulty": 1,
+    "tag": "字符串split"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "执行 `'hello'.includes('ell')` 的返回值是（　）？",
+    "options": ["true", "false", "2", "undefined"],
+    "answer": "A",
+    "analysis": "includes 判断字符串是否包含指定子串并返回布尔值，'hello' 包含 'ell'，故返回 true，故选 A。includes 是 ES6 新增方法，比 indexOf 更直观。",
+    "difficulty": 1,
+    "tag": "字符串includes"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `Object.keys` 的返回结果是（　）？\n```js\nvar keys = Object.keys({ a: 1, b: 2 });\n```",
+    "options": ["[[\"a\",1],[\"b\",2]]", "[\"a\", \"b\"]", "[1, 2]", "{\"a\":1,\"b\":2}"],
+    "answer": "B",
+    "analysis": "Object.keys 返回对象自身可枚举字符串属性名组成的数组，因此为 [\"a\", \"b\"]，故选 B。属性值用 Object.values 获取，键值对用 Object.entries 获取。",
+    "difficulty": 1,
+    "tag": "Object.keys"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `obj` 的值是（　）？\n```js\nvar obj = Object.assign({ a: 1 }, { a: 2, b: 3 });\n```",
+    "options": ["{a: 1, b: 3}", "{\"a\":1,\"a\":2,\"b\":3}", "{a: 2, b: 3}", "报错"],
+    "answer": "C",
+    "analysis": "Object.assign 把源对象属性拷贝到目标对象，同名属性后者覆盖前者，因此 a 由 2 覆盖 1，结果为 {a: 2, b: 3}，故选 C。该方法属于浅拷贝。",
+    "difficulty": 2,
+    "tag": "Object.assign"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码在严格模式下执行的结果是（　）？\n```js\n'use strict';\nvar o = { a: 1 };\nObject.freeze(o);\no.a = 2;\n```",
+    "options": ["o.a 变为 2", "静默失败，o.a 仍为 1", "o 被删除", "抛出 TypeError"],
+    "answer": "D",
+    "analysis": "Object.freeze 使对象不可新增、删除或修改属性；在严格模式下修改冻结对象会抛出 TypeError，故选 D。非严格模式下则静默失败不报错，但属性同样不会改变。",
+    "difficulty": 3,
+    "tag": "Object.freeze"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "执行 `({ a: 1 }).hasOwnProperty('toString')` 的返回值是（　）？",
+    "options": ["false", "true", "undefined", "报错"],
+    "answer": "A",
+    "analysis": "toString 来自原型链上的 Object.prototype，不是对象自身的属性，hasOwnProperty 只检查自身属性，因此返回 false，故选 A。可用 in 运算符验证继承属性是否存在。",
+    "difficulty": 2,
+    "tag": "hasOwnProperty"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列关于 `for...in` 与 `for...of` 的说法正确的是（　）？",
+    "options": ["for...in 遍历属性的值，for...of 遍历属性名", "for...in 会遍历对象自身及原型链上可枚举的属性名", "for...of 可以直接遍历普通对象", "for...in 不会遍历继承的属性"],
+    "answer": "B",
+    "analysis": "for...in 遍历的是可枚举属性名，且会包含原型链上的可枚举属性，故选 B。for...of 遍历迭代器的值，普通对象没有迭代器不能直接用 for...of 遍历。",
+    "difficulty": 3,
+    "tag": "for...in/for...of"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `Object.create(null)` 创建的对象（　）？",
+    "options": ["原型是 Object.prototype", "与 {} 完全等价", "没有原型，且没有 toString 等方法", "原型是 Function.prototype"],
+    "answer": "C",
+    "analysis": "Object.create(null) 显式传入 null 作为原型，创建的对象没有任何原型，因此也没有继承自 Object.prototype 的 toString、hasOwnProperty 等方法，故选 C。",
+    "difficulty": 2,
+    "tag": "Object.create"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "非严格模式下，独立调用下列函数时其内部 `this` 指向（　）？\n```js\nfunction show() {\n  return this;\n}\nvar t = show();\n```",
+    "options": ["undefined", "null", "show 函数本身", "全局对象（浏览器中为 window）"],
+    "answer": "D",
+    "analysis": "非严格模式下，普通函数独立调用属于默认绑定，this 指向全局对象（浏览器为 window，Node 为 global），故选 D。严格模式下独立调用 this 为 undefined。",
+    "difficulty": 2,
+    "tag": "this默认绑定"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码在严格模式下执行，其输出结果是（　）？\n```js\n'use strict';\nfunction f() {\n  console.log(this);\n}\nf();\n```",
+    "options": ["undefined", "window", "null", "f 函数"],
+    "answer": "A",
+    "analysis": "严格模式下普通函数独立调用，this 不会被默认绑定到全局对象，而是保持 undefined，因此输出 undefined，故选 A。这也是严格模式最重要的行为差异之一。",
+    "difficulty": 2,
+    "tag": "严格模式"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `this.name` 的输出结果是（　）？\n```js\nvar obj = {\n  name: 'alice',\n  getName: function() {\n    return this.name;\n  }\n};\nconsole.log(obj.getName());\n```",
+    "options": ["undefined", "\"alice\"", "window", "报错"],
+    "answer": "B",
+    "analysis": "以 obj.getName() 形式调用时属于隐式绑定，this 指向调用者 obj，因此返回 obj.name 即 'alice'，故选 B。this 的指向取决于调用方式而非定义位置。",
+    "difficulty": 1,
+    "tag": "this隐式绑定"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中第二行的输出结果是（　）？\n```js\nvar obj = {\n  name: 'alice',\n  getName: function() {\n    return this.name;\n  }\n};\nvar f = obj.getName;\nconsole.log(f());\n```",
+    "options": ["\"alice\"", "抛出 TypeError", "undefined", "null"],
+    "answer": "C",
+    "analysis": "把方法单独取出后直接调用 f()，丢失了隐式绑定上下文，此时属于默认绑定（非严格模式下 this 为 window/global），window 上没有 name 属性，因此输出 undefined，故选 C。",
+    "difficulty": 3,
+    "tag": "this隐式丢失"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `call` 与 `apply` 在用法上的关键区别是（　）？",
+    "options": ["call 绑定 this，apply 不绑定 this", "apply 会立即执行，call 会延迟执行", "二者没有任何区别", "call 以参数列表传参，apply 以数组传参"],
+    "answer": "D",
+    "analysis": "call 与 apply 都立即调用函数并指定 this，唯一区别是传参方式：call 逐个传参，apply 把参数放在数组（或类数组）中传入，故选 D。bind 才是不立即执行的绑定函数。",
+    "difficulty": 2,
+    "tag": "call/apply"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列关于 `bind` 的说法正确的是（　）？",
+    "options": ["bind 返回一个新函数，其 this 被永久绑定，可后续调用", "bind 会立即执行函数", "bind 与 call 完全等价", "bind 只能用于箭头函数"],
+    "answer": "A",
+    "analysis": "bind 不立即执行，而是返回一个绑定了 this（及初始参数）的新函数，后续可任意次调用，故选 A。即使之后再用 call/apply 也无法改变 bind 绑定的 this（new 除外）。",
+    "difficulty": 2,
+    "tag": "bind"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码的输出结果是（　）？\n```js\nfunction Person(name) {\n  this.name = name;\n}\nvar p = new Person('bob');\nconsole.log(p.name);\n```",
+    "options": ["undefined", "\"bob\"", "Person", "window"],
+    "answer": "B",
+    "analysis": "使用 new 调用构造函数时属于 new 绑定，函数内部的 this 指向新创建的对象，因此 this.name = 'bob' 写入新对象，输出 'bob'，故选 B。new 是四条绑定规则中优先级最高的之一。",
+    "difficulty": 1,
+    "tag": "this的new绑定"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码的输出结果是（　）？\n```js\nvar obj = {\n  x: 1,\n  f: function() {\n    return this.x;\n  }\n};\nvar y = new obj.f();\nconsole.log(y.x);\n```",
+    "options": ["1", "报错", "undefined", "0"],
+    "answer": "C",
+    "analysis": "new 绑定的优先级高于隐式绑定：new obj.f() 创建了新对象，函数内的 this 指向新对象而非 obj，新对象上没有 x 属性（构造函数未赋值），因此输出 undefined，故选 C。",
+    "difficulty": 4,
+    "tag": "this绑定优先级"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码的输出结果是（　）？\n```js\nvar obj = {\n  x: 1,\n  f: () => this.x\n};\nconsole.log(obj.f());\n```",
+    "options": ["1", "报错", "NaN", "undefined（非严格模式下由外层 this 决定）"],
+    "answer": "D",
+    "analysis": "箭头函数没有自己的 this，其 this 取自定义时的外层词法作用域；此处定义箭头函数的外层是脚本/模块顶层，非严格模式下顶层 this 为全局对象，全局没有 x（假设未定义），因此输出 undefined，故选 D。若页面定义了全局变量 x 则输出该全局值。",
+    "difficulty": 3,
+    "tag": "箭头函数this"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `f` 内的 `arguments` 指向（　）？\n```js\nvar f = () => arguments;\nfunction g() {\n  return f();\n}\nconsole.log(g(1, 2));\n```",
+    "options": ["外层 g 函数的 arguments 对象", "g 的实参组成的数组 [1, 2]", "报错 ReferenceError", "undefined"],
+    "answer": "A",
+    "analysis": "箭头函数没有自己的 arguments 对象，它会沿词法作用域向上查找，因此 f 中的 arguments 实际是外层函数 g 的 arguments，故选 A。注意 print 结果显示的是类数组 arguments 对象而非普通数组。",
+    "difficulty": 4,
+    "tag": "箭头函数arguments"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "执行 `[].__proto__ === Array.prototype && Array.prototype.__proto__ === Object.prototype` 的结果是（　）？",
+    "options": ["false", "true", "undefined", "报错"],
+    "answer": "B",
+    "analysis": "数组实例的隐式原型指向 Array.prototype，而 Array.prototype 本身是普通对象，其隐式原型指向 Object.prototype，因此整个表达式为 true，故选 B。这体现对象 instanceof 判定的原型链结构。",
+    "difficulty": 3,
+    "tag": "原型链"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `b instanceof Animal` 的结果是（　）？\n```js\nfunction Animal() {}\nvar b = new Animal();\n```",
+    "options": ["false", "undefined", "true", "报错"],
+    "answer": "C",
+    "analysis": "instanceof 沿着实例的原型链查找构造函数的 prototype，b 由 new Animal() 创建，其原型链上存在 Animal.prototype，因此返回 true，故选 C。",
+    "difficulty": 1,
+    "tag": "instanceof原型链"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "使用原型链继承实现 `Child.prototype = new Parent()` 的主要缺陷是（　）？",
+    "options": ["无法继承父类方法", "语法上不合法", "子类无法调用父类构造函数", "子类实例共享父类实例上的引用类型属性，一个实例修改会影响其他实例"],
+    "answer": "D",
+    "analysis": "当父类属性中包含引用类型（如数组）时，这些属性存在父类实例上，而该实例被所有子类实例共享为原型，因此引用类型属性被所有子类实例共享，修改一个会影响其他，故选 D。组合继承通过构造函数传参解决此问题。",
+    "difficulty": 4,
+    "tag": "原型链继承"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列组合继承代码中 `dog.name` 与 `dog instanceof Animal` 的结果是（　）？\n```js\nfunction Animal(name) {\n  this.name = name;\n}\nAnimal.prototype.say = function() { return 'hi'; };\nfunction Dog(name) {\n  Animal.call(this, name);\n}\nDog.prototype = Object.create(Animal.prototype);\nDog.prototype.constructor = Dog;\nvar dog = new Dog('wang');\n```",
+    "options": ["\"wang\" 与 true", "\"wang\" 与 false", "undefined 与 true", "\"wang\" 与 报错"],
+    "answer": "A",
+    "analysis": "构造函数借用 Animal.call(this, name) 给每个实例复制自己的 name 属性，因此 dog.name 为 'wang'；Dog.prototype 的原型指向 Animal.prototype，原型链上能找到 Animal.prototype，因此 instanceof Animal 为 true，故选 A。这是组合继承的标准写法。",
+    "difficulty": 4,
+    "tag": "组合继承"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列 ES6 class 代码的结论是（　）？\n```js\nclass A {\n  constructor(x) {\n    this.x = x;\n  }\n}\nclass B extends A {\n  constructor(x, y) {\n    super(x);\n    this.y = y;\n  }\n}\nvar b = new B(1, 2);\n```",
+    "options": ["报错，必须在 super 之前访问 this", "b.x 为 1，b.y 为 2", "b 的实例无法访问 x", "super 只能用于静态方法"],
+    "answer": "B",
+    "analysis": "B 的构造函数中先调用 super(x) 完成父类初始化，之后才能使用 this，因此 b.x 为 1、b.y 为 2，故选 B。这段代码是先 super 后访问 this 的正确写法，不会报错。",
+    "difficulty": 3,
+    "tag": "ES6 class继承"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列关于 ES6 class 的说法正确的是（　）？",
+    "options": ["class 声明可以在声明前调用（存在提升）", "class 中的方法默认是可枚举的", "class 必须先 new 才能实例化，直接以函数方式调用会报错", "class 不能使用 extends 继承"],
+    "answer": "C",
+    "analysis": "class 与 function 不同：类声明存在暂时性死区，且类只能通过 new 实例化，直接调用（如 A()）会抛出 TypeError，故选 C。class 方法默认不可枚举，且支持 extends 继承。",
+    "difficulty": 3,
+    "tag": "class特性"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 `a.arr.length` 为（　）？\n```js\nvar a = { arr: [1, 2] };\nvar b = Object.assign({}, a);\nb.arr.push(3);\n```",
+    "options": ["2", "报错", "0", "3"],
+    "answer": "D",
+    "analysis": "Object.assign 是浅拷贝，b.arr 与 a.arr 指向同一个数组引用，push 后原数组变为 [1, 2, 3]，因此 a.arr.length 为 3，故选 D。浅拷贝只复制第一层，嵌套对象仍共享引用。",
+    "difficulty": 3,
+    "tag": "浅拷贝"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "使用 `JSON.parse(JSON.stringify(obj))` 进行深拷贝时，下列哪种数据会被丢失或变形（　）？",
+    "options": ["值为函数的属性", "字符串属性", "普通数字属性", "数组属性"],
+    "answer": "A",
+    "analysis": "JSON 序列化会忽略值为 undefined、函数、Symbol 的属性，因此函数属性会在拷贝中丢失，故选 A。Date 会被转成字符串，NaN/Infinity 会变成 null，这是 JSON 深拷贝的已知局限，复杂场景应使用 structuredClone 或递归深拷贝。",
+    "difficulty": 3,
+    "tag": "深拷贝"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "采用展开运算符 `var b = { ...a }` 复制对象，下列说法正确的是（　）？",
+    "options": ["这是深拷贝，嵌套对象完全独立", "这是浅拷贝，嵌套引用类型仍与原对象共享", "展开运算符不能用于对象", "复制后 b 与 a 是两个完全不相关的对象"],
+    "answer": "B",
+    "analysis": "...（展开运算符）对对象做第一层属性的拷贝，属于浅拷贝：b 拥有独立的第一层属性，但嵌套的对象、数组仍是原引用，故选 B。深拷贝需要递归处理嵌套结构。",
+    "difficulty": 2,
+    "tag": "展开运算符拷贝"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列关于 JavaScript 垃圾回收（标记清除）的说法正确的是（　）？",
+    "options": ["引用计数是 V8 唯一的回收算法", "被标记为可回收的对象会立即内存泄漏", "从根（全局对象等）出发无法到达的对象会被标记并回收", "开发者可以手动调用 GC 立即回收任意对象"],
+    "answer": "C",
+    "analysis": "标记清除算法从根对象出发标记所有可达对象，未被标记的对象将被回收，故选 C。V8 还结合分代回收、增量标记等手段；JS 没有暴露给开发者的直接 GC 接口，引用计数是旧版 IE 采用过的方式。",
+    "difficulty": 2,
+    "tag": "垃圾回收"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列哪种做法最容易导致内存泄漏（　）？",
+    "options": ["使用 const 声明变量", "使用函数局部变量", "调用数组的 push 方法", "定时器或事件监听器长期持有引用且未清除"],
+    "answer": "D",
+    "analysis": "未清除的 setInterval/setTimeout、未移除的事件监听器、未解绑的 DOM 引用会让本应回收的对象持续被引用，造成内存泄漏，故选 D。const 与局部变量有明确作用域，函数结束后可被回收。",
+    "difficulty": 2,
+    "tag": "内存泄漏"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "single",
+    "question": "下列代码中 t1 与 t2 的关系及 t1() 的返回值是（　）？\n```js\nfunction foo() {\n  var a = 1;\n  function bar() {\n    a++;\n    return a;\n  }\n  return bar;\n}\nvar t1 = foo();\nvar t2 = foo();\nt1();\n```",
+    "options": ["t1 和 t2 各自持有独立的 a，t1() 返回 2", "t1 和 t2 共享同一个 a", "t1() 返回 1", "报错，无法两次调用 foo"],
+    "answer": "A",
+    "analysis": "每次调用 foo() 都会创建新的执行上下文和新的局部变量 a，因此 t1 与 t2 各自持有独立闭包，互不影响；t1() 首次执行使各自的 a 从 1 递增到 2 并返回，故选 A。闭包每次创建都是独立的一份。",
+    "difficulty": 3,
+    "tag": "闭包"
+  }
+]

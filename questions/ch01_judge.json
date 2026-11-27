@@ -1,0 +1,222 @@
+[
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "在同一个HTML文档中，`<main>`元素应只出现一次，用于标识页面中的主要内容区域。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "`<main>`用于标识页面唯一的主内容区域，除带`hidden`属性的情况外，一个文档中不应出现多个`<main>`。将主内容放入`<main>`可让屏幕阅读器等辅助技术直接跳转到核心内容，改善无障碍体验。",
+    "difficulty": 1,
+    "tag": "语义化标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "`<section>`元素与`<div>`元素在语义上完全等价，任何场景下都可以互相替换使用。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "`<div>`是没有语义的通用容器，而`<section>`表示文档中独立的章节，通常应包含标题，语义更明确。两者语义不同，不能无条件互相替换，使用`<section>`时应确保其语义在实际结构中成立。",
+    "difficulty": 1,
+    "tag": "语义化标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "根据HTML规范，`<h1>`标签在一个HTML文档中只能出现一次，否则会导致文档结构不合法。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "HTML规范并未禁止`<h1>`在文档中出现多次，例如每个`<section>`内使用自己的`<h1>`是允许的。规范要求的是标题层级使用合理、结构清晰，而非数量上的硬性限制，因此说法错误。",
+    "difficulty": 2,
+    "tag": "文档结构"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "`<meta charset=\"UTF-8\">`标签可以放在`<body>`中，效果与放在`<head>`中完全相同。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "`<meta charset=\"UTF-8\">`必须放在`<head>`中，且应尽量位于文档前1024字节内，以保证浏览器尽早以正确的编码解析文档。放在`<body>`中可能导致编码声明被忽略，使页面出现中文乱码。",
+    "difficulty": 2,
+    "tag": "meta标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "在移动端适配中，`<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">`可使页面布局宽度与设备屏幕宽度一致。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "`width=device-width`让布局视口宽度等于设备屏幕宽度，`initial-scale=1.0`将初始缩放比例设为1，二者配合是移动端适配的基础配置。没有该meta时，移动浏览器会按默认的较宽视口渲染页面，导致文字与布局被缩小。",
+    "difficulty": 2,
+    "tag": "移动端适配"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "带有`async`属性的外部脚本一定会在HTML文档解析完成后再执行。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "`async`脚本下载时不会阻塞HTML解析，但下载完成后会立即执行，执行时机不固定，可能发生在解析完成之前。这与`defer`不同，因此\"一定在解析完成后执行\"的说法错误。",
+    "difficulty": 3,
+    "tag": "脚本加载"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "带有`defer`属性的外部脚本会在文档解析完成后、`DOMContentLoaded`事件触发前，按文档顺序依次执行。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "`defer`脚本在HTML解析完成后、`DOMContentLoaded`触发之前按它们在文档中出现的顺序依次执行。该机制保证脚本执行时DOM已经构建完成，且多个`defer`脚本的执行顺序可预期。",
+    "difficulty": 3,
+    "tag": "脚本加载"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "`<script type=\"module\">`脚本与普通`<script>`一样，遇到时立即同步执行。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "`<script type=\"module\">`默认采用延迟执行方式，下载不阻塞解析，在文档解析完成后按模块依赖顺序执行。它与普通同步脚本的行为不同，\"遇到时立即同步执行\"的说法错误。",
+    "difficulty": 3,
+    "tag": "模块脚本"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "当`<script>`同时带有`defer`和`async`属性时，`async`的优先级更高，脚本在下载完成后立即执行。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "根据HTML规范，当`async`与`defer`同时出现时，`async`优先生效，脚本在下载完成后立即执行，`defer`行为被忽略。该题考查两个属性的优先级关系，日常应避免同时使用以免混淆。",
+    "difficulty": 4,
+    "tag": "脚本加载"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "将`<link rel=\"stylesheet\">`放在`<body>`末尾加载，比放在`<head>`中拥有更好的页面渲染性能。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "浏览器加载CSS时会阻塞渲染，将样式表放在`<head>`中尽早加载可避免页面先显示无样式内容（FOUC）。放在`<body>`末尾反而会推迟样式生效、增加改版闪烁，属于不良实践，说法错误。",
+    "difficulty": 3,
+    "tag": "资源加载"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "`<header>`元素既可以用作整个页面的页眉，也可以放在`<article>`或`<section>`内部表示章节头部。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "`<header>`是引导性内容容器，既可作为页面级页眉，也可作为`<article>`、`<section>`等区块的头部使用。其含义是区块的引导内容，因此一个文档中可以出现多个`<header>`。",
+    "difficulty": 1,
+    "tag": "语义化标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "`<footer>`元素在每个HTML文档中只能使用一次，且只能放在`<body>`的最后。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "`<footer>`表示区块的尾部内容（如版权、相关链接等），既可用于整个页面，也可用于`<article>`、`<section>`内部。文档中可以有多个`<footer>`，\"只能使用一次、只能放在最后\"的说法错误。",
+    "difficulty": 2,
+    "tag": "语义化标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "`<nav>`元素用于标记页面中的导航链接区域，通常包含站点主导航或页内锚点链接。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "`<nav>`专门用于标记导航链接（如主导航、面包屑、页内锚点导航等），便于辅助技术识别跳转区域。并非所有链接都必须放入`<nav>`，只有主要导航区块才适合使用该语义化标签。",
+    "difficulty": 1,
+    "tag": "语义化标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "`<figure>`元素只能包含图片，不能放入代码块或图表等其他内容。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "`<figure>`表示与主内容相关但可独立引用的内容单元，可包含图片、代码块、图表、引用等多种内容，并常配合`<figcaption>`提供标题说明。\"只能包含图片\"的说法错误。",
+    "difficulty": 2,
+    "tag": "常用标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "`<i>`元素与`<em>`元素的语义完全相同，都表示强调文本。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "`<em>`表示语义上的强调，屏幕阅读器会以加重语气朗读；`<i>`在HTML5中表示斜体显示的文本（如术语、外来语等），并不带有强调语义。两者视觉上常同为斜体，但语义含义不同。",
+    "difficulty": 2,
+    "tag": "标签语义"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "浏览器默认样式（用户代理样式）的优先级低于作者样式，因此作者编写的CSS通常能覆盖浏览器的默认样式。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "CSS层叠规则中，作者样式表（开发者编写的样式）优先级高于用户代理样式表，所以`<h1>`默认加粗、`<body>`默认边距等都可被作者样式覆盖。这是CSS层叠优先级的基本规则。",
+    "difficulty": 3,
+    "tag": "默认样式"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "HTML解析器遇到不带`async`或`defer`属性的普通外部`<script>`时会暂停解析文档，待脚本下载并执行完毕后再继续。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "普通（无`async`/`defer`/`type=\"module\"`属性的同步脚本在执行前会阻塞HTML解析，即解析器阻塞行为。`async`与`defer`正是为消除该阻塞而设计，因此脚本位置与加载方式会影响页面解析与渲染速度。",
+    "difficulty": 3,
+    "tag": "文档解析流程"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "localStorage中保存的数据在浏览器窗口或标签页关闭后会被自动清除。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "localStorage的数据会持久保存在浏览器中，关闭窗口、标签页甚至浏览器后仍然存在，只有通过代码`removeItem`/`clear`或用户主动清除站点数据才会被删除。随会话结束自动清除的是sessionStorage。",
+    "difficulty": 1,
+    "tag": "Web存储"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "localStorage与sessionStorage均以字符串键值对形式存储数据，存储对象前需要先将其序列化为JSON字符串。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "localStorage与sessionStorage的存储值都会被转换为字符串，直接存入数字或对象会得到其字符串形式，因此存取对象需借助`JSON.stringify`与`JSON.parse`。这是HTML5 Web存储API的基本特性。",
+    "difficulty": 1,
+    "tag": "Web存储"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "将用户输入直接拼接到innerHTML后插入页面是安全的，浏览器会自动对插入内容中的特殊字符进行转义。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "浏览器不会对写入innerHTML的内容自动转义，`<script>`、`<img onerror>`等代码会被原样解析执行，直接拼接用户输入会产生XSS漏洞。安全做法是先对输入做HTML转义，或使用`textContent`等不解析HTML的方式写入。",
+    "difficulty": 2,
+    "tag": "HTML安全"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "通过`Content-Security-Policy`响应头限制资源的加载来源，是降低XSS攻击风险的有效手段。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "CSP通过`Content-Security-Policy`响应头声明允许加载脚本、样式等资源的来源，能有效限制攻击者注入的恶意脚本执行，是XSS的重要纵深防御手段。配合输入校验与输出转义，可显著降低XSS风险。",
+    "difficulty": 4,
+    "tag": "HTML安全"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "judge",
+    "question": "合理使用`<article>`、`<nav>`等HTML5语义化标签，有助于屏幕阅读器等辅助技术识别页面结构，改善无障碍访问。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "语义化标签如`<article>`、`<nav>`、`<main>`等会映射为相应的ARIA landmark角色，屏幕阅读器用户可借此快速跳转浏览页面结构。语义化是提升无障碍访问的基础手段之一，同时也有利于SEO与代码可读性。",
+    "difficulty": 2,
+    "tag": "无障碍访问"
+  }
+]

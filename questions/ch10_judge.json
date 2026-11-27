@@ -1,0 +1,222 @@
+[
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "npm 的 package.json 中，dependencies 字段用于声明项目运行时必需的依赖，而 devDependencies 字段用于声明仅在开发或构建阶段需要的依赖。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "这是 npm 包管理的核心分类：dependencies 中的依赖在生产运行时也必须安装，如 Vue、React 等框架；devDependencies 中的依赖只在开发阶段使用，如 Babel、Jest、webpack 等构建与测试工具。安装时通过 --save-dev 参数可将依赖写入 devDependencies。故题干说法正确。",
+    "difficulty": 1,
+    "tag": "包管理"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "npm 安装依赖时会进行扁平化处理，因此同一名称的依赖包在项目 node_modules 目录中只会存在一个副本。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "npm 自 v3 起确实采用扁平的 node_modules 结构，但当不同依赖声明了同一包的相互冲突的版本时，npm 仍会在嵌套子目录中安装额外的副本以满足各自版本要求，并非绝对只有一个副本。package-lock.json 的作用正是锁定这份依赖树的精确结构。故题干说法过于绝对，是错误的。",
+    "difficulty": 2,
+    "tag": "包管理"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "在 webpack 中，Loader 负责将各式各样的资源转换为可被模块系统处理的模块，而 Plugin 用于执行打包流程中的复杂任务，如代码压缩、清理目录、注入环境变量等。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Loader 本质是文件转换器，在模块加载时按规则处理内容，如 sass-loader 将 Sass 编译为 CSS、babel-loader 转译 JS 语法；Plugin 则能通过编译钩子介入整个打包生命周期，能力更强。一个文件可通过 rules 配置多个 Loader 按顺序执行。该说法正确反映了二者在 webpack 中的职责分工。",
+    "difficulty": 2,
+    "tag": "打包工具"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "webpack 5 开箱即用即可打包 CSS、图片等静态资源，无需配置任何 Loader 也能正确解析处理。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "webpack 只原生理解 JavaScript 与 JSON，处理 CSS 必须配置 css-loader、style-loader 或 MiniCssExtractPlugin 等 Loader；图片等资源虽由 webpack 5 内置的 Asset Modules 支持，仍需在 module.rules 中显式声明处理规则。所谓开箱即用无需配置的说法与事实不符，故题干错误。",
+    "difficulty": 2,
+    "tag": "构建配置"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "将 webpack 的 mode 配置为 production 后，构建结果默认会启用代码压缩与 tree shaking 等优化手段。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "mode 为 production 时，webpack 会自动启用 TerserPlugin 压缩 JS 代码，并默认开启 tree shaking、作用域提升等优化；development 模式则优先考虑构建速度与调试体验，不做压缩。这正是 mode 配置的核心作用之一，故题干说法正确。",
+    "difficulty": 3,
+    "tag": "构建优化"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "Babel 是一个 JavaScript 编译器，可将高版本 ES 语法转译为旧环境可兼容的低版本语法，但本身不负责模块打包。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Babel 的核心职责是语法转译，例如把箭头函数、可选链等新语法转换为 ES5 形式供旧浏览器运行；模块打包与资源处理由 webpack、Rollup 等打包器完成，Babel 通常作为其中的一个转换环节参与。因此题干对 Babel 角色的描述是准确的。",
+    "difficulty": 2,
+    "tag": "Babel"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "通过 @babel/preset-env 配置后，Babel 无需任何额外设置即可自动转换 Promise、Set 等新增的内置 API。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "preset-env 只负责转换语法，默认不会为 Promise、Set、Array.prototype.flat 等新的内置对象与方法提供实现，需要配合 core-js 并配置 useBuiltIns 选项按需注入 polyfill 才能补齐。可见题干说法与 Babel 的实际行为不符，是错误的。",
+    "difficulty": 4,
+    "tag": "Babel"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "CommonJS 的 require 可以在条件语句或函数内部动态调用，而 ESModule 的 import 语句必须位于模块顶层，不能动态引入。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "CommonJS 是运行时加载机制，require 本质上是普通函数调用，可以出现在任意位置；ESModule 是静态的，import 声明必须写在模块顶层，便于编译期做依赖分析和 tree shaking。若需动态加载 ES 模块，应使用 import() 函数。故题干说法正确。",
+    "difficulty": 3,
+    "tag": "模块化"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "ESModule 的静态导入机制是打包工具实现 Tree Shaking 的前提条件之一。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Tree Shaking 依赖编译期对模块依赖图进行静态分析，只有 import/export 这种顶层静态语法能保证依赖关系可预先确定；CommonJS 的 require 是运行时动态的，难以被可靠静态分析。Rollup、webpack 的摇树优化都基于 ESModule 这一特性，故题干正确。",
+    "difficulty": 3,
+    "tag": "摇树优化"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "只要 webpack 的 mode 设置为 production，构建产物中所有未被使用的导出代码就一定会被完全剔除。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "production 模式仅默认开启 tree shaking，能否完整剔除还受模块副作用标记 sideEffects、动态导入方式以及第三方库的写法等多种因素影响，打包产物中仍可能残留部分未用代码。通过声明 sideEffects: false 可进一步优化，但无法保证绝对完全剔除，题干说法过于绝对，故错误。",
+    "difficulty": 5,
+    "tag": "副作用"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "webpack 的 SplitChunksPlugin 可以将多个模块共享的第三方依赖提取到独立 chunk，从而提升浏览器缓存利用率。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "SplitChunksPlugin 是 webpack 代码分割的核心插件，能把公共依赖或体积较大的库拆分为独立 chunk，这些 chunk 内容变化频率低，配合缓存指纹可长期命中浏览器缓存，同时减小入口 chunk 的体积。这是代码分割与缓存优化的标准做法，题干正确。",
+    "difficulty": 2,
+    "tag": "代码分割"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "开启代码分割后，项目所有静态资源的总字节数一定会比不分割时更小。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "代码分割只是把单个大 bundle 拆分为多个 chunk 并按需加载，资源总体积并不会必然减小，配置不合理时甚至可能因 chunk 间重复包含公共代码而增大。其意义在于减少首屏加载的体积并提升缓存命中率，而非压缩所有资源的总字节数，故题干错误。",
+    "difficulty": 3,
+    "tag": "代码分割"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "Sass、Less 等 CSS 预处理器提供了变量、嵌套、混入等能力，浏览器无法直接执行，使用前需编译成原生 CSS。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "预处理器语法不是浏览器可识别的标准 CSS，必须通过 sass-loader、less-loader 等工具在构建阶段编译为原生 CSS 后才能被浏览器渲染。其变量、嵌套、混入等特性均是在编译期展开的，属于构建阶段的能力。故题干描述正确。",
+    "difficulty": 2,
+    "tag": "预处理器"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "Sass 中的变量与 CSS 自定义属性（var()）在作用域与运行机制上完全相同。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "Sass 变量在编译期就被替换为具体值，不参与 CSS 继承，也无法在运行时修改；而 CSS 自定义属性是运行时生效的，支持继承，可通过 JavaScript 或媒体查询动态改变。二者机制完全不同，不能混用，故题干说法错误。",
+    "difficulty": 3,
+    "tag": "CSS变量"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "Hot Module Replacement（HMR，模块热替换）能在不刷新整个页面的情况下更新被修改的模块，并尽量保留应用当前状态。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "HMR 是开发模式下的核心体验优化，通过 WebSocket 与开发服务器通信，只替换发生变更的模块及其依赖，避免整页刷新导致的状态丢失。配合 style-loader 等可以实现样式热更新，配合框架的 HMR 能力可实现组件状态保留。题干描述准确。",
+    "difficulty": 2,
+    "tag": "HMR"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "防抖与节流的作用完全相同，都能让函数在连续触发期间按固定时间间隔执行。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "两者的作用不同：防抖（debounce）是在事件停止触发后延迟执行一次，适合输入搜索、窗口 resize 结束等场景；节流（throttle）保证固定时间间隔内最多执行一次，适合滚动、拖拽等高频事件。将二者混为一谈是错误的。",
+    "difficulty": 4,
+    "tag": "防抖节流"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "webpack 文件名模板中的 [hash]、[chunkhash]、[contenthash] 三种占位符的取值规则完全相同，可以互相替代。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "三者粒度不同：[hash] 基于本次构建的所有内容计算，任何文件修改都会导致其变化；[chunkhash] 基于所在 chunk 的内容计算；[contenthash] 基于单个文件内容计算，稳定性最好。生产环境常用 [contenthash] 实现长缓存，三者不能互相替代，故题干错误。",
+    "difficulty": 3,
+    "tag": "缓存指纹"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "使用 contenthash 作为静态资源文件名时，只要文件内容不变，文件名就不会改变，浏览器可继续命中本地缓存。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "contenthash 由文件内容计算得出，内容不变则 hash 不变、文件名不变，配合 Cache-Control 等强缓存即可让浏览器继续命中本地缓存；内容一旦变更，文件名随之改变，浏览器会强制请求新版本。这是实现长期缓存的标准做法，题干正确。",
+    "difficulty": 3,
+    "tag": "缓存指纹"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "FCP（First Contentful Paint）指的是页面首屏内容完全渲染完毕、所有图片均加载完成的时刻。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "FCP 表示从开始加载到浏览器首次绘制出任何内容（文本、图片、canvas 等）所经过的时间，衡量的只是首次出现内容，而非所有资源加载完成。页面完全可交互应参考 TTI，全部资源加载完成参考 Load 事件等指标，故题干描述错误。",
+    "difficulty": 3,
+    "tag": "性能指标"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "LCP（Largest Contentful Paint）的数值越大，说明页面加载性能越好。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "LCP 衡量视口内最大内容元素渲染完成的时间，数值越小说明主要内容越快呈现，性能越好；数值越大意味着用户等待主要内容的时间越长，性能越差。业界以 LCP 不超过 2.5 秒作为良好标准，故题干说法错误。",
+    "difficulty": 2,
+    "tag": "性能指标"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "单元测试主要用于验证单个函数或模块在给定输入下的输出是否符合预期，Jest、Vitest 是常见的单元测试框架。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "单元测试以最小可测试单元（函数、类、模块）为对象，隔离性强、运行速度快，验证输入与输出的对应关系；Jest 与新一代的 Vitest 都是主流的前端单元测试框架。集成测试与端到端测试的粒度则更大，故题干正确。",
+    "difficulty": 2,
+    "tag": "单元测试"
+  },
+  {
+    "chapter": "考点10：前端工程化构建与性能优化",
+    "type": "judge",
+    "question": "持续部署（CD）仅指将开发分支的代码合并到主干分支的过程，不包含自动构建、测试与发布环节。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "CD 指持续交付与持续部署，其核心是把通过构建和测试的产物自动发布到目标环境，流水线通常包含构建、测试、部署等完整环节；合并代码属于版本管理操作，并非 CD 的核心内容。CI 侧重自动化的集成构建与测试，CD 侧重自动化交付，故题干错误。",
+    "difficulty": 3,
+    "tag": "CI/CD"
+  }
+]

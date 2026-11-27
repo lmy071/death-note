@@ -1,0 +1,222 @@
+[
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列选项中，属于 JavaScript 基本类型（原始类型）的是（　）？",
+    "options": ["string", "number", "object", "array"],
+    "answer": "AB",
+    "analysis": "JavaScript 基本类型包括 string、number、boolean、undefined、null、symbol、bigint，故选 A、B。object 与 array 均为引用类型，array 本质是对象。",
+    "difficulty": 1,
+    "tag": "基本类型"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列代码中，`typeof` 结果为 \"object\" 的表达式是（　）？\n```js\ntypeof null\ntypeof []\ntypeof function(){}\ntypeof undefined\n```",
+    "options": ["typeof null", "typeof []", "typeof function(){}", "typeof undefined"],
+    "answer": "AB",
+    "analysis": "typeof null 返回 \"object\"（历史遗留 bug），typeof [] 也返回 \"object\"，故选 A、B。typeof function(){} 返回 \"function\"，typeof undefined 返回 \"undefined\"。",
+    "difficulty": 2,
+    "tag": "typeof"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列能正确判断变量 `v` 是否为数组的方式是（　）？",
+    "options": ["Array.isArray(v)", "v instanceof Array", "Object.prototype.toString.call(v) === '[object Array]'", "typeof v === 'array'"],
+    "answer": "ABC",
+    "analysis": "Array.isArray、instanceof Array、Object.prototype.toString 三种方式均能正确识别数组，故选 A、B、C。typeof 对数组返回 \"object\"，不存在 \"array\" 这一返回值，故 D 错。",
+    "difficulty": 2,
+    "tag": "数组判断"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列表达式的运算结果为 true 的是（　）？",
+    "options": ["\"5\" == 5", "null == undefined", "\"\" === 0", "0 == false"],
+    "answer": "ABD",
+    "analysis": "\"5\" == 5 中字符串转为数字相等；null == undefined 按规范宽松相等为 true；0 == false 中 false 转数字 0 相等，故选 A、B、D。\"\" === 0 因类型不同（字符串与数字）为 false，C 错。",
+    "difficulty": 2,
+    "tag": "类型转换"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列属于 `let` 与 `const` 共同特点的是（　）？",
+    "options": ["存在暂时性死区，声明前访问会报 ReferenceError", "块级作用域", "声明的变量都可以重新赋值", "不允许重复声明同名变量"],
+    "answer": "ABD",
+    "analysis": "let 与 const 都有块级作用域、暂时性死区，且同一作用域内不允许重复声明，故选 A、B、D。const 声明的变量不能重新赋值，C 错。",
+    "difficulty": 2,
+    "tag": "let/const"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列关于 `var` 声明的说法，正确的有（　）？",
+    "options": ["存在变量提升，声明会被提升到当前作用域顶部", "函数作用域而非块级作用域", "重复声明同名变量不会报错", "在声明前访问会抛出 ReferenceError"],
+    "answer": "ABC",
+    "analysis": "var 有变量提升、函数作用域、可重复声明（后者覆盖前者），故选 A、B、C。var 声明前访问得到 undefined 而不是报错，只有 let/const 才有暂时性死区，D 错。",
+    "difficulty": 2,
+    "tag": "var"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列关于闭包的说法，正确的有（　）？",
+    "options": ["闭包可以访问外部函数作用域中的变量", "闭包能让外部函数中的变量在函数执行完后继续存活", "闭包可以用来实现私有变量的封装", "闭包不会带来任何内存开销的副作用"],
+    "answer": "ABC",
+    "analysis": "闭包能读取并持有外部函数作用域的变量，使变量生命周期延长，并可借函数作用域模拟私有变量，故选 A、B、C。闭包长期持有引用会增加内存占用，若使用不当可能造成内存泄漏，D 说法错误。",
+    "difficulty": 2,
+    "tag": "闭包"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列代码执行后，输出 0 1 2（即 i 依次为 0、1、2）的正确写法有（　）？",
+    "options": ["let i 声明循环变量", "var i 声明循环变量并在回调内用立即执行函数传入 i", "var i 声明循环变量，回调直接打印 i", "const i 声明循环变量"],
+    "answer": "AB",
+    "analysis": "let 声明循环变量会为每次迭代创建独立绑定；用 IIFE 传参可以把 var 的共享变量值固化到每次闭包中，都能正确输出 0 1 2，故选 A、B。var 直接打印会全部输出 3；const 无法递增循环变量，C、D 错。",
+    "difficulty": 4,
+    "tag": "闭包"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列关于原型与原型链的说法，正确的有（　）？",
+    "options": ["实例的隐式原型 __proto__ 指向其构造函数的 prototype 属性", "原型链的尽头是 null", "几乎所有对象都通过原型链继承 Object.prototype 上的方法", "每个函数都有 __proto__ 但无 prototype 属性时无法作为构造器"],
+    "answer": "ABC",
+    "analysis": "实例的 __proto__ 指向构造函数.prototype；原型链逐级上溯最终指向 null；普通对象都继承 Object.prototype 的方法，故选 A、B、C。除了箭头函数等少数情况，普通函数都有 prototype 属性，D 后半句表述不准确。",
+    "difficulty": 3,
+    "tag": "原型链"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列 ES6 class 相关说法，正确的有（　）？",
+    "options": ["class 中的方法默认不可枚举", "class 支持 extends 继承", "类声明存在暂时性死区", "class 定义的类可以直接像函数一样调用"],
+    "answer": "ABC",
+    "analysis": "class 方法定义在原型上且默认不可枚举，支持 extends 继承，类声明存在暂时性死区，故选 A、B、C。类只能通过 new 实例化，直接调用会抛 TypeError，D 错。",
+    "difficulty": 3,
+    "tag": "ES6 class"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列做法中，能让函数 `f` 的 this 指向对象 obj 的有（　）？\n```js\nfunction f() { return this; }\nvar obj = { name: 'obj' };\n```",
+    "options": ["f.call(obj)", "f.apply(obj)", "f.bind(obj)()", "f()"],
+    "answer": "ABC",
+    "analysis": "call、apply 直接指定 this，bind 返回绑定 this 的新函数后立即调用也能让 this 指向 obj，故选 A、B、C。f() 独立调用 this 指向全局对象（非严格模式），D 错。",
+    "difficulty": 2,
+    "tag": "this显式绑定"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列关于箭头函数与普通函数的区别，正确的有（　）？",
+    "options": ["箭头函数没有自己的 this，继承外层词法作用域的 this", "箭头函数不能用作构造函数（不能 new）", "箭头函数没有自己的 arguments 对象", "箭头函数的 this 会随调用方式改变而改变"],
+    "answer": "ABC",
+    "analysis": "箭头函数没有自己的 this 与 arguments，分别继承外层词法作用域；也不能用作构造函数（没有 prototype 属性、不能被 new），故选 A、B、C。箭头函数 this 在定义时确定，不会随调用方式改变，D 错。",
+    "difficulty": 2,
+    "tag": "箭头函数"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列数组方法中，会修改原数组的是（　）？",
+    "options": ["push", "splice", "map", "sort"],
+    "answer": "ABD",
+    "analysis": "push、splice、sort 都会就地修改原数组，故选 A、B、D。map 返回新数组、不修改原数组，C 错。可据此记忆：push/pop/shift/unshift/splice/sort/reverse 为破坏性方法。",
+    "difficulty": 2,
+    "tag": "数组方法"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列数组方法中，不会修改原数组且返回新数组的是（　）？",
+    "options": ["slice", "filter", "concat", "unshift"],
+    "answer": "ABC",
+    "analysis": "slice 截取返回新数组，filter 过滤返回新数组，concat 拼接返回新数组，均不改原数组，故选 A、B、C。unshift 在头部插入元素并修改原数组，D 错。",
+    "difficulty": 2,
+    "tag": "数组方法"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列关于 `forEach` 与 `map` 的说法，正确的有（　）？",
+    "options": ["map 会收集回调返回值并组成新数组", "forEach 的返回值是 undefined", "forEach 无法中途 break 跳出循环", "两者都会修改原数组"],
+    "answer": "ABC",
+    "analysis": "map 返回收集回调返回值的新数组；forEach 没有返回值（undefined）；forEach 不能像 for 循环那样 break，故选 A、B、C。两者默认都不修改原数组（除非回调内部自行修改），D 错。",
+    "difficulty": 3,
+    "tag": "forEach/map"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列代码可以实现字符串反转（\"abc\" → \"cba\"）的是（　）？",
+    "options": ["\"abc\".split('').reverse().join('')", "\"abc\".split('').reverse().join()", "\"abc\".split('').join('').reverse()", "用 [...\"abc\"].reverse().join('')"],
+    "answer": "AD",
+    "analysis": "split('') 拆成字符数组后 reverse 再 join('') 可得到反转字符串，[...\"abc\"] 同样拆成字符数组，故选 A、D。B 中 join() 默认用逗号连接会得到 \"c,b,a\"；C 中字符串本身没有 reverse 方法，会报错。",
+    "difficulty": 3,
+    "tag": "字符串/数组组合"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列代码中，正确的是（　）？",
+    "options": ["\"abc\".toUpperCase() 返回 \"ABC\"", "\"  hi \".trim() 返回 \"hi\"", "\"apple\".indexOf('p') 返回 1", "\"abc\".charAt(5) 返回 undefined"],
+    "answer": "ABC",
+    "analysis": "toUpperCase 把字母转大写，trim 去除两端空白，indexOf 返回首次出现的下标（'p' 在第 1 位），故选 A、B、C。字符串 charAt 越界时返回空字符串而非 undefined，D 错。",
+    "difficulty": 2,
+    "tag": "字符串方法"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列关于 `Object.keys`、`Object.values`、`Object.entries` 的说法，正确的有（　）？",
+    "options": ["Object.keys 返回属性名数组", "Object.values 返回属性值数组", "Object.entries 返回键值对数组", "三者都会遍历原型链上的属性"],
+    "answer": "ABC",
+    "analysis": "keys 取属性名、values 取属性值、entries 取 [key, value] 对组成的数组，故选 A、B、C。三者都只遍历对象自身可枚举属性，不会包含原型链上的属性，D 错。",
+    "difficulty": 2,
+    "tag": "Object方法"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列属于浅拷贝实现方式的是（　）？",
+    "options": ["Object.assign({}, obj)", "{ ...obj }（展开运算符）", "JSON.parse(JSON.stringify(obj))", "Array.from 拷贝数组外层"],
+    "answer": "ABD",
+    "analysis": "Object.assign、展开运算符、Array.from 都只复制第一层，属于浅拷贝，故选 A、B、D。JSON 序列化方式会递归复制纯 JSON 数据，属于深拷贝（且会丢弃函数等），C 错。",
+    "difficulty": 3,
+    "tag": "浅拷贝"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列情况中，容易造成内存泄漏的有（　）？",
+    "options": ["全局变量无意中引用大量不再需要的数据", "事件监听器绑定后从未移除", "定时器（setInterval）在组件销毁后未清除", "使用后置 null 释放不再需要的引用"],
+    "answer": "ABC",
+    "analysis": "全局变量长期持有大对象、未移除的事件监听器、未清除的定时器都会使对象无法被回收，造成泄漏，故选 A、B、C。显式把引用置为 null 是帮助 GC 释放内存的正确做法，不会造成泄漏，D 错。",
+    "difficulty": 2,
+    "tag": "内存泄漏"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列关于垃圾回收与内存管理的说法，正确的有（　）？",
+    "options": ["V8 采用标记清除为主、结合分代回收的机制", "JS 引擎会自动回收不可达的对象，开发者一般无需手动释放", "闭包是导致内存不被释放的常用原因之一（长期持有引用时）", "开发者可以调用 gc() 强制立即回收任意对象的内存"],
+    "answer": "ABC",
+    "analysis": "V8 以标记清除为核心并结合分代回收、增量标记；引擎自动回收不可达对象；闭包长期持有引用会影响回收时机，故选 A、B、C。虽然部分调试环境暴露 gc()，但它并非标准的、可依赖的回收接口，D 说法不准确。",
+    "difficulty": 3,
+    "tag": "垃圾回收"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "multiple",
+    "question": "下列关于 this 绑定规则及其优先级的说法，正确的有（　）？",
+    "options": ["new 绑定的优先级高于显式绑定和隐式绑定", "箭头函数的 this 一旦确定，call/apply/bind 都无法改变", "显式绑定（call/apply/bind）优先级高于隐式绑定", "默认绑定的优先级最高"],
+    "answer": "ABC",
+    "analysis": "绑定优先级从高到低依次为 new > 显式绑定 > 隐式绑定 > 默认绑定；箭头函数定义时确定 this 且无法被 call/apply/bind 修改，故选 A、B、C。默认绑定优先级最低，D 错。",
+    "difficulty": 4,
+    "tag": "this优先级"
+  }
+]

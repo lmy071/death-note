@@ -1,0 +1,21 @@
+[P0] 前端开发岗位考试大纲
+[P2] 考点1：HTML与语义化标记
+[P3] 复习HTML文档结构、常用标签与标签语义，重点掌握HTML5新增的语义化标签（header、nav、main、section、article、footer等）的作用及其对无障碍访问的意义；理解meta、title等元信息配置，掌握script的defer与async加载方式、type="module"脚本默认延迟执行的行为、HTML5存储及移动端适配方案；了解浏览器默认样式、文档解析流程和HTML安全规范。
+[P4] 考点2：CSS基础与布局
+[P5] 复习选择器类型、优先级计算与层叠规则，盒模型与box-sizing的差异；掌握position定位机制及其对文档流的影响，浮动与BFC、Flexbox一维布局、Grid二维布局以及水平垂直居中的常见实现；理解层叠上下文与z-index、CSS变量、常用单位与响应式设计，了解过渡、动画、变换和伪元素等CSS3特性。
+[P6] 考点3：JavaScript语言核心
+[P7] 复习基本类型与引用类型的判断方式、类型转换规则，var、let、const的作用域、变量提升与暂时性死区；深入理解闭包原理、原型与原型链、继承机制、this绑定规则和严格模式；掌握数组、字符串、对象的常用方法，以及深浅拷贝、垃圾回收与内存管理等核心知识。
+[P8] 考点4：ES6+与异步编程
+[P9] 复习解构赋值、扩展运算符、箭头函数、Symbol、Set与Map等ES6+核心语法；掌握Promise的三种状态及状态转换规则，理解Promise.all、Promise.allSettled、Promise.race与async/await的使用；重点掌握事件循环机制、宏任务与微任务的执行顺序，能够分析异步代码的输出结果。
+[P10] 考点5：DOM、BOM与事件
+[P11] 复习DOM节点查询（getElementById、querySelector等）与节点的增删改操作，掌握BOM常用对象和浏览器存储方式；重点掌握事件流三阶段（捕获、目标、冒泡）与addEventListener的使用，理解事件委托机制及其性能优势，熟悉表单事件处理和常见DOM操作场景。
+[P12] 考点6：浏览器原理与网络基础
+[P13] 复习浏览器从输入URL到页面渲染的完整流程，理解重排与重绘的触发条件及其性能影响；掌握同源策略与常见跨域解决方案（CORS、代理、JSONP等）；了解浏览器多进程架构与渲染进程内的多线程模型（含Web Worker）、常见渲染引擎（Blink、WebKit、Gecko等）及其与JavaScript引擎（如V8）的区别、浏览器存储机制、HTTP缓存原理，以及TCP/UDP、TCP三次握手、DNS解析和HTTPS的TLS/SSL加密传输等计算机网络基础知识。
+[P14] 考点7：HTTP与数据交互
+[P15] 复习HTTP与HTTPS协议基础、HTTP/2多路复用特性，常见请求方法的语义与状态码分类；掌握强缓存与协商缓存的工作原理及相关请求头、响应头，理解Cookie、Token、JWT等鉴权机制；熟悉Fetch API与axios的使用，了解RESTful接口约定与异常处理方式。
+[P16] 考点8：Vue框架
+[P17] 复习Vue2与Vue3响应式原理的核心差异，掌握Composition API核心（ref、shallowRef、reactive、computed、watch）、生命周期与异步更新队列；熟悉组件基础、组件通信、自定义指令、动态组件、内置组件和状态管理；理解Vue Router路由传参、导航守卫以及虚拟DOM与Diff算法。
+[P18] 考点10：前端工程化、构建与性能优化
+[P19] 复习ESModule等模块化规范与前端路由原理，掌握Webpack核心概念（Loader、Plugin、HMR、代码分割、缓存优化、模式配置）以及Vite的基本原理与开发构建流程；了解TypeScript基础和前端架构设计；掌握首屏加载优化、懒加载、CDN、防抖节流等性能优化手段，了解FCP、LCP等性能指标。
+[P20] 考点11：前端安全与跨端技术
+[P21] 复习XSS与CSRF攻击原理及防御措施，内容安全策略（CSP）与存储安全；了解SSR/SSG渲染模式的应用场景；理解微前端核心概念与主子应用通信方式，以及PWA、小程序等跨端方案概况，能够结合项目场景选择合适的前端架构。

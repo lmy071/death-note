@@ -1,0 +1,222 @@
+[
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "反射型 XSS 的恶意代码不会被持久化存储，只对提交该恶意请求的用户生效。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "反射型 XSS 随请求参数在服务端响应中反射，不写入数据库，形态是非持久化的，受害者多为被诱导点击链接的用户本人。",
+    "difficulty": 2,
+    "tag": "反射型XSS"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "存储型 XSS 的恶意代码只影响攻击者本人。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "存储型 XSS 将脚本持久化到服务器存储，任意访问包含该数据的页面的用户都会触发执行，影响范围是全体访问者，危害最大。",
+    "difficulty": 1,
+    "tag": "存储型XSS"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "DOM 型 XSS 可在浏览器端由 DOM 操作直接触发，请求中甚至可以完全不包含恶意代码。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "DOM 型 XSS 的污染源与执行都在浏览器端（如 location.hash 被写入 innerHTML），恶意数据可以不经过服务端，因此服务端输出转义难以防御。",
+    "difficulty": 3,
+    "tag": "DOM型XSS"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "所有类型的 XSS 攻击都必须经过服务端输出。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "DOM 型 XSS 完全在浏览器端完成，数据可能从未到达服务端，因此并非所有 XSS 都经过服务端输出，防御也需覆盖前端 DOM 操作。",
+    "difficulty": 2,
+    "tag": "DOM型XSS"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "为 Cookie 设置 HttpOnly 属性即可完全防止 XSS 攻击发生。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "HttpOnly 只阻止脚本读取 Cookie，降低 XSS 窃取会话的损失，但脚本仍会执行并可篡改页面、发起恶意请求，XSS 本身并未被拦截。",
+    "difficulty": 3,
+    "tag": "HttpOnly"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "CSP 既可以通过 HTTP 响应头配置，也可以通过 <meta> 标签配置。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Content-Security-Policy 支持响应头与 <meta http-equiv=\"Content-Security-Policy\"> 两种下发方式，但 meta 方式下部分指令（如 frame-ancestors）不受支持。",
+    "difficulty": 2,
+    "tag": "CSP"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "配置 CSP 后，默认情况下内联脚本（inline script）仍然可以随意执行。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "当 script-src 等指令生效且未声明 'unsafe-inline' 时，内联脚本会被阻止，这正是 CSP 缓解 XSS 的关键机制；如需放行可用 nonce 或 hash。",
+    "difficulty": 3,
+    "tag": "CSP"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "CSRF 攻击必须首先窃取用户密码才能发起。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "CSRF 利用浏览器自动携带 Cookie 的机制伪造跨站请求，攻击者从不读取 Cookie 内容，也不需要密码，只要用户处于登录态即可。",
+    "difficulty": 2,
+    "tag": "CSRF"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "CSRF 攻击的根本成因是浏览器自动携带目标站点 Cookie 且服务器难以区分请求是否用户本意。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "浏览器对跨站表单、图片等请求会自动携带 Cookie，服务端依据凭据放行，因此攻击者可冒用用户身份，需要 Token、SameSite 等机制验证请求来源。",
+    "difficulty": 2,
+    "tag": "CSRF"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "设置为 SameSite=Strict 的 Cookie，在跨站顶层导航（点击外部链接进入）时也不会被携带。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Strict 表示任何跨站上下文都不发送 Cookie，包括顶层导航；Lax 才允许跨站顶层导航的 GET 携带，Strict 防护最严但对外链跳转登录态不友好。",
+    "difficulty": 3,
+    "tag": "SameSite"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "CSRF Token 应放入 URL 中提交，以便服务端校验。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "Token 放 URL 会出现在日志、历史记录与 Referer 中而被泄露，且做法本身无防 CSRF 收益，应通过表单隐藏域或请求头携带并服务端校验。",
+    "difficulty": 3,
+    "tag": "CSRF防御"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "HttpOnly Cookie 可以有效防御 CSRF 攻击。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "CSRF 不需要读取 Cookie 内容，浏览器会自动携带，因此 HttpOnly 对 CSRF 无效；它针对的是 XSS 窃取会话凭证的风险。",
+    "difficulty": 3,
+    "tag": "CSRF防御"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "校验请求的 Origin/Referer 来源可以作为一种 CSRF 缓解手段。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "拒绝非本站来源的请求能拦截绝大多数跨站伪造请求，属于有效缓解手段；但来源头可能缺失或被特殊客户端伪造，通常需与 Token 机制叠加使用。",
+    "difficulty": 3,
+    "tag": "CSRF防御"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "会话 Token 等敏感信息可以放心存放在 localStorage 中。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "localStorage 对同源所有脚本可读，一旦发生 XSS 凭证会被直接窃取，因此敏感凭证应放在 HttpOnly Cookie 或由服务端管理的会话中。",
+    "difficulty": 2,
+    "tag": "存储安全"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "用户密码应在服务端采用加盐哈希的方式存储，绝不明文落库。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "明文存储一旦数据库泄露将直接暴露全部密码；加盐哈希可防止彩虹表破解，是密码存储的安全基线，前端浏览器环境无法替代服务端完成这一职责。",
+    "difficulty": 2,
+    "tag": "存储安全"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "SSR（服务端渲染）模式下，页面 HTML 由服务端生成并返回，有利于 SEO。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "SSR 返回包含完整内容的 HTML，爬虫无需执行 JS 即可抓取，同时首屏可更快呈现，因此在 SEO 与首屏体验上优于纯 CSR。",
+    "difficulty": 1,
+    "tag": "SSR"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "SSG 静态生成模式会在每个用户请求时动态渲染页面。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "SSG 在构建期一次性生成静态 HTML，部署后直接返回文件，不进行任何运行时渲染；每次请求动态渲染是 SSR 的特征。",
+    "difficulty": 2,
+    "tag": "SSG"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "采用 SSR 服务端渲染会显著减小服务器端压力与成本。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "SSR 每次请求都需服务端执行渲染，高并发下 CPU 与带宽消耗大，服务器压力反而增加；SSG 把渲染移到构建期，静态分发压力更小。",
+    "difficulty": 2,
+    "tag": "SSR"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "Service Worker 的注册要求站点运行在 HTTPS（或 localhost）安全上下文中。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Service Worker 具备拦截与缓存网络请求的能力，浏览器强制要求安全上下文，普通 HTTP 站点无法注册，这也是 PWA 需要 HTTPS 的原因。",
+    "difficulty": 2,
+    "tag": "Service Worker"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "小程序采用逻辑层与渲染层分离的双线程模型，通过原生桥与 setData 通信。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "小程序逻辑层运行 JS、渲染层基于 WebView 渲染，二者分离并通过原生桥通信，setData 将数据从逻辑层同步到渲染层，避免 JS 阻塞渲染。",
+    "difficulty": 2,
+    "tag": "小程序"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "小程序运行环境中存在完整的标准 DOM 对象，可以直接操作 DOM。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "小程序运行环境没有标准 DOM/BOM，页面结构用 WXML 描述、由渲染层渲染，逻辑层无法直接操作 DOM，数据更新需通过 setData 完成。",
+    "difficulty": 3,
+    "tag": "小程序"
+  },
+  {
+    "chapter": "考点11：前端安全与跨端技术",
+    "type": "judge",
+    "question": "qiankun 是基于 single-spa 封装的微前端解决方案，支持任意技术栈的子应用接入。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "qiankun 在 single-spa 基础上提供 HTML 入口、JS 沙箱与样式隔离等能力，子应用语言和技术栈不受限制，因此可以支持任意技术栈独立接入。",
+    "difficulty": 2,
+    "tag": "qiankun"
+  }
+]

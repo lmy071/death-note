@@ -1,0 +1,332 @@
+[
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 DOM 树与节点类型，下列说法正确的有（　）",
+    "options": [
+      "文本内容在 DOM 中同样以文本节点的形式存在",
+      "注释在文档中不会生成任何节点",
+      "id、class 等属性会作为独立子节点出现在 DOM 树中",
+      "元素节点按 HTML 嵌套关系构成层级树状结构"
+    ],
+    "answer": "AD",
+    "analysis": "文本内容在 DOM 中对应文本节点（Text），注释对应注释节点（Comment），二者都是有效节点，故 B 错误。属性（Attr）虽是一种节点类型，但不会作为子节点参与 DOM 树的层级结构，故 C 错误。元素节点按嵌套关系组成整棵 DOM 树，A、D 正确。",
+    "difficulty": 2,
+    "tag": "节点类型"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 `document.querySelectorAll` 的返回值，下列说法正确的有（　）",
+    "options": [
+      "返回一个 NodeList，且是查询时刻的静态快照",
+      "没有匹配到任何元素时返回 null",
+      "返回的 NodeList 支持 forEach 遍历，也可用下标访问",
+      "与 `getElementsByTagName` 一样返回动态更新的 HTMLCollection"
+    ],
+    "answer": "AC",
+    "analysis": "querySelectorAll 返回 NodeList，属于静态集合，之后 DOM 的变化不会影响已取得的集合，故 A 正确、D 错误。未匹配任何元素时返回空 NodeList 而非 null，故 B 错误。NodeList 自带 forEach 方法并支持下标访问，故 C 正确。",
+    "difficulty": 3,
+    "tag": "节点查询"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 `document.querySelector`，下列说法正确的有（　）",
+    "options": [
+      "参数是符合规范的 CSS 选择器字符串",
+      "返回文档中匹配该选择器的第一个元素",
+      "传入无效的选择器字符串会抛出异常",
+      "没有任何匹配元素时返回空数组"
+    ],
+    "answer": "ABC",
+    "analysis": "querySelector 接受 CSS 选择器字符串并返回第一个匹配的元素节点，故 A、B 正确。选择器语法非法时会抛出 SyntaxError 类异常，故 C 正确。无匹配时返回的是 null 而不是空集合，故 D 错误。",
+    "difficulty": 2,
+    "tag": "CSS选择器"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于节点的创建与插入操作，下列说法正确的有（　）",
+    "options": [
+      "`document.createElement('div')` 创建的元素在插入文档前不会显示在页面中",
+      "`appendChild` 会把新节点追加为父节点的最后一个子节点",
+      "`appendChild` 只能接收元素节点，不能接收文本节点",
+      "`insertBefore(newNode, refNode)` 会把 newNode 插入到 refNode 之前"
+    ],
+    "answer": "ABD",
+    "analysis": "createElement 创建的元素先存在于内存中，必须通过 appendChild、insertBefore 等操作挂到 DOM 树上才会参与渲染，故 A 正确。appendChild 将节点追加到末尾，insertBefore 可指定插入位置，故 B、D 正确。appendChild 同样可以接收 createTextNode 创建的文本节点，故 C 错误。",
+    "difficulty": 3,
+    "tag": "节点增删改"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 innerHTML 与 textContent，下列说法正确的有（　）",
+    "options": [
+      "textContent 会把字符串中的 HTML 标签解析并渲染",
+      "通过 innerHTML 可以把包含标签的字符串按 HTML 解析后插入",
+      "将用户输入的内容直接写入 innerHTML 存在 XSS 风险",
+      "textContent 读取文本时不会包含 display:none 隐藏元素的文本"
+    ],
+    "answer": "BCD",
+    "analysis": "innerHTML 会把字符串按 HTML 解析后生成对应节点，也因此把不可信输入直接写入会带来 XSS 注入风险，故 B、C 正确。textContent 始终按纯文本处理、不解析标签，故 A 错误；textContent 返回的是包含隐藏元素在内的全部文本（忽略隐藏元素的是 innerText），故 D 错误。",
+    "difficulty": 3,
+    "tag": "文本插入"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于事件流的三个阶段，下列说法正确的有（　）",
+    "options": [
+      "事件的传播顺序是「捕获 → 目标 → 冒泡」",
+      "addEventListener 不传第三个参数时，监听器在冒泡阶段触发",
+      "捕获阶段的事件从目标元素开始，逐层向外传播到 window",
+      "在捕获阶段调用 stopPropagation 可以阻止事件继续向目标传播"
+    ],
+    "answer": "ABD",
+    "analysis": "事件传播依次经历捕获、目标、冒泡三个阶段，故 A 正确。捕获阶段从 window 沿 DOM 树向下到达目标，方向与 C 的描述相反。addEventListener 默认在冒泡阶段触发，故 B 正确；在捕获阶段调用 stopPropagation 会中断后续传播，故 D 正确。",
+    "difficulty": 3,
+    "tag": "事件流三阶段"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 addEventListener 的第三个参数，下列说法正确的有（　）",
+    "options": [
+      "传入 true 表示监听器在捕获阶段触发",
+      "传入 { once: true } 表示监听器最多执行一次后自动移除",
+      "传入 { passive: true } 时，监听器内调用 preventDefault 不会生效",
+      "第三个参数只能接收布尔值"
+    ],
+    "answer": "ABC",
+    "analysis": "第三个参数既可以是布尔值（useCapture），也可以是包含 capture、once、passive 等属性的对象，故 D 错误。capture 为 true 时监听器在捕获阶段触发，once 保证最多执行一次，passive 声明监听器不会调用 preventDefault，浏览器可据此优化滚动等性能，A、B、C 正确。",
+    "difficulty": 5,
+    "tag": "事件监听"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 removeEventListener 的使用，下列说法正确的有（　）",
+    "options": [
+      "必须传入与 addEventListener 时相同的函数引用才能移除",
+      "用匿名函数添加的监听器无法通过 removeEventListener 移除",
+      "移除时第三个参数 capture 的取值需与添加时一致",
+      "只要事件类型相同，传入任意函数都可移除监听器"
+    ],
+    "answer": "ABC",
+    "analysis": "removeEventListener 通过「事件类型 + 函数引用 + capture 标志」三要素精确匹配监听器，三要素缺一不可，故 A、B、C 正确。匿名函数没有可引用的标识，一经添加便无法移除；只要事件类型相同即可移除的说法错误，故 D 错误。",
+    "difficulty": 3,
+    "tag": "移除监听"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于事件对象中 target 与 currentTarget，下列说法正确的有（　）",
+    "options": [
+      "e.target 表示事件实际触发的元素",
+      "e.currentTarget 表示当前绑定并正在处理事件的元素",
+      "事件委托时，e.target 与 e.currentTarget 始终相同",
+      "事件冒泡到父元素时，e.currentTarget 会随之变为当前处理该事件的元素"
+    ],
+    "answer": "ABD",
+    "analysis": "target 是事件真正的来源元素，不会随传播过程改变，故 A 正确。currentTarget 指向当前正在执行监听器的元素，随传播阶段而变化，故 B、D 正确。事件委托中监听器绑定在父元素上，冒泡时 currentTarget 始终是父元素而 target 是子元素，二者并不相同，故 C 错误。",
+    "difficulty": 3,
+    "tag": "事件对象"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于事件对象的 preventDefault 方法，下列说法正确的有（　）",
+    "options": [
+      "用于阻止浏览器对该事件执行默认行为",
+      "同时会阻止事件继续冒泡传播",
+      "在链接的 click 事件中调用可阻止默认跳转",
+      "在表单的 submit 事件中调用可阻止表单提交"
+    ],
+    "answer": "ACD",
+    "analysis": "preventDefault 只负责取消浏览器对该事件的默认行为，不会影响事件自身的传播，故 B 错误。链接 click 的默认跳转、表单 submit 的默认提交都是典型的默认行为，调用后不再执行，A、C、D 正确。",
+    "difficulty": 2,
+    "tag": "默认行为"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于事件对象的 stopPropagation 方法，下列说法正确的有（　）",
+    "options": [
+      "可以阻止事件继续向父元素冒泡",
+      "不会影响浏览器对该事件的默认行为",
+      "会阻止同一元素上其他同类型监听器的执行",
+      "在捕获阶段调用可以阻止事件到达目标元素"
+    ],
+    "answer": "ABD",
+    "analysis": "stopPropagation 中断事件继续传播，在捕获或冒泡阶段调用都有效，故 A、D 正确。它与 preventDefault 职责不同，不影响默认行为，故 B 正确。阻止同一元素上其他同类监听器执行的是 stopImmediatePropagation，故 C 错误。",
+    "difficulty": 3,
+    "tag": "阻止传播"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于事件委托，下列说法正确的有（　）",
+    "options": [
+      "核心原理是借助事件冒泡，将子元素的事件交由父元素统一处理",
+      "可以减少事件监听器的数量，降低内存开销",
+      "动态新增的子元素无需重新绑定监听器即可被处理",
+      "委托后无法区分具体是哪个子元素触发了事件"
+    ],
+    "answer": "ABC",
+    "analysis": "事件委托利用冒泡机制把监听器挂在父元素上，监听器数量大幅减少，内存开销更低，故 A、B 正确。通过 e.target 可以判断真实触发元素，故 D 错误。由于事件总会冒泡，动态新增的子元素也会被父元素上的监听器捕获，无需重复绑定，故 C 正确。",
+    "difficulty": 3,
+    "tag": "事件委托"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 BOM 中的 window 对象，下列说法正确的有（　）",
+    "options": [
+      "window 是浏览器中的全局对象，var 声明的全局变量会成为它的属性",
+      "setTimeout、alert 等方法不属于 window 对象",
+      "window.innerWidth 表示屏幕的物理像素宽度",
+      "location、navigator、history、screen 都是 window 的可访问属性"
+    ],
+    "answer": "AD",
+    "analysis": "window 是浏览器环境下的全局对象，全局变量、函数都会挂到它上面，setTimeout、alert 等也是其方法，故 A 正确、B 错误。location、navigator、history、screen 均为 window 的属性，可直接访问，故 D 正确。innerWidth 表示浏览器视口的宽度而非屏幕宽度，故 C 错误。",
+    "difficulty": 1,
+    "tag": "全局对象"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 location 对象，下列说法正确的有（　）",
+    "options": [
+      "给 location.href 赋值会触发页面跳转",
+      "location.replace() 会新增一条历史记录",
+      "location.reload() 用于重新加载当前页面",
+      "location 对象是 navigator 对象的一个属性"
+    ],
+    "answer": "AC",
+    "analysis": "修改 location.href 会导航到新地址，reload() 重新加载当前文档，故 A、C 正确。replace() 用新页面替换当前历史记录，不会新增记录，故 B 错误。location 属于 window 对象（document 也引用同一对象），不是 navigator 的属性，故 D 错误。",
+    "difficulty": 2,
+    "tag": "页面跳转"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 history 对象，下列说法正确的有（　）",
+    "options": [
+      "history.pushState 可以修改地址栏 URL 且不刷新页面",
+      "history.replaceState 会新增一条浏览历史记录",
+      "history.back() 与 history.go(-1) 的作用相同",
+      "pushState 可以跨域名修改 URL"
+    ],
+    "answer": "AC",
+    "analysis": "pushState 在页面不刷新的前提下更换地址栏 URL，常用于前端路由，故 A 正确。replaceState 是替换当前历史记录而非新增，故 B 错误。back() 即后退一步，等价于 go(-1)，故 C 正确。pushState 受同源策略限制，不能跨域修改 URL，故 D 错误。",
+    "difficulty": 4,
+    "tag": "历史记录"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 navigator 对象，下列说法正确的有（　）",
+    "options": [
+      "navigator.history 用于页面的历史记录操作",
+      "navigator.userAgent 返回浏览器的用户代理字符串",
+      "navigator.language 返回浏览器优先使用的语言",
+      "navigator.geolocation 在非 HTTPS 页面也一定可用"
+    ],
+    "answer": "BC",
+    "analysis": "userAgent 与 language 分别提供用户代理字符串和首选语言，是 navigator 的常用属性，故 B、C 正确。history 属于 window 对象而非 navigator 的属性，故 A 错误。地理定位接口通常要求安全上下文（HTTPS）并需要用户授权，故 D 错误。",
+    "difficulty": 1,
+    "tag": "浏览器信息"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 screen 对象与视口尺寸，下列说法正确的有（　）",
+    "options": [
+      "window.innerWidth 表示显示器屏幕的物理宽度",
+      "screen.width 会随着浏览器窗口大小变化而变化",
+      "screen 对象描述的是用户显示屏幕（显示器）的信息",
+      "window.outerWidth 表示浏览器窗口的整体宽度"
+    ],
+    "answer": "CD",
+    "analysis": "screen 对象描述显示器本身的信息，screen.width 即屏幕宽度，不会随窗口缩放改变，故 C 正确、B 错误。innerWidth 是浏览器视口的宽度，outerWidth 才是整个浏览器窗口的宽度，故 D 正确、A 错误。",
+    "difficulty": 2,
+    "tag": "屏幕尺寸"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 setTimeout 与 setInterval，下列说法正确的有（　）",
+    "options": [
+      "setInterval 的两次回调执行间隔一定是精确相等的",
+      "setTimeout 会返回一个数字 id，可用 clearTimeout 取消尚未执行的回调",
+      "页面关闭后，未到期的 setTimeout 回调仍会被执行",
+      "可用 clearInterval 停止由 setInterval 创建的循环执行"
+    ],
+    "answer": "BD",
+    "analysis": "setTimeout 与 setInterval 都会返回定时器 id，分别可用 clearTimeout、clearInterval 取消，故 B、D 正确。setInterval 的实际间隔受浏览器限制只会大于等于设定值，并非精确相等，故 A 错误。页面关闭后其定时器随之销毁，回调不会执行，故 C 错误。",
+    "difficulty": 2,
+    "tag": "定时器"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于元素的尺寸与滚动相关属性，下列说法正确的有（　）",
+    "options": [
+      "clientHeight 包含元素边框的高度",
+      "offsetWidth 包含内容、内边距和边框的宽度，不包含外边距",
+      "offsetWidth 与 getBoundingClientRect().width 的数值始终完全一致",
+      "scrollTop 表示元素内容向下滚动的距离，且可以赋值"
+    ],
+    "answer": "BD",
+    "analysis": "offsetWidth 由内容、内边距、边框组成，不含外边距，故 B 正确。scrollTop 记录滚动距离且可赋值实现滚动，故 D 正确。clientHeight 包含 padding 但不包含边框，故 A 错误；getBoundingClientRect().width 是带小数的精确值而 offsetWidth 取整，可能不一致，故 C 错误。",
+    "difficulty": 4,
+    "tag": "尺寸与滚动"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 localStorage，下列说法正确的有（　）",
+    "options": [
+      "localStorage 中的数据在浏览器关闭后自动清除",
+      "localStorage 只能存储字符串，存取对象时需要先序列化",
+      "localStorage 中的数据会随 HTTP 请求自动发送到服务器",
+      "localStorage 按同源隔离，不同源页面互不共享数据"
+    ],
+    "answer": "BD",
+    "analysis": "localStorage 的数据按源（协议、域名、端口）隔离并持久保存，不随浏览器关闭而丢失，故 A 错误、D 正确。其值必须是字符串，存取对象需借助 JSON.stringify 与 JSON.parse，故 B 正确。只有 Cookie 会随请求自动发送，localStorage 不会，故 C 错误。",
+    "difficulty": 2,
+    "tag": "本地存储"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于 Cookie 与 Web Storage（sessionStorage、localStorage），下列说法正确的有（　）",
+    "options": [
+      "Cookie 会随同源请求自动发送到服务器",
+      "localStorage 中的数据在浏览器关闭后自动清除",
+      "sessionStorage 中的数据在标签页关闭后被清除",
+      "sessionStorage 与 localStorage 的容量上限远小于 Cookie"
+    ],
+    "answer": "AC",
+    "analysis": "Cookie 的典型特征就是随同源请求自动携带，故 A 正确。sessionStorage 按会话（标签页）隔离，关闭即清除；localStorage 持久保存，故 C 正确、B 错误。Web Storage 单个源约 5MB，远大于 Cookie 约 4KB 的上限，故 D 错误。",
+    "difficulty": 2,
+    "tag": "浏览器存储"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "multiple",
+    "question": "关于表单事件，下列说法正确的有（　）",
+    "options": [
+      "change 事件在文本框每次按键时都会触发",
+      "在 form 的 submit 事件中调用 preventDefault 可阻止表单提交",
+      "input 事件在输入框内容每次变化时都会触发",
+      "focus 与 blur 事件会像 click 一样沿 DOM 树冒泡"
+    ],
+    "answer": "BC",
+    "analysis": "submit 事件发生在提交动作之前，调用 preventDefault 可以取消提交，故 B 正确。input 事件随输入内容变化实时触发，故 C 正确。change 事件对文本框而言要在值改变且失去焦点后才触发，故 A 错误。focus 与 blur 不冒泡，其冒泡版本是 focusin 与 focusout，故 D 错误。",
+    "difficulty": 3,
+    "tag": "表单事件"
+  }
+]

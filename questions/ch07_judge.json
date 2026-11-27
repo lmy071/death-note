@@ -1,0 +1,222 @@
+[
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "HTTP 的 GET 方法被设计为安全且幂等的，正常使用下不应引起服务器端数据的修改。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "GET 方法只应获取资源而不会改变服务器状态，因此是安全的；对同一资源重复请求的结果一致，因此是幂等的。浏览器中 GET 请求默认可被缓存，进一步印证了其只读语义。",
+    "difficulty": 2,
+    "tag": "GET方法"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "POST 方法在 HTTP 语义上是幂等的，重复提交相同的请求数据必然产生完全相同的结果。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "POST 的语义是向服务器提交数据以创建或处理资源，每次请求都可能产生新资源或不同的副作用，因此既不安全也不幂等。幂等方法的典型代表是 GET、PUT 和 DELETE。",
+    "difficulty": 2,
+    "tag": "POST方法"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "PATCH 方法与 PUT 方法语义完全相同，二者都是对目标资源进行整体替换。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "PUT 的语义是整体替换资源，而 PATCH 专用于对资源进行部分修改，只提交需要变更的字段。二者语义并不相同，PATCH 的引入正是为了弥补 PUT 无法表达局部更新场景的不足。",
+    "difficulty": 3,
+    "tag": "PATCH"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "HTTP 状态码 301 表示永久重定向，302 表示临时重定向。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "301 Moved Permanently 告知客户端资源已永久迁移到新地址，应更新书签与链接；302 Found 表示临时重定向，后续请求仍应使用原地址。二者的区别在于重定向是否持久。",
+    "difficulty": 2,
+    "tag": "状态码"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "HTTP 状态码 401 与 403 含义完全相同，都表示服务器拒绝访问。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "401 Unauthorized 表示请求未通过身份认证，通常需要先登录获取凭证后重试；403 Forbidden 表示已认证但被禁止访问该资源。二者一个强调未认证、一个强调无权限，语义并不相同。",
+    "difficulty": 3,
+    "tag": "状态码"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "状态码 500 属于客户端错误类，表示客户端发送的请求语法有误。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "500 Internal Server Error 属于 5xx 服务器错误类，表示服务器内部发生异常而无法完成请求。客户端请求语法错误对应的是 4xx 类状态码，如 400 Bad Request、404 Not Found 等。",
+    "difficulty": 1,
+    "tag": "状态码"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "协商缓存中，服务器通过 ETag 响应头标识资源内容版本，客户端后续请求携带 If-None-Match 请求头，若内容未变化服务器返回 304。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "ETag 是资源的指纹值，If-None-Match 请求头携带上次收到的 ETag 供服务器比对；一致时服务器返回 304 Not Modified，浏览器继续使用本地缓存。这是典型的协商缓存工作流程。",
+    "difficulty": 3,
+    "tag": "协商缓存"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "Cache-Control: no-cache 表示浏览器完全不使用缓存，每次请求都必须重新下载完整资源。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "no-cache 的含义是缓存响应在使用前必须向服务器重新验证，验证通过（如返回 304）后仍可复用缓存，并非禁止缓存。真正禁止缓存的是 no-store 指令。",
+    "difficulty": 3,
+    "tag": "强缓存"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "前端通过 axios 或 fetch 发送 JSON 数据时，Content-Type 请求头应设置为 application/json。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Content-Type 请求头用于声明请求体的媒体类型，服务端据此解析数据。发送 JSON 字符串时设置为 application/json 是通用约定，axios 对对象数据也默认序列化为该格式。",
+    "difficulty": 2,
+    "tag": "媒体类型"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "Content-Type: application/x-www-form-urlencoded 是适合传输 JSON 数据的编码格式。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "该类型对应表单的 key=value&key2=value2 形式并使用百分号编码，用于普通表单提交，并不是 JSON 格式。传输 JSON 数据应使用 application/json。",
+    "difficulty": 2,
+    "tag": "媒体类型"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "CORS 机制中，服务器在响应头 Access-Control-Allow-Origin 中声明允许访问的跨域来源，浏览器据此决定是否放行响应。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "同源策略限制跨域读取响应，CORS 由服务器通过 Access-Control-Allow-Origin 响应头显式授权。浏览器收到该头且与请求来源匹配时，才把响应交给页面脚本处理。",
+    "difficulty": 3,
+    "tag": "CORS"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "CORS 预检请求通过 Access-Control-Allow-Origin 请求头询问服务器是否允许本次跨域请求。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "预检请求（OPTIONS）使用 Access-Control-Request-Method 和 Access-Control-Request-Headers 请求头声明将要使用的跨域方法与自定义头；Access-Control-Allow-Origin 是服务器的响应头，用于告知允许的来源。二者方向完全不同。",
+    "difficulty": 5,
+    "tag": "CORS"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "RESTful 风格使用名词表示资源、HTTP 方法表示操作，例如 GET /users/1 表示获取编号为 1 的用户。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "REST 强调以资源为中心，URL 用名词描述资源，操作交由 GET、POST、PUT、DELETE 等方法表达。GET /users/1 语义明确地表示读取 id 为 1 的用户资源。",
+    "difficulty": 2,
+    "tag": "REST"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "RESTful 风格要求在 URL 中使用动词描述操作，例如用 /getUserById 这样的路径获取用户信息。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "RESTful 约定中 URL 应表示资源（名词），操作由 HTTP 方法体现，应避免在路径中出现 getUserById 之类的动词。这种设计使接口更统一，也更利于缓存与复用。",
+    "difficulty": 3,
+    "tag": "REST"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "使用 fetch 请求时，如果服务器返回 404 等非 2xx 状态码，Promise 会自动进入 rejected 状态，需要 catch 处理。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "fetch 只在网络层错误（断网、DNS 失败等）时 reject，HTTP 状态码 4xx/5xx 仍会走 resolved，只是此时 response.ok 为 false。判断请求是否成功需检查 response.ok 或状态码。",
+    "difficulty": 4,
+    "tag": "fetch"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "axios 的请求拦截器可在请求发出前统一添加请求头（如 Token），响应拦截器可统一处理错误响应。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "axios 提供请求与响应两级拦截器，请求拦截器适合统一注入鉴权头、公共参数，响应拦截器适合统一剥离 data 或集中处理 401 跳转登录等异常。这是项目中常见的封装方式。",
+    "difficulty": 2,
+    "tag": "axios"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "JWT 由 Header、Payload、Signature 三部分组成，各部分之间用英文点号（.）分隔。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "JWT 的完整形态为 Header.Payload.Signature：Header 声明签名算法与类型，Payload 存放用户等声明信息，Signature 用于校验数据未被篡改。三部分均经 Base64Url 编码后以点号连接。",
+    "difficulty": 2,
+    "tag": "JWT"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "JWT 的 Payload 部分是经过加密的，因此在网络中即使被截获也无法读取其中的用户信息。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "Payload 只是 Base64Url 编码而非加密，任何人解码即可读取内容，因此不能在其中存放明文敏感信息。签名仅保证内容未被篡改，并不提供保密性。",
+    "difficulty": 3,
+    "tag": "JWT"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "设置了 HttpOnly 属性的 Cookie 无法通过 document.cookie 读取，可以降低 XSS 攻击窃取 Cookie 的风险。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "HttpOnly 标记的 Cookie 仅允许浏览器在请求时自动携带，脚本无法读取，从而切断了 XSS 窃取会话的主要途径。它虽不能阻止 XSS 本身，但显著提升了会话安全性。",
+    "difficulty": 3,
+    "tag": "Cookie"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "WebSocket 连接建立之后，后续的数据通信仍然按 HTTP 的请求-响应模式进行。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "WebSocket 通过 HTTP 的 Upgrade 机制完成握手后，连接即升级为独立的全双工协议，服务端可主动推送数据，不再遵循请求-响应模式。握手依赖 HTTP，但后续传输与 HTTP 无关。",
+    "difficulty": 3,
+    "tag": "长连接"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "HTTPS 是在 HTTP 与 TCP 之间加入 TLS/SSL 加密层，其默认端口为 443。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "HTTPS 即 HTTP over TLS，TLS 提供加密、完整性校验与身份认证，默认使用 443 端口，而明文 HTTP 默认使用 80 端口。加密保护的是请求头与请求体等全部传输内容。",
+    "difficulty": 2,
+    "tag": "HTTPS"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "judge",
+    "question": "HTTP/2 的多路复用特性允许在同一个 TCP 连接上并行发送多个请求和响应，减少了连接建立的开销。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "HTTP/2 将消息拆分为二进制帧并在单个 TCP 连接上交错传输，多个请求可同时进行，缓解了 HTTP/1.1 的队头阻塞。连接复用也减少了频繁建立和关闭 TCP 连接的消耗。",
+    "difficulty": 3,
+    "tag": "HTTP/2"
+  }
+]

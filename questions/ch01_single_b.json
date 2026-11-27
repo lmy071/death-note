@@ -1,0 +1,497 @@
+[
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "页面上同时存在多个带有 defer 属性的外部脚本时，它们的执行顺序是？",
+    "options": [
+      "按网络下载完成的先后顺序执行",
+      "按在文档中出现的先后顺序执行，且都在 DOMContentLoaded 事件之前执行",
+      "执行顺序随机，由浏览器内部调度决定",
+      "等所有 async 脚本执行完成后才开始执行"
+    ],
+    "answer": "B",
+    "analysis": "defer 脚本会在文档解析完成后、DOMContentLoaded 触发之前执行，且多个 defer 脚本严格按照文档中的声明顺序依次执行；async 脚本才不保证执行顺序。",
+    "difficulty": 3,
+    "tag": "script defer"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于带 async 属性的外部脚本，下列说法正确的是？",
+    "options": [
+      "必须等整个 HTML 文档解析完成后才执行",
+      "多个 async 脚本保证按文档中的声明顺序执行",
+      "下载完成后立即执行，不保证执行顺序，且执行时可能中断 HTML 解析",
+      "与 defer 属性的行为完全相同"
+    ],
+    "answer": "C",
+    "analysis": "async 脚本下载完成后立即执行，多个 async 脚本的执行顺序与声明顺序无关；脚本执行时需要暂停 HTML 解析。defer 则保证顺序，且延迟到文档解析完成后再执行。",
+    "difficulty": 3,
+    "tag": "script async"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 <script type=\"module\">，下列说法错误的是？",
+    "options": [
+      "模块脚本默认按延迟方式执行，相当于隐式 defer",
+      "模块顶层声明的变量不会污染全局作用域",
+      "模块代码默认运行在严格模式下",
+      "跨域加载模块脚本时与普通脚本一样不受 CORS 限制"
+    ],
+    "answer": "D",
+    "analysis": "模块脚本通过 fetch 加载，跨域请求必须获得服务器 CORS 许可（响应携带 Access-Control-Allow-Origin），否则加载失败；A、B、C 均为模块脚本的正确特性：默认延迟执行、模块作用域隔离、默认严格模式。",
+    "difficulty": 4,
+    "tag": "type module"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 <meta charset=\"utf-8\"> 的写法与作用，下列说法正确的是？",
+    "options": [
+      "只能放在 <body> 标签内部才生效",
+      "应放在 <head> 靠前的位置（前 1024 字节内），让解析器尽早识别编码，避免中文乱码",
+      "只对 <title> 标签的内容生效",
+      "HTML5 中已废弃该写法，必须使用 http-equiv 形式声明"
+    ],
+    "answer": "B",
+    "analysis": "charset 声明属于文档元信息，应尽早出现（规范要求位于文档前 1024 字节内），以便浏览器尽早确定文档编码；它作用于整个文档而非仅 title；HTML5 中 <meta charset=\"utf-8\"> 是合法的简化写法。",
+    "difficulty": 2,
+    "tag": "meta 元信息"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "在移动端适配的 viewport meta 中，用于禁止用户手动缩放页面的写法是？",
+    "options": [
+      "width=device-width",
+      "initial-scale=1.0",
+      "user-scalable=no",
+      "maximum-scale=2.0"
+    ],
+    "answer": "C",
+    "analysis": "user-scalable=no 表示禁止用户缩放；width=device-width 使布局视口宽度等于设备宽度；initial-scale 设置初始缩放比例；maximum-scale 限制最大缩放倍数。出于无障碍考虑，实践中不建议完全禁止缩放。",
+    "difficulty": 2,
+    "tag": "viewport"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "在 devicePixelRatio（设备像素比）为 3 的屏幕上，1 个 CSS 像素理论上对应多少个物理像素？",
+    "options": [
+      "1 个",
+      "3 个",
+      "6 个",
+      "9 个"
+    ],
+    "answer": "D",
+    "analysis": "devicePixelRatio 表示一个 CSS 像素在水平、垂直方向上各覆盖的物理像素数。DPR 为 3 时，1 个 CSS 像素对应 3×3=9 个物理像素，这是高清屏实现细腻渲染的原理。",
+    "difficulty": 3,
+    "tag": "移动端适配"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 localStorage 与 sessionStorage 的区别，下列说法正确的是？",
+    "options": [
+      "localStorage 同源共享且数据持久保存，sessionStorage 仅当前标签页会话有效，关闭标签页即清除",
+      "两者都会在关闭浏览器时被自动清空",
+      "sessionStorage 的数据可以在所有同源标签页之间共享",
+      "sessionStorage 的容量上限是 localStorage 的 10 倍"
+    ],
+    "answer": "A",
+    "analysis": "localStorage 的生命周期是持久的，同一源的所有标签页共享同一份数据；sessionStorage 以标签页会话为单位，关闭标签页后数据清除，也不会跨标签页共享；两者的容量上限通常相当（约 5MB）。",
+    "difficulty": 2,
+    "tag": "HTML5存储"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "各主流浏览器为每个源（origin）提供的 localStorage 存储空间典型上限约为？",
+    "options": [
+      "5 KB",
+      "5 MB",
+      "500 MB",
+      "5 GB"
+    ],
+    "answer": "B",
+    "analysis": "各浏览器对 localStorage 的配额通常在 5MB 左右（不同浏览器及具体策略略有差异）。当存储超出配额时，setItem 会抛出 QuotaExceededError 错误。",
+    "difficulty": 2,
+    "tag": "HTML5存储"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 window 对象上的 storage 事件，下列说法正确的是？",
+    "options": [
+      "在当前页面调用 localStorage.setItem 时会立即在该页面触发",
+      "修改 sessionStorage 后会在所有同源标签页中触发",
+      "每次刷新页面时都会触发一次",
+      "当同源的其他标签页修改 localStorage 时，在这些标签页中触发，而修改数据所在的页面自身不会触发"
+    ],
+    "answer": "D",
+    "analysis": "storage 事件只在同源的其他文档中触发，修改存储的页面本身收不到该事件，主要用于跨标签页的数据同步；该事件仅在存储区域数据实际发生变化时触发。",
+    "difficulty": 4,
+    "tag": "storage 事件"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 HTML5 文档的基本结构，下列说法正确的是？",
+    "options": [
+      "<head> 与 <body> 是 <html> 的直接子元素，且 <!DOCTYPE html> 声明位于文档最前",
+      "<title> 必须放在 <body> 中才能生效",
+      "<html> 元素必须声明 xmlns 属性",
+      "所有标签都必须显式闭合，包括 <img>、<br> 等空元素"
+    ],
+    "answer": "A",
+    "analysis": "HTML5 文档最前是 <!DOCTYPE html>，随后 <html> 内包含 <head> 与 <body>；title 属于 head 中的元信息；HTML5 中 <html> 无需 xmlns；img、br 等空元素（void 元素）不必写闭合标签。",
+    "difficulty": 1,
+    "tag": "文档结构"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "文档最开头的 <!DOCTYPE html> 声明的主要作用是？",
+    "options": [
+      "将文档按 XML 格式解析",
+      "声明文档使用的字符编码",
+      "让浏览器以标准模式（standards mode）渲染页面，避免进入怪异模式",
+      "向服务器声明页面使用的 HTTP 版本"
+    ],
+    "answer": "C",
+    "analysis": "DOCTYPE 用于让浏览器选择渲染模式：存在 DOCTYPE 时触发标准模式，缺失时浏览器可能进入怪异模式（Quirks Mode），导致盒模型等行为与标准不一致；它不负责编码或 XML 解析。",
+    "difficulty": 2,
+    "tag": "文档结构"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "在 <html> 标签上设置 lang 属性（如 lang=\"zh-CN\"）的主要意义是？",
+    "options": [
+      "强制页面使用指定的中文字体",
+      "声明页面主要内容所用的语言，辅助屏幕阅读器、翻译工具与拼写检查正确处理页面内容",
+      "提高页面在搜索引擎中的权重排名",
+      "与 <meta charset> 功能相同，用于设置字符编码"
+    ],
+    "answer": "B",
+    "analysis": "lang 声明了页面的主要语言，屏幕阅读器可据此选择正确的发音规则，翻译和拼写检查工具也能正确处理内容；它与字体、SEO 权重和字符编码无关，是重要的无障碍元信息。",
+    "difficulty": 2,
+    "tag": "无障碍"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 <title> 标签，下列说法错误的是？",
+    "options": [
+      "其内容会显示在浏览器标签页（或窗口标题）上",
+      "是搜索引擎结果页面中标题的重要来源",
+      "通常作为浏览器历史记录与书签的默认名称",
+      "必须放在 <body> 标签内才能生效"
+    ],
+    "answer": "D",
+    "analysis": "<title> 是 <head> 内的元信息元素，放在 <body> 中不符合规范且不生效；它提供页面标题，供浏览器标签页、收藏夹和搜索引擎使用。",
+    "difficulty": 1,
+    "tag": "title 元信息"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 h1~h6 标题标签的正确用法，下列说法正确的是？",
+    "options": [
+      "六个标题只是字号不同，使用哪个完全取决于视觉大小",
+      "应按文档大纲的逻辑层级递进使用，h1 通常作为页面主标题，便于屏幕阅读器构建页面导航大纲",
+      "同一个页面最多只能出现一个标题元素",
+      "标题层级可以随意跳跃，对无障碍没有任何影响"
+    ],
+    "answer": "B",
+    "analysis": "标题标签的意义在于传达内容层级结构，屏幕阅读器等辅助技术依靠标题大纲进行页面导航；视觉大小应交给 CSS 控制，不应通过随意跳级或堆叠标题来代替样式。",
+    "difficulty": 2,
+    "tag": "标题语义"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "在未引入任何 CSS 的情况下，浏览器对 <ul> 无序列表的默认处理通常包括？",
+    "options": [
+      "每个列表项自动按 1、2、3 编号",
+      "将列表项内容设置为加粗显示",
+      "显示圆点项目符号（disc）并带有左缩进",
+      "不显示任何项目符号，也无缩进"
+    ],
+    "answer": "C",
+    "analysis": "浏览器默认样式表（user agent stylesheet）会给 ul 设置 disc 项目符号和左内边距/缩进；数字编号是 <ol> 有序列表的默认行为。这正体现了浏览器默认样式的存在。",
+    "difficulty": 2,
+    "tag": "默认样式"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "从语义化角度，<strong> 与 <b> 的主要区别是？",
+    "options": [
+      "<strong> 表示内容具有重要性（有语义，辅助技术会强调朗读），<b> 仅表示视觉加粗、无语义",
+      "两者语义完全相同，任何时候都可以互换",
+      "<strong> 是 HTML5 中已废弃的标签",
+      "<b> 的语义重要性高于 <strong>"
+    ],
+    "answer": "A",
+    "analysis": "HTML5 规定 strong 表示内容“重要”的语义，b 只是样式层面的“文本加粗”而不传达程度语义；需要强调重要性时用 strong，仅需视觉加粗时用 b。",
+    "difficulty": 2,
+    "tag": "标签语义"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "屏幕阅读器在朗读时会特别加重语气、体现强调语义的元素是？",
+    "options": [
+      "<i> 斜体文本",
+      "<u> 下划线文本",
+      "<s> 删除线文本",
+      "<em> 强调文本"
+    ],
+    "answer": "D",
+    "analysis": "em 表示强调（emphasis），属于有语义的元素，辅助技术朗读时可改变语调以示强调；i、u、s 属于无语义的视觉样式元素，屏幕阅读器通常不会赋予特殊的强调处理。",
+    "difficulty": 2,
+    "tag": "无障碍"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 <article> 与 <section> 的语义区别，下列说法正确的是？",
+    "options": [
+      "两者完全等价，任何时候都可以互换",
+      "<article> 只能用于新闻网站的文章列表",
+      "<article> 表示可独立分发、复用的内容组合（如一篇博文、一条新闻），<section> 表示文档中带标题的通用章节",
+      "<section> 必须嵌套在 <article> 内部，不能单独使用"
+    ],
+    "answer": "C",
+    "analysis": "article 强调内容的独立性与可复用性，单独拿出来依然完整、有意义；section 表示文档的通用分区，通常带有自己的标题；二者可以互相嵌套，但语义侧重不同。",
+    "difficulty": 3,
+    "tag": "语义化标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于语义化标签 <main>，下列说法正确的是？",
+    "options": [
+      "一个页面可以包含多个 <main> 分别对应不同区块",
+      "表示页面的主体内容，同一文档中应只有一个，辅助技术可据此跳过重复的导航直达主要内容",
+      "<main> 中必须包含 <nav> 导航",
+      "<main> 只能应用于移动端页面"
+    ],
+    "answer": "B",
+    "analysis": "main 用于标记页面主体内容，同一文档中建议唯一；它配合“跳到主要内容”的机制可显著改善键盘与屏幕阅读器用户的导航体验；导航属于 nav，并非 main 的必需内容。",
+    "difficulty": 2,
+    "tag": "语义化标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "下列哪组内容最适合使用 <nav> 标签包裹？",
+    "options": [
+      "文章正文中的引用来源链接",
+      "一张图片的下载链接",
+      "编辑推荐的商品文字链接",
+      "页面顶部的主要导航菜单链接集合"
+    ],
+    "answer": "D",
+    "analysis": "<nav> 用于标记页面中主要导航链接所在区域，如顶部主导航、面包屑导航；正文中零散的引用链接、图片链接等不属于主要导航，无需用 nav 包裹。",
+    "difficulty": 1,
+    "tag": "语义化标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "用语义化的方式插入一张带说明文字的图片，正确的结构是？",
+    "options": [
+      "<figure><img src=\"sunset.jpg\" alt=\"海边日落\"><figcaption>日落</figcaption></figure>",
+      "<p><img src=\"sunset.jpg\"></p><label>日落</label>",
+      "<div class=\"pic\"><img src=\"sunset.jpg\"></div><span>日落</span>",
+      "<img src=\"sunset.jpg\"><caption>日落</caption>"
+    ],
+    "answer": "A",
+    "analysis": "<figure> 用于组织自包含的图文内容，<figcaption> 为其提供说明文字，是图片配说明的语义化标准写法；label 面向表单控件，caption 元素只适用于表格。",
+    "difficulty": 2,
+    "tag": "figure 标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "<time datetime=\"2026-05-01\"> 中 datetime 属性的作用是？",
+    "options": [
+      "控制时间的显示格式",
+      "指定页面所在的时区",
+      "提供机器可读的准确时间值，供搜索引擎、屏幕阅读器等程序化解析",
+      "仅为 CSS 提供样式挂钩，没有实际功能"
+    ],
+    "answer": "C",
+    "analysis": "time 元素的可见文本按人类习惯显示，datetime 提供机器可读的精确时间值，便于程序化解析与比较；它不代表时区设置，也不控制显示样式。",
+    "difficulty": 2,
+    "tag": "time 标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "页面中有一个只含图标的提交按钮，为使屏幕阅读器用户也能理解其功能，最佳做法是？",
+    "options": [
+      "用 <b> 标签把图标加粗",
+      "为按钮添加 aria-label 属性提供可访问名称（或同时保留可见文字）",
+      "仅设置 title 属性即可完全满足无障碍要求",
+      "不需要任何处理，图标本身就是可访问的"
+    ],
+    "answer": "B",
+    "analysis": "纯图标对屏幕阅读器不可见，应通过 aria-label 为按钮补充可访问名称，使辅助技术能朗读其功能；title 仅在悬停时提示且不支持触屏，不能替代可访问名称。",
+    "difficulty": 3,
+    "tag": "ARIA 无障碍"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 <img> 的 alt 属性，下列说法正确的是？",
+    "options": [
+      "alt=\"\"（空字符串）表示图片是装饰性内容，辅助技术会忽略该图片；而省略 alt 时辅助技术可能朗读文件名等替代信息",
+      "空 alt 与省略 alt 的效果完全相同",
+      "空 alt 会导致图片无法加载",
+      "HTML5 规范不推荐给图片添加 alt"
+    ],
+    "answer": "A",
+    "analysis": "空 alt 明确标识图片为装饰性内容，屏幕阅读器直接跳过；省略 alt 等价于没有替代文本，辅助技术可能退而朗读文件名或提示“图片”，两者并不等价；alt 是 img 的重要无障碍属性。",
+    "difficulty": 3,
+    "tag": "img alt"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "浏览器内置的“用户代理样式表”（user agent stylesheet）的主要作用是？",
+    "options": [
+      "覆盖开发者编写的所有 CSS 规则",
+      "只在 IE 浏览器中存在",
+      "提升 JavaScript 的执行性能",
+      "在页面没有任何 CSS 时提供一套基础可读样式，如标题字号、列表缩进、body 边距等"
+    ],
+    "answer": "D",
+    "analysis": "用户代理样式表是浏览器自带的默认样式，保证无 CSS 时内容依然可读；开发者编写的样式优先级更高，可按需覆盖；它存在于所有主流浏览器中，与 JS 性能无关。",
+    "difficulty": 1,
+    "tag": "默认样式"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "前端项目中使用 reset.css 或 normalize.css 的主要目的是？",
+    "options": [
+      "加快浏览器的渲染速度",
+      "使页面通过 W3C 校验",
+      "抹平不同浏览器默认样式之间的差异，统一渲染基线",
+      "替代 HTML 语义标签实现页面结构"
+    ],
+    "answer": "C",
+    "analysis": "不同浏览器的默认样式存在差异（如边距、字号），reset/normalize 通过统一规则消除差异，保证跨浏览器表现一致；reset 将默认样式清零，normalize 则保留合理默认值并修补不一致。",
+    "difficulty": 1,
+    "tag": "样式重置"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "当浏览器解析 HTML 文档遇到不带 defer/async 的普通外部 <script> 时，典型行为是？",
+    "options": [
+      "完全不阻塞，与 HTML 解析并行进行",
+      "先暂停 HTML 解析，下载并执行该脚本，执行完后再继续解析",
+      "跳过该脚本，等 load 事件触发后再执行",
+      "立即在内存中编译但不执行，待 DOMContentLoaded 后再执行"
+    ],
+    "answer": "B",
+    "analysis": "普通外部脚本是同步阻塞的：浏览器必须先下载并执行它，期间暂停 HTML 解析与渲染，因此实践中常把它放在 <body> 末尾，或用 defer/async 优化首屏加载。",
+    "difficulty": 3,
+    "tag": "文档解析流程"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于带 defer 属性的外部脚本的执行时机，下列说法正确的是？",
+    "options": [
+      "在 HTML 文档解析完成后、DOMContentLoaded 事件触发之前按文档顺序执行",
+      "在 DOMContentLoaded 事件触发之后执行",
+      "在 window.load 事件触发之后执行",
+      "解析到该标签时立即执行一次，DOMContentLoaded 时再执行一次"
+    ],
+    "answer": "A",
+    "analysis": "defer 脚本延迟到文档解析完成之后执行，且位于 DOMContentLoaded 之前；多个 defer 脚本按文档中的声明顺序依次执行，因此适合放置依赖完整 DOM 的初始化逻辑。",
+    "difficulty": 3,
+    "tag": "script defer"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "要在 HTML 页面的文本内容中显示小于号“<”，正确的写法是？",
+    "options": [
+      "&gt;",
+      "&quot;",
+      "&nbsp;",
+      "&lt;"
+    ],
+    "answer": "D",
+    "analysis": "&lt; 是小于号的字符实体，&gt; 对应大于号，&quot; 对应双引号，&nbsp; 是不换行空格。使用实体可避免“<”被解析为标签的开始符。",
+    "difficulty": 1,
+    "tag": "字符实体"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "使用 <a target=\"_blank\"> 打开新页面时，为防止新页面通过 window.opener 反向操作原页面，推荐的写法是？",
+    "options": [
+      "添加 rel=\"noopener noreferrer\"",
+      "添加 rel=\"preload\"",
+      "添加 aria-hidden=\"true\"",
+      "添加 spellcheck=\"false\""
+    ],
+    "answer": "A",
+    "analysis": "默认情况下 target=\"_blank\" 打开的新页面可通过 window.opener 访问并篡改原页面（反向 tabnabbing 攻击）；rel=\"noopener noreferrer\" 会切断这种关联，是推荐的安全写法。",
+    "difficulty": 3,
+    "tag": "HTML 安全"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "关于 <header> 与 <footer> 语义化标签，下列说法正确的是？",
+    "options": [
+      "每个页面中 header 与 footer 只能各出现一次",
+      "header 内部必须包含 h1 主标题",
+      "它们既可表示页面级的页眉与页脚，也可表示某个 <article>/<section> 区块的页眉与页脚，每个区块内都可以有各自的 header/footer",
+      "footer 中不允许出现版权信息以外的内容"
+    ],
+    "answer": "C",
+    "analysis": "header 与 footer 是 HTML5 语义化标签，既可用于页面级（顶部栏、页脚），也可作为 article、section 等容器的区头与区尾，在文档中可以多次出现；是否包含 h1 并无强制要求。",
+    "difficulty": 2,
+    "tag": "语义化标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "执行 localStorage.setItem('count', 5) 之后，再读取 localStorage.getItem('count') 得到的结果是？",
+    "options": [
+      "数字 5，浏览器会自动还原为原来的类型",
+      "字符串 “5”",
+      "以 JSON 对象形式存储，读取时会被自动解析",
+      "undefined，因为数字类型不能存入 Web Storage"
+    ],
+    "answer": "B",
+    "analysis": "Web Storage 只能存储字符串，setItem 会把传入的值自动转为字符串 “5” 再存储，读取时返回的自然是字符串；要保存对象需先 JSON.stringify，读取时再 JSON.parse。",
+    "difficulty": 2,
+    "tag": "HTML5存储"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "single",
+    "question": "当 HTML 文档中存在未闭合标签等“不合法”写法时，浏览器的行为是？",
+    "options": [
+      "按照 HTML 标准定义的解析算法自动容错纠错（如为未闭合的 <p> 补全），而不是停止解析",
+      "立即报错并停止渲染整个页面",
+      "在开发者工具中强制弹出错误提示",
+      "自动清空该节点所在的所有内容"
+    ],
+    "answer": "A",
+    "analysis": "HTML 解析器具有容错机制，HTML 标准明确规定了各类错误写法的处理算法，浏览器会尽力纠错并继续解析，这也是“写错也能显示”的原因；但依赖容错并非好习惯，应编写规范的 HTML。",
+    "difficulty": 3,
+    "tag": "文档解析流程"
+  }
+]

@@ -1,0 +1,497 @@
+[
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "下列 HTTP 状态码与其语义的对应中，错误的是哪一项？",
+    "options": [
+      "200：请求成功",
+      "301：永久重定向，客户端应更新链接",
+      "304：资源未修改，可继续使用本地缓存",
+      "403：服务器内部错误"
+    ],
+    "answer": "D",
+    "analysis": "403 表示 Forbidden（禁止访问），说明客户端没有访问权限；服务器内部错误对应的是 500。200、301、304 与其语义的对应均正确。",
+    "difficulty": 2,
+    "tag": "状态码"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "服务器成功处理了 DELETE 请求但无需返回任何响应体时，HTTP 响应状态码通常为？",
+    "options": [
+      "200",
+      "201",
+      "204",
+      "206"
+    ],
+    "answer": "C",
+    "analysis": "204 No Content 表示请求成功但响应体为空，常用于删除等无需返回内容的操作；200 一般会携带响应体，201 用于创建资源成功后返回，206 表示 Range 请求的部分内容。",
+    "difficulty": 2,
+    "tag": "状态码"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "客户端在未登录状态下请求需要认证的接口，服务器最可能返回的状态码是？",
+    "options": [
+      "401",
+      "403",
+      "404",
+      "407"
+    ],
+    "answer": "A",
+    "analysis": "401 Unauthorized 表示未认证或凭证无效，提示需要提供身份验证信息；403 表示已认证但无权限；404 表示资源不存在；407 表示需要通过代理进行认证。",
+    "difficulty": 3,
+    "tag": "状态码"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "某资源只允许 GET 访问，客户端却发送了 DELETE 请求，服务器应返回的状态码是？",
+    "options": [
+      "400",
+      "405",
+      "409",
+      "501"
+    ],
+    "answer": "B",
+    "analysis": "405 Method Not Allowed 表示请求方法不被目标资源支持，响应中通常带 Allow 头列出允许的方法；400 表示请求语法错误，409 表示资源冲突，501 表示服务器未实现该功能。",
+    "difficulty": 3,
+    "tag": "状态码"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "与 HTTP/1.0 相比，HTTP/1.1 在连接管理上的重要改进是？",
+    "options": [
+      "默认每次请求后关闭连接，由 keep-alive 请求头显式开启",
+      "默认开启持久连接，允许多个请求复用同一条 TCP 连接",
+      "支持在同一连接上同时并行处理多个请求的多路复用",
+      "将传输层从 TCP 改为 UDP"
+    ],
+    "answer": "B",
+    "analysis": "HTTP/1.1 默认开启持久连接（Connection: keep-alive），避免为每个请求重新建立 TCP 连接；A 描述的是 HTTP/1.0 的行为；同一连接上的多路复用是 HTTP/2 的特性；HTTP 的传输层仍然是 TCP。",
+    "difficulty": 2,
+    "tag": "HTTP版本"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "关于 HTTP/2 的说法，正确的是？",
+    "options": [
+      "头部信息仍以明文文本传输，便于调试",
+      "同一条 TCP 连接同时只能处理一个请求",
+      "采用二进制分帧协议并用 HPACK 压缩请求头，支持多路复用",
+      "必须为每个请求单独建立一条 TCP 连接"
+    ],
+    "answer": "C",
+    "analysis": "HTTP/2 将消息拆分为二进制帧，多个流在一条 TCP 连接上交错传输实现多路复用，头部使用 HPACK 压缩；A、B、D 描述的均是 HTTP/1.x 的特征。",
+    "difficulty": 3,
+    "tag": "HTTP版本"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "HTTP/2 的『多路复用』主要指的是？",
+    "options": [
+      "多个请求和响应在一条 TCP 连接上以流的形式并发交错传输，互不阻塞",
+      "一个请求被复制发送到多条连接以提高可靠性",
+      "多个域名共享同一个端口号",
+      "将 HTTP 报文拆分成多个 TCP 连接并行发送"
+    ],
+    "answer": "A",
+    "analysis": "多路复用是指一条连接上多个流交错发送帧，避免了 HTTP/1.1 按队列串行导致的请求级队头阻塞；B、C、D 都与多路复用的定义不符。",
+    "difficulty": 3,
+    "tag": "HTTP版本"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "关于 HTTP/1.1 持久连接的说法，正确的是？",
+    "options": [
+      "连接上的多个请求可以并行处理、无序返回",
+      "持久连接上无需任何机制即可区分多条响应的边界",
+      "持久连接可以无限期保持不关闭",
+      "同一连接的多个请求按队列串行处理，前一个响应未完成时后续请求可能被阻塞，形成队头阻塞"
+    ],
+    "answer": "D",
+    "analysis": "HTTP/1.1 虽复用连接，但请求与响应仍是串行排队，前一个响应未完成会阻塞后续请求，形成队头阻塞；响应通过 Content-Length 或分块传输区分边界，连接也有超时限制，不会无限期保持。",
+    "difficulty": 4,
+    "tag": "HTTP版本"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "使用 HTML 表单上传文件时，form 的 enctype 应设置为？",
+    "options": [
+      "application/x-www-form-urlencoded",
+      "application/json",
+      "text/plain",
+      "multipart/form-data"
+    ],
+    "answer": "D",
+    "analysis": "表单包含文件时必须使用 multipart/form-data，它以 boundary 分隔多个部分，能够承载二进制文件；urlencoded 只适合简单键值对，无法可靠传输文件，application/json 和 text/plain 均不用于表单文件上传。",
+    "difficulty": 1,
+    "tag": "媒体类型"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "后端接口要求直接上传二进制文件流（如原始 Blob 数据），Content-Type 通常应设为？",
+    "options": [
+      "application/json",
+      "application/x-www-form-urlencoded",
+      "text/plain",
+      "application/octet-stream"
+    ],
+    "answer": "D",
+    "analysis": "application/octet-stream 表示不透明的二进制数据流，是原始二进制上传和文件下载的通用媒体类型；其余选项均为文本类类型，不适合承载原始二进制内容。",
+    "difficulty": 2,
+    "tag": "媒体类型"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "使用 fetch 向服务器提交 JSON 数据，正确的做法是？",
+    "options": [
+      "使用 GET 请求并在查询参数中携带序列化后的 JSON",
+      "在 body 中直接传入 JS 对象，fetch 会自动序列化",
+      "将 body 用 JSON.stringify 序列化，并设置 Content-Type 为 application/json",
+      "无需设置请求头，body 传字符串即可被自动识别为 JSON"
+    ],
+    "answer": "C",
+    "analysis": "fetch 不会自动序列化对象，需要手动调用 JSON.stringify；服务器依据 Content-Type: application/json 识别请求体格式。GET 携带查询参数、直接传对象以及不设置 Content-Type 都无法保证正确交互。",
+    "difficulty": 3,
+    "tag": "fetch"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "关于媒体类型 application/json 的说法，正确的是？",
+    "options": [
+      "它是 JSON 数据的标准媒体类型，内容为按 UTF-8 编码的 JSON 文本",
+      "它用于描述 HTML 文档",
+      "它只能配合 GET 请求使用",
+      "携带该类型的响应一定是二进制数据"
+    ],
+    "answer": "A",
+    "analysis": "application/json 是 JSON 文本的标准 MIME 类型，按约定应使用 UTF-8 编码；HTML 文档对应的媒体类型是 text/html；该类型与请求方法无关；JSON 是文本而非二进制。",
+    "difficulty": 1,
+    "tag": "媒体类型"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "希望『每次使用缓存前都必须向服务器验证缓存是否仍然有效』，响应头应设置为？",
+    "options": [
+      "Cache-Control: no-store",
+      "Cache-Control: public",
+      "Cache-Control: only-if-cached",
+      "Cache-Control: no-cache"
+    ],
+    "answer": "D",
+    "analysis": "no-cache 表示使用缓存前必须与服务器重新验证，注意它并不等于禁止缓存；no-store 是完全不缓存；public 表示允许任何缓存保存；only-if-cached 表示仅从缓存读取而不联网。",
+    "difficulty": 3,
+    "tag": "缓存头"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "关于基于 ETag 的协商缓存流程，描述正确的是？",
+    "options": [
+      "首次响应时客户端在 If-None-Match 请求头中携带 ETag 值",
+      "服务器比对 ETag 一致后返回 200 和完整响应体",
+      "ETag 只能取文件最后修改时间生成",
+      "首次响应时服务器在响应头 ETag 中返回标识，后续请求通过 If-None-Match 携带该值，命中时返回 304"
+    ],
+    "answer": "D",
+    "analysis": "ETag 由服务器在首次响应中下发，客户端后续请求携带 If-None-Match 回传，服务器比对一致则返回 304 且无响应体；方向相反是 A 错，命中后返回 200 是 B 错，ETag 可由内容哈希等方式生成，不限于修改时间。",
+    "difficulty": 3,
+    "tag": "ETag"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "响应头中同时存在 ETag 与 Last-Modified 时，协商缓存的验证以哪个为准？",
+    "options": [
+      "ETag 优先于 Last-Modified",
+      "Last-Modified 优先于 ETag",
+      "以两者中较早的时间为准",
+      "两者不能同时存在"
+    ],
+    "answer": "A",
+    "analysis": "规范约定服务器应优先校验 If-None-Match（ETag），因为 ETag 能精确标识内容版本，而 Last-Modified 精度到秒且可能误判；两者可以同时返回，时间比较并不用于优先级判断。",
+    "difficulty": 3,
+    "tag": "协商缓存"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "HTTP/1.1 响应头包含 Connection: close 时表示？",
+    "options": [
+      "禁止浏览器缓存该响应",
+      "本次响应体已压缩",
+      "服务器将在完成本次响应后关闭该 TCP 连接",
+      "客户端必须改用 HTTPS 重新请求"
+    ],
+    "answer": "C",
+    "analysis": "Connection: close 显式告知连接在响应结束后关闭、不再复用；它与缓存控制无关，与压缩无关，也不涉及协议升级。",
+    "difficulty": 2,
+    "tag": "连接头"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "客户端希望服务器对响应内容进行 gzip 压缩后再传输，应在请求头中携带？",
+    "options": [
+      "Accept",
+      "Accept-Language",
+      "Content-Encoding",
+      "Accept-Encoding"
+    ],
+    "answer": "D",
+    "analysis": "Accept-Encoding 声明客户端可接受的编码方式（如 gzip、br、deflate）；Accept 声明可接受的媒体类型；Accept-Language 声明语言偏好；Content-Encoding 是响应头，表示响应体实际使用的编码，不应由客户端设置。",
+    "difficulty": 2,
+    "tag": "请求头"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "以下哪种跨域请求会触发浏览器发起 CORS 预检（OPTIONS 预请求）？",
+    "options": [
+      "Content-Type 为 text/plain 的 GET 请求",
+      "携带自定义请求头 X-Request-Id 的 POST 请求",
+      "通过 img 标签加载跨域图片",
+      "同源页面发起的普通 GET 请求"
+    ],
+    "answer": "B",
+    "analysis": "除简单请求外的跨域请求都会触发预检，包括携带自定义请求头、使用非简单方法（如 PUT、DELETE、PATCH）以及 Content-Type 为非简单值（如 application/json）的情况；GET 加 text/plain、img 标签加载和同源请求都不满足触发条件。",
+    "difficulty": 3,
+    "tag": "CORS"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "下列属于 CORS『简单请求』的是？",
+    "options": [
+      "Content-Type 为 application/json 的 POST 请求",
+      "携带 Authorization 请求头的 GET 请求",
+      "Content-Type 为 application/x-www-form-urlencoded 的表单 POST 请求",
+      "使用 PUT 方法的跨域请求"
+    ],
+    "answer": "C",
+    "analysis": "简单请求须满足：方法为 GET、HEAD 或 POST，请求头仅包含允许的 safelisted 头，且 Content-Type 只能是 application/x-www-form-urlencoded、multipart/form-data 或 text/plain 之一；application/json、Authorization 头和 PUT 方法都会使请求变成非简单请求。",
+    "difficulty": 3,
+    "tag": "CORS"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "响应头 Access-Control-Max-Age 的作用是？",
+    "options": [
+      "指定预检请求结果可被浏览器缓存的秒数",
+      "指定 Cookie 的有效期",
+      "指定响应体的缓存时间",
+      "指定 TCP 连接保持时间"
+    ],
+    "answer": "A",
+    "analysis": "Access-Control-Max-Age 告诉浏览器本次预检结果（允许的方法、允许的请求头等）可以缓存多少秒，从而减少后续重复预检；它与 Cookie 有效期、响应体强缓存和连接保持时间均无关。",
+    "difficulty": 3,
+    "tag": "CORS"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "跨域请求需要携带 Cookie 时，正确的配置是？",
+    "options": [
+      "前端设置 credentials: include 后即可，无需服务端配置",
+      "服务器将 Access-Control-Allow-Origin 设为 * 即可",
+      "浏览器会自动携带跨域 Cookie，无需任何配置",
+      "前端设置 credentials: include（或 withCredentials），同时服务器返回 Access-Control-Allow-Credentials: true，且 Access-Control-Allow-Origin 不能为 *"
+    ],
+    "answer": "D",
+    "analysis": "携带凭证的跨域请求要求前端开启 credentials，同时服务器必须返回 Access-Control-Allow-Credentials: true，并且 Access-Control-Allow-Origin 必须为具体源而非 *，否则浏览器会拦截；A、B、C 均缺少必要环节。",
+    "difficulty": 4,
+    "tag": "CORS"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "关于 JSONP 的说法，正确的是？",
+    "options": [
+      "JSONP 通过 XMLHttpRequest 的跨域模式发送请求",
+      "JSONP 利用 script 标签不受同源策略限制的特性，动态插入 script 并传入回调函数名，服务器返回回调包裹的数据",
+      "JSONP 是浏览器原生提供的标准化跨域方案",
+      "JSONP 可以携带任意自定义请求头"
+    ],
+    "answer": "B",
+    "analysis": "JSONP 的核心是动态创建 script 标签，其 src 指向跨域接口并携带 callback 参数，服务器返回回调名包裹数据的 JS 代码；它只能使用 GET、无法定制请求头，也不是标准规范，只是一种利用 script 标签特性的跨域技巧。",
+    "difficulty": 3,
+    "tag": "JSONP"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "JSONP 方案的主要局限是？",
+    "options": [
+      "仅能请求同源服务器",
+      "只能接收 JSON 类型的数据",
+      "只支持 GET 请求，返回格式与回调名需由服务器配合约定，安全性依赖对接口来源的信任",
+      "必须手动解析返回的二进制流"
+    ],
+    "answer": "C",
+    "analysis": "JSONP 只能通过 script 加载发起 GET 请求，服务器须按回调名包裹数据格式返回，且无法做标准的错误码与请求头控制，安全性取决于对接口信任；它本身专为跨域设计，返回内容也不限于 JSON 格式。",
+    "difficulty": 4,
+    "tag": "JSONP"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "登录后希望在每次请求发出前自动附加 Authorization 请求头，在 axios 中的推荐做法是？",
+    "options": [
+      "在响应拦截器中对每个响应追加请求头",
+      "通过请求拦截器统一修改 config.headers 后再发送",
+      "在每个调用 axios 的位置手动拼接头",
+      "在 then 回调中修改已发送的请求"
+    ],
+    "answer": "B",
+    "analysis": "请求拦截器在请求发出前执行，可在其中读取 token 并写入 config.headers，实现统一注入；响应拦截器处理的是响应，then 回调在请求完成后执行，逐处手动拼接则违背了统一处理的目标。",
+    "difficulty": 3,
+    "tag": "axios"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "组件卸载时想要取消一个尚未完成的 axios 请求，应使用？",
+    "options": [
+      "将请求的 timeout 设置为 0",
+      "使用 AbortController（signal）或 axios 的 CancelToken 调用取消",
+      "调用 response.interceptors 清空",
+      "删除请求配置对象即可自动取消"
+    ],
+    "answer": "B",
+    "analysis": "axios 支持传入 AbortController 的 signal 或使用 CancelToken 取消请求，取消后请求的 Promise 会以 AbortError/CanceledError 拒绝，可通过 axios.isCancel 判断；timeout 为 0 表示不设超时，删除配置对象并不能取消已发出的网络请求。",
+    "difficulty": 3,
+    "tag": "axios"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "关于 axios 与 fetch 的说法，正确的是？",
+    "options": [
+      "axios 在浏览器端基于 XMLHttpRequest 封装，fetch 是浏览器内置的原生 API",
+      "fetch 不具备取消请求的能力",
+      "axios 不具备请求拦截器功能",
+      "fetch 在 Node.js 环境中无法使用"
+    ],
+    "answer": "A",
+    "analysis": "axios 在浏览器端底层是 XMLHttpRequest，并提供拦截器、取消请求、统一错误处理等封装；fetch 是原生 Promise 式 API，可借助 AbortController 取消请求，且 Node.js 18 及以上版本原生支持 fetch。",
+    "difficulty": 3,
+    "tag": "请求库"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "使用 fetch 请求接口，服务器返回 500 状态码，此时 fetch 返回的 Promise 默认处于什么状态？",
+    "options": [
+      "立即 reject 并抛出异常",
+      "进入无限重试",
+      "正常 resolve，需要检查 response.ok 或 response.status 判断是否成功",
+      "浏览器会自动弹出错误提示"
+    ],
+    "answer": "C",
+    "analysis": "fetch 只在网络层失败（如断网、DNS 失败、CORS 被拦截）时才 reject；HTTP 状态码即使是 500 或 404 也会正常 resolve 响应对象，需要借助 response.ok 或 status 自行判断请求是否成功。",
+    "difficulty": 2,
+    "tag": "fetch"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "关于『访问令牌 + 刷新令牌』机制的说法，正确的是？",
+    "options": [
+      "访问令牌过期后，用有效期更长的刷新令牌换取新的访问令牌，避免用户重新登录",
+      "刷新令牌的有效期比访问令牌更短",
+      "刷新令牌应写入 URL 查询参数便于前端读取",
+      "刷新令牌与访问令牌同时过期"
+    ],
+    "answer": "A",
+    "analysis": "访问令牌（access_token）有效期短，过期后由客户端用刷新令牌向认证服务换取新令牌；刷新令牌有效期通常更长，也不应与访问令牌同时过期，且它属于敏感凭证，绝不能出现在 URL 或日志中。",
+    "difficulty": 3,
+    "tag": "token"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "业务接口因访问令牌过期统一返回 401 时，前端推荐的统一处理方式是？",
+    "options": [
+      "在请求拦截器中提前判断令牌是否过期",
+      "忽略 401 继续展示页面数据",
+      "每次请求前强制用户重新登录",
+      "在响应拦截器中统一捕获 401，触发刷新令牌流程，成功后重放原请求"
+    ],
+    "answer": "D",
+    "analysis": "响应拦截器能统一看到状态码，捕获 401 后可调用刷新接口换新令牌，并配合请求队列防止并发刷新，再用新令牌重放被打断的请求；请求拦截器在发出前执行，看不到响应状态码，不能用来判断 401。",
+    "difficulty": 4,
+    "tag": "token"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "以下符合 RESTful 资源命名设计的是？",
+    "options": [
+      "GET /getUserById?id=42 查询用户",
+      "GET /api/users 获取用户列表，GET /api/users/42 获取单个用户",
+      "POST /api/saveUser 保存用户",
+      "GET /api/userList 获取用户列表"
+    ],
+    "answer": "B",
+    "analysis": "REST 用名词复数表示资源，集合使用 /users，单个资源使用 /users/42；A、C、D 中出现了动词化命名（getUserById、saveUser、userList 或操作动词），不符合 REST 以资源为中心的设计。",
+    "difficulty": 1,
+    "tag": "REST"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "下列 URL 加方法的设计最能体现 RESTful 风格的是？",
+    "options": [
+      "POST /api/orders 创建订单，DELETE /api/orders/1001 删除订单",
+      "GET /api/deleteOrder?id=1001 删除订单",
+      "POST /api/order/addOrder 新增订单",
+      "GET /api/getOrderList 获取订单列表"
+    ],
+    "answer": "A",
+    "analysis": "REST 通过 HTTP 方法表达操作语义，URL 只描述资源：POST 创建集合资源、DELETE 删除指定资源；B、C、D 把操作动词写进 URL，属于过程式接口风格，不符合 REST 约定。",
+    "difficulty": 2,
+    "tag": "REST"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "关于 URL 编码（百分号编码）的说法，正确的是？",
+    "options": [
+      "浏览器在请求前会对 URL 中的非 ASCII 字符（如中文）进行编码，转成 %XX 形式，例如『中』编码为 %E4%B8%AD",
+      "URL 中的空格无需任何编码",
+      "编码只作用于查询字符串，路径部分永远不会被编码",
+      "encodeURIComponent 不会编码任何字符，仅作格式校验"
+    ],
+    "answer": "A",
+    "analysis": "URL 只能包含 ASCII 字符，非 ASCII 字符和特殊字符需要百分号编码，中文字符按 UTF-8 编码后转成 %E4%B8%AD 形式；空格在查询串中通常编码为 %20 或 +，路径中的非 ASCII 字符同样会被编码，encodeURIComponent 会对除保留字符外几乎所有字符进行编码。",
+    "difficulty": 1,
+    "tag": "URL编码"
+  },
+  {
+    "chapter": "考点7：HTTP与数据交互",
+    "type": "single",
+    "question": "与 HTTP 长轮询相比，WebSocket 的主要优势是？",
+    "options": [
+      "连接建立后服务器可主动推送数据，全双工通信，无需客户端反复轮询",
+      "它基于 UDP 传输，延迟更低",
+      "它不需要握手，首次连接即可直接通信",
+      "它在每次消息传输后都会自动关闭连接"
+    ],
+    "answer": "A",
+    "analysis": "WebSocket 在 HTTP 握手升级后建立全双工通道，服务器可随时主动推送，避免了轮询产生的空闲请求开销与延迟；它基于 TCP 传输，需要完成 Upgrade 握手，连接可以长时间保持而不必每次关闭。",
+    "difficulty": 1,
+    "tag": "全双工"
+  }
+]

@@ -1,0 +1,222 @@
+[
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "在原生表单元素上，v-model 本质上是 value 属性绑定与监听 input 事件的语法糖，用于实现表单输入与数据的双向绑定。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "对文本类输入框，v-model 会编译为 value 属性绑定加 input 事件监听，输入时同步更新数据，实现双向绑定。对 checkbox、radio 以及 select 等元素，底层绑定的是 checked 或 change 相关事件而非 input。在自定义组件上，v-model 则基于 modelValue 属性与 update:modelValue 事件实现。",
+    "difficulty": 1,
+    "tag": "v-model"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "v-if 与 v-show 在条件为假时都会将对应的元素从 DOM 中移除，二者的区别仅在于初始渲染的开销不同。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "v-if 是条件渲染，条件为假时元素根本不会渲染到 DOM 中；v-show 则始终渲染元素，只是通过 display:none 控制显隐。因此条件为假时 v-show 的元素仍保留在 DOM 中，题目说两者都会移除是错误的。",
+    "difficulty": 1,
+    "tag": "条件渲染"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "在 Vue 3 中，当同一元素上同时使用 v-for 与 v-if 时，v-for 的优先级更高，会先完成遍历再执行判断。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "Vue 3 中 v-if 的优先级高于 v-for，因此 v-if 无法访问 v-for 遍历出的变量，官方建议将 v-if 放到 v-for 外部或用 template 包裹。Vue 2 中才是 v-for 优先级更高，二者行为相反，题目表述属于 Vue 2 的语义。",
+    "difficulty": 4,
+    "tag": "指令优先级"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "computed 计算属性会根据其内部访问的响应式依赖自动缓存计算结果，只有依赖发生变化时才需要重新计算。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "computed 具有缓存机制，只要依赖的响应式数据未变化，多次访问都会返回同一份缓存结果，不会重复执行计算逻辑。这与 methods 每次访问都重新执行不同，因此性能更好，适合用于派生数据的计算。",
+    "difficulty": 1,
+    "tag": "computed"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "Vue 3 的 watch 侦听器默认是惰性的：只有被侦听的数据源发生变化时才会触发回调，除非显式配置 immediate 选项。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "watch 默认不会立即执行回调，属于惰性侦听，只有被侦听的源变化时才触发。设置 immediate: true 后会在创建监听器时立即执行一次，与该默认行为形成对比，这也是 watch 与 watchEffect 的重要差异之一。",
+    "difficulty": 3,
+    "tag": "watch"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "使用 watch 侦听一个 ref 包裹的对象（如 watch(ref(user))）时，直接修改该对象内部嵌套属性的值会默认触发回调，无需设置 deep 选项。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "watch 侦听 ref 时默认只跟踪 .value 的整体替换，对象内部嵌套属性的修改不会触发回调。若要侦听深层变化，需要传入 deep: true，或改为侦听返回嵌套属性的 getter 函数。只有直接侦听 reactive 对象时，Vue 才会隐式开启深层侦听。",
+    "difficulty": 4,
+    "tag": "watch"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "在 Vue 3 组合式 API 中，setup 函数在组件实例创建时同步执行，其执行时机早于 Options API 的 beforeCreate 和 created 钩子。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "setup 在组件实例创建阶段最先执行，beforeCreate 与 created 两个钩子的职责已被 setup 取代，因此在 Options API 中不再需要这两个钩子。setup 执行时组件尚未挂载，无法访问 DOM 元素。",
+    "difficulty": 2,
+    "tag": "生命周期"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "Vue 对 DOM 的更新是同步的，修改响应式数据后，在同一轮事件循环中立即读取 DOM 即可获取最新内容。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "Vue 的数据变更会进入异步更新队列，同一轮事件循环内的多次修改会被合并为一次 DOM 更新，因此修改数据后立即读取 DOM 看到的是旧内容。正确做法是通过 nextTick 的回调获取更新完成后的 DOM。",
+    "difficulty": 3,
+    "tag": "异步更新"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "Vue 2 的响应式系统基于 Object.defineProperty 劫持对象的 getter/setter，因此无法自动侦测对象新增属性和数组按索引直接赋值的变更。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Object.defineProperty 只能劫持已存在的属性，动态新增的属性不具备响应式，需要借助 Vue.set 手动添加。数组的 length 与按索引赋值同样无法被拦截，因此 Vue 2 通过重写 push、pop 等数组方法来弥补这一缺陷。",
+    "difficulty": 3,
+    "tag": "响应式原理"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "Vue 3 的响应式系统仍然基于 Object.defineProperty 实现，与 Vue 2 在原理上没有本质差异。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "Vue 3 改用 ES6 的 Proxy 实现响应式，可以拦截属性的新增、删除以及数组下标赋值等操作，弥补了 Vue 2 的不足。这也是 Vue 3 中新增属性天然具备响应性、无需再手动调用 Vue.set 的根本原因。",
+    "difficulty": 3,
+    "tag": "响应式原理"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "shallowRef 与 ref 的行为完全相同：直接修改 shallowRef 所包裹对象内部嵌套属性的值，同样会触发响应式更新。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "shallowRef 只对 .value 的整体替换做出响应，对象内部属性的深层修改不会触发更新，常用于只关心引用变化的性能优化场景。ref 则会对包裹的对象进行深层响应式转换，二者行为明显不同。",
+    "difficulty": 4,
+    "tag": "shallowRef"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "reactive 可以直接将字符串、数字等基本数据类型包装为响应式数据。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "reactive 只能接收对象类型，包括普通对象、数组以及 Map、Set 等集合，直接传入基本类型无法产生有效的响应式代理。基本类型需要使用 ref，由 ref 包装成带 .value 属性的对象来支持响应式读写。",
+    "difficulty": 2,
+    "tag": "reactive"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "父组件通过 props 向子组件传递数据，props 遵循单向数据流，子组件不应直接修改 props 的值。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "props 是父组件向子组件传递数据的通道，数据流是单向的，子组件直接修改 props 会破坏单向数据流并产生难以排查的问题。子组件如有修改需求，应通过 $emit 触发事件让父组件更新数据，或使用本地 data 与 computed 承接。",
+    "difficulty": 1,
+    "tag": "组件通信"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "插槽内容默认在子组件的作用域中编译，因此插槽可以直接访问子组件内部的数据。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "插槽内容实际上是在父组件作用域中编译的，只能访问父组件的数据，这正是一般插槽无法直接读取子组件数据的原因。若需要在插槽中使用子组件的数据，必须使用作用域插槽，由子组件通过 slot props（配合 v-slot 解构）把数据传给父组件的插槽模板使用。",
+    "difficulty": 3,
+    "tag": "插槽"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "Vue Router 的动态路由通过路径参数匹配，如 /user/:id，组件内可以通过 $route.params 或 useRoute() 读取路由参数 id。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "动态路由由冒号开头的参数段定义，匹配成功后参数会挂载到 $route.params 上，组合式 API 中可用 useRoute() 获取等价数据。需要注意的是，同一组件复用时参数变化不会重新创建组件，需通过 watch 监听 $route 或使用 beforeRouteUpdate 守卫来响应。",
+    "difficulty": 3,
+    "tag": "路由传参"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "Vue Router 的全局前置守卫 beforeEach 会在每次路由导航确认之前执行，常用于登录态校验和页面访问权限控制。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "beforeEach 注册的守卫会在导航被确认前按注册顺序执行，可以结合 to.meta 等路由元信息判断页面权限，并通过 next() 决定放行、重定向或取消导航。这是实现登录拦截和页面权限控制最常用的手段之一。",
+    "difficulty": 2,
+    "tag": "导航守卫"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "引入虚拟 DOM 之后，Vue 的渲染更新过程就不再操作任何真实 DOM 节点。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "虚拟 DOM 是真实 DOM 的 JavaScript 对象描述，Vue 通过 diff 算法对比新旧虚拟 DOM 得出最小差异，再通过 patch 过程操作真实 DOM。因此真实 DOM 操作并未消失，而是被最小化、批量化，这正是虚拟 DOM 提升渲染性能的机制。",
+    "difficulty": 2,
+    "tag": "虚拟DOM"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "Vue 的 diff 算法对两棵虚拟 DOM 树进行深度优先的同层比较，默认不会把节点跨层级移动。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Vue 的 diff 采用同层比较策略，逐层对比节点并以 key 辅助复用，跨层级的节点移动会被识别为删除加新增而非真正移动。该策略在保证更新正确性的同时，把 diff 的时间复杂度控制在可接受范围。",
+    "difficulty": 4,
+    "tag": "Diff算法"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "在 Vuex 中，官方推荐在 mutation 中直接执行异步请求，因为 mutation 是唯一能修改 state 的途径。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "Vuex 规定 mutation 必须是同步函数，因为异步操作会造成状态变化无法被 devtools 可靠追踪。异步请求应放在 action 中，action 完成后再通过提交 mutation 来同步修改 state。",
+    "difficulty": 3,
+    "tag": "状态管理"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "使用 ref 创建的响应式数据在模板中会被自动解包，可以直接使用变量名；而在 setup 函数内部访问时则需要写 .value。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "ref 返回的是带 value 属性的响应式对象，模板渲染时会自动解包顶层 ref，因此模板中无需写 .value。但在 setup 的 JavaScript 逻辑中访问时必须显式写 .value，这也是组合式 API 初学者最容易出错的地方。",
+    "difficulty": 3,
+    "tag": "组合式API"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "keep-alive 是 Vue 的内置组件，用于缓存动态组件实例，被缓存组件切走时触发 deactivated 钩子，切回时触发 activated 钩子。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "keep-alive 会缓存组件的实例与状态，避免组件切换时被频繁创建和销毁。被缓存的组件会触发 activated 与 deactivated 生命周期钩子，且可以通过 include/exclude 属性控制哪些组件被缓存。",
+    "difficulty": 3,
+    "tag": "keep-alive"
+  },
+  {
+    "chapter": "考点8：Vue框架",
+    "type": "judge",
+    "question": "在 Vue 3 中，通过 provide/inject 注入的任意值（包括普通字符串、数字等原始值）都会自动具备响应性，会随源数据的更新而更新。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "provide/inject 本身只负责跨层级传递数据，只有注入 ref、reactive 等响应式数据时，接收方才会随源数据更新。直接注入普通原始值并不具备响应性；此外实践中常配合 readonly 保护注入的数据不被后代组件擅自修改。",
+    "difficulty": 4,
+    "tag": "Provide/Inject"
+  }
+]

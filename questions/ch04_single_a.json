@@ -1,0 +1,392 @@
+[
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `const [a, , b] = [1, 2, 3];` 后，变量 a 和 b 的值分别是？",
+    "options": ["1 和 3", "1 和 2", "2 和 3", "1 和 undefined"],
+    "answer": "A",
+    "analysis": "数组解构按位置一一对应取值，中间的逗号位对应数组下标 1 的元素 2，使用空位跳过它。因此 a 取第一个元素 1，b 取第三个元素 3，选项 A 正确。",
+    "difficulty": 2,
+    "tag": "解构赋值"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `let x = 1, y = 2; [x, y] = [y, x];` 后，变量 x 和 y 的值分别是？",
+    "options": ["2 和 1", "1 和 2", "1 和 undefined", "2 和 2"],
+    "answer": "A",
+    "analysis": "右侧 `[y, x]` 会先求值得到新数组 [2, 1]，再按位置解构赋给左侧的 x 和 y，因此 x 得到 2、y 得到 1，实现了两个变量值的交换，无需借助临时变量。",
+    "difficulty": 2,
+    "tag": "解构赋值"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "函数 `function f({ a = 10 } = {}) { return a; }` 分别执行 `f({ a: 1 })` 和 `f(undefined)`，返回值依次是？",
+    "options": ["1 和 undefined", "1 和 10", "undefined 和 10", "10 和 10"],
+    "answer": "B",
+    "analysis": "传入 { a: 1 } 时解构得到 a = 1；传入 undefined 时会先触发参数默认值 {}，再对 {} 解构，因没有 a 属性而使用解构默认值 10。注意解构默认值只在属性不存在或值为 undefined 时生效。",
+    "difficulty": 3,
+    "tag": "解构赋值"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `const arr = [1, 2]; const copy = [...arr]; copy.push(3);` 后，变量 arr 的长度是？",
+    "options": ["3", "2", "1", "报错"],
+    "answer": "B",
+    "analysis": "扩展运算符 ... 对数组做的是浅拷贝，copy 是独立的新数组，对 copy 执行 push 不会影响原数组，arr 仍是 [1, 2]，长度为 2。",
+    "difficulty": 2,
+    "tag": "扩展运算符"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "`Math.max(...[3, 1, 2])` 的返回值是？",
+    "options": ["1", "2", "3", "NaN"],
+    "answer": "C",
+    "analysis": "扩展运算符把数组 [3, 1, 2] 展开为 3, 1, 2 三个独立参数传入 Math.max，因此返回最大值 3。若直接把数组整体传给 Math.max，数组会被转成字符串并得到 NaN。",
+    "difficulty": 2,
+    "tag": "扩展运算符"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "下列关于箭头函数 this 的说法，正确的是？",
+    "options": [
+      "箭头函数拥有自己独立的 this，且与调用方式无关",
+      "箭头函数的 this 在每次调用时按调用者动态绑定",
+      "箭头函数没有自己的 this，this 继承自定义时所在的外层作用域",
+      "箭头函数内的 this 永远指向 window，即使外层是对象方法"
+    ],
+    "answer": "C",
+    "analysis": "箭头函数不创建自己的 this、arguments，其 this 在定义时由外层作用域的词法环境决定，即继承外层 this，与调用方式无关，因此选项 C 正确；call/apply/bind 也无法改变箭头函数的 this。",
+    "difficulty": 3,
+    "tag": "箭头函数"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "下列关于箭头函数与构造函数的关系，说法正确的是？",
+    "options": [
+      "箭头函数可以被 new 调用，因为它本质上是函数",
+      "箭头函数可以作为构造函数使用，但需要手动返回对象",
+      "箭头函数可以用 new 调用，只是没有 prototype 属性",
+      "箭头函数不能作为构造函数，使用 new 调用会抛出 TypeError"
+    ],
+    "answer": "D",
+    "analysis": "箭头函数没有自己的 prototype 属性，也没有 [[Construct]] 内部方法，不能作为构造函数，用 new 调用会抛出 TypeError，选项 D 正确。",
+    "difficulty": 2,
+    "tag": "箭头函数"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "关于箭头函数，下列说法错误的是？",
+    "options": [
+      "箭头函数没有自己的 arguments 对象，只能访问外层函数的 arguments",
+      "箭头函数不能用作构造函数，也不能使用 new 调用",
+      "箭头函数的 this 由定义时的词法作用域决定，call、apply、bind 无法改变它",
+      "箭头函数可以通过 bind 永久改变其 this 指向，与普通函数一致"
+    ],
+    "answer": "D",
+    "analysis": "箭头函数的 this 在定义时已由外层作用域固定，bind、call、apply 只能传递参数、无法改变 this 指向，因此 D 的说法是错误的。A、B、C 均符合箭头函数的特性。",
+    "difficulty": 3,
+    "tag": "箭头函数"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "表达式 `Symbol('a') === Symbol('a')` 的求值结果是？",
+    "options": [
+      "false，因为每次调用 Symbol() 都会产生一个全新的唯一值",
+      "true，因为两个 Symbol 的描述相同",
+      "true，因为 Symbol 是基本类型，相同描述必然相等",
+      "false，但不保证，取决于 JavaScript 引擎的实现"
+    ],
+    "answer": "A",
+    "analysis": "Symbol 是唯一的原始值类型，即使传入相同的描述，每次调用 Symbol() 也会生成不同的值，因此严格相等比较返回 false。描述参数仅用于调试标识，不影响值的唯一性。",
+    "difficulty": 2,
+    "tag": "Symbol"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `const s1 = Symbol.for('key'); const s2 = Symbol.for('key');` 后，`s1 === s2` 的结果是？",
+    "options": [
+      "true，Symbol.for 会按 key 在全局注册表中查找并复用同一个 Symbol",
+      "false，Symbol.for 每次调用都会创建新的 Symbol",
+      "true，因为所有 Symbol 之间都相等",
+      "false，因为 Symbol.for 不能接收字符串参数"
+    ],
+    "answer": "A",
+    "analysis": "Symbol.for 与 Symbol 不同：它会在全局 Symbol 注册表中按给定的 key 查找，若已存在则直接返回该 Symbol，否则新建并登记，因此 s1 与 s2 是同一个值，结果为 true。",
+    "difficulty": 3,
+    "tag": "Symbol"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `const s = new Set([1, 1, 2, 3, 3]);` 后，`s.size` 的值是？",
+    "options": ["5", "3", "4", "2"],
+    "answer": "B",
+    "analysis": "Set 中的元素是唯一的，重复值会被自动去重，构造时传入的数组 [1, 1, 2, 3, 3] 去重后只剩 1、2、3 三个元素，因此 size 为 3。",
+    "difficulty": 1,
+    "tag": "Set"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "关于 Set，下列说法正确的是？",
+    "options": [
+      "Set 中的元素按字典序排序，方便查找",
+      "Set 中的元素是唯一的，并且按插入顺序遍历",
+      "Set 只能存储原始类型，不能存储对象",
+      "Set 的 add 方法返回布尔值，表示是否添加成功"
+    ],
+    "answer": "B",
+    "analysis": "Set 不允许重复元素（NaN 也按同一个值处理），且按元素的插入顺序遍历，选项 B 正确。Set 可以存储对象引用，add 方法返回 Set 本身而不是布尔值。",
+    "difficulty": 2,
+    "tag": "Set"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `const o = { x: 1 }; const s = new Set([o, o, { x: 1 }]);` 后，`s.size` 的值是？",
+    "options": ["1", "3", "2", "0"],
+    "answer": "C",
+    "analysis": "Set 以引用相等（严格相等）判断是否重复：o 两次加入指向同一对象，只保留一个；而 { x: 1 } 是另一个新建对象，即使内容相同也被视为不同元素，因此共 2 个元素。",
+    "difficulty": 3,
+    "tag": "Set"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "关于 Map，下列说法正确的是？",
+    "options": [
+      "Map 的键只能是字符串或 Symbol 类型",
+      "Map 的键会被隐式转换为字符串后再存储",
+      "Map 的键可以是对象、函数等任意类型的值",
+      "Map 的键只能是基本类型，不能是引用类型"
+    ],
+    "answer": "C",
+    "analysis": "Map 的键可以是任意值，包括对象、函数、原始类型，且不会像普通对象那样把键隐式转换为字符串，选项 C 正确；以对象作为键时按引用进行匹配。",
+    "difficulty": 2,
+    "tag": "Map"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `const m = new Map(); m.set('a', 1).set('a', 2);` 后，`m.size` 和 `m.get('a')` 的值分别是？",
+    "options": ["2 和 1", "1 和 1", "2 和 2", "1 和 2"],
+    "answer": "D",
+    "analysis": "Map 的键不允许重复，第二次 set 相同的键 'a' 会覆盖之前的值为 2，因此 size 仍为 1，get('a') 返回 2。set 方法返回 Map 本身，所以可以链式调用。",
+    "difficulty": 2,
+    "tag": "Map"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "已知 `name = 'Tom'`，模板字符串 `Hello, ${name.toUpperCase()}!` 的求值结果是？",
+    "options": ["Hello, Tom!", "Hello, name.toUpperCase()!", "Hello, Tom", "Hello, TOM!"],
+    "answer": "D",
+    "analysis": "模板字符串中 ${} 内可以书写任意 JavaScript 表达式并对其求值，name.toUpperCase() 返回 'TOM'，因此最终结果为 'Hello, TOM!'。",
+    "difficulty": 1,
+    "tag": "模板字符串"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "关于模板字符串，下列说法错误的是？",
+    "options": [
+      "模板字符串的 ${} 中只能插入变量，不能书写函数调用或运算表达式",
+      "模板字符串支持多行书写，换行符会原样保留在结果中",
+      "模板字符串的 ${} 内可以书写任意合法的 JavaScript 表达式",
+      "模板字符串内的大括号 { } 不需要转义，只有反引号和 ${} 需要特殊处理"
+    ],
+    "answer": "A",
+    "analysis": "${} 内可以使用任意表达式，包括函数调用、运算、三元表达式等，因此 A 的说法错误。B、C、D 均为模板字符串的正确特性。",
+    "difficulty": 3,
+    "tag": "模板字符串"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `const obj = null; const r = obj?.a?.b;` 后，变量 r 的值是？",
+    "options": ["null", "undefined", "抛出 TypeError", "空字符串"],
+    "answer": "B",
+    "analysis": "可选链 ?. 在左侧为 null 或 undefined 时会短路，直接返回 undefined 而不会继续访问后续属性，因此不会抛出 TypeError，r 的值为 undefined。",
+    "difficulty": 1,
+    "tag": "可选链"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "关于可选链 ?.，下列说法正确的是？",
+    "options": [
+      "可选链与普通属性访问完全等价，只是写法更短",
+      "可选链可以出现在赋值运算符的左侧，给可能不存在的对象属性赋值",
+      "当左侧为 null 或 undefined 时，?. 会短路返回 undefined，不会抛出 TypeError",
+      "可选链只能用于访问对象属性，不能用于调用方法"
+    ],
+    "answer": "C",
+    "analysis": "?. 在左侧为 null 或 undefined 时会短路，返回 undefined 且不再访问后续属性或调用方法，从而避免 TypeError，选项 C 正确。可选链不能用于赋值左侧，也能用于方法调用。",
+    "difficulty": 3,
+    "tag": "可选链"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `console.log(false || 'x', false ?? 'x');` 控制台输出的结果是？",
+    "options": ["x x", "false false", "false x", "x false"],
+    "answer": "D",
+    "analysis": "|| 判断的是值的真值性，false 为假值，所以返回右侧 'x'；?? 只判断值是否为 null 或 undefined，false 不属于二者，因此原样保留 false。输出依次为 'x' 和 false。",
+    "difficulty": 2,
+    "tag": "空值合并"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "下列关于 Promise 状态转换的说法，正确的是？",
+    "options": [
+      "Promise 状态只能从 pending 变为 fulfilled 或 rejected，一旦改变就不可逆转",
+      "Promise 可以先进入 fulfilled 状态，之后可以再变回 pending 状态",
+      "Promise 从 rejected 状态可以变回 pending 状态以重新执行",
+      "Promise 共有四种状态：pending、fulfilled、rejected 和 cancelled"
+    ],
+    "answer": "A",
+    "analysis": "Promise 只有 pending、fulfilled、rejected 三种状态，且状态只能由 pending 单向迁移到后两者，一旦确定就永久锁定、不可逆转，也不存在 cancelled 状态。",
+    "difficulty": 3,
+    "tag": "状态转换"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `new Promise((resolve) => { resolve(1); resolve(2); }).then((v) => console.log(v));` 控制台输出？",
+    "options": ["2", "1", "1 和 2", "抛出错误"],
+    "answer": "B",
+    "analysis": "Promise 状态一旦从 pending 变为 fulfilled 就锁定，之后再次调用 resolve 不会改变结果，因此第一个 resolve(1) 生效，控制台输出 1。",
+    "difficulty": 3,
+    "tag": "状态转换"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `new Promise((resolve, reject) => { throw new Error('x'); })` 后，该 Promise 最终处于什么状态？",
+    "options": [
+      "永远是 pending 状态",
+      "fulfilled 状态，值为 'x'",
+      "rejected 状态，拒绝原因为该错误",
+      "同步抛出异常，导致脚本立即终止"
+    ],
+    "answer": "C",
+    "analysis": "executor 函数中抛出的异常会被 Promise 自动捕获，并触发 reject 使 Promise 变为 rejected，而不会向外部同步抛出导致脚本终止。",
+    "difficulty": 3,
+    "tag": "状态转换"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `Promise.resolve(1).then((v) => v + 1).then((v) => console.log(v));` 控制台输出？",
+    "options": ["1", "undefined", "抛出错误", "2"],
+    "answer": "D",
+    "analysis": "then 回调的返回值会成为新 Promise 的兑现值，因此第一个 then 返回 2，第二个 then 接收 2 并输出。then 链会依次向下传递值。",
+    "difficulty": 2,
+    "tag": "链式调用"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `Promise.reject('err').catch((e) => console.log('catch:' + e)).then(() => console.log('done'));` 控制台输出的顺序是？",
+    "options": ["catch:err done", "done catch:err", "只输出 catch:err", "只输出 done"],
+    "answer": "A",
+    "analysis": "rejected 的 Promise 先被 catch 捕获并输出 'catch:err'；catch 回调正常返回后，其返回的新 Promise 变为 fulfilled，后续 then 继续执行并输出 'done'，因此顺序为 catch:err done。",
+    "difficulty": 3,
+    "tag": "链式调用"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `Promise.resolve(1).finally(() => console.log('f')).then((v) => console.log(v));` 控制台输出的顺序是？",
+    "options": ["1 f", "f 1", "只输出 1", "f f"],
+    "answer": "B",
+    "analysis": "finally 无论 Promise 成功还是失败都会执行，且不接收也不修改当前结果，只会把原结果透传给下游，因此先输出 'f'，then 再收到 1 并输出。",
+    "difficulty": 3,
+    "tag": "链式调用"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `async function f() { return await 1; } f().then((v) => console.log(v));` 控制台输出？",
+    "options": ["Promise {1}", "undefined", "1", "1 和 Promise"],
+    "answer": "C",
+    "analysis": "async 函数中 return await 1 会先等待 1（立即兑现）再返回，整个函数 resolve 为 1；调用方通过 then 取到值 1 并输出，因此结果为 1。",
+    "difficulty": 3,
+    "tag": "await"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `async function f() { return 'ok'; }` 后，调用 `f()` 的返回值是？",
+    "options": [
+      "字符串 'ok'",
+      "undefined",
+      "一个处于 pending 状态的 Promise",
+      "一个已兑现为 'ok' 的 Promise"
+    ],
+    "answer": "D",
+    "analysis": "async 函数的返回值无论是什么都会被包装成一个 Promise。返回普通值 'ok' 时，f() 返回的是状态为 fulfilled（兑现值为 'ok'）的 Promise，需要用 then 或 await 才能取出。",
+    "difficulty": 2,
+    "tag": "异步函数"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `async function f() { console.log(1); await null; console.log(2); } f(); console.log(3);` 控制台输出的顺序是？",
+    "options": ["1 3 2", "1 2 3", "3 1 2", "3 2 1"],
+    "answer": "A",
+    "analysis": "async 函数在遇到第一个 await 之前是同步执行的，因此先输出 1；遇到 await 后函数挂起，主线程继续输出 3；await 之后的代码作为微任务在同步代码结束后执行，输出 2，顺序为 1 3 2。",
+    "difficulty": 4,
+    "tag": "await"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `console.log(1); setTimeout(() => console.log(2), 0); Promise.resolve().then(() => console.log(3)); console.log(4);` 控制台输出的顺序是？",
+    "options": ["1 4 2 3", "1 4 3 2", "1 2 3 4", "4 1 3 2"],
+    "answer": "B",
+    "analysis": "同步代码先执行，输出 1、4；事件循环中微任务队列先于宏任务队列处理，Promise 的 then 回调输出的 3 先于 setTimeout 回调输出的 2，因此完整顺序为 1 4 3 2。即使 setTimeout 延迟为 0 也排在微任务之后。",
+    "difficulty": 4,
+    "tag": "事件循环"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `setTimeout(() => console.log('a'), 0); Promise.resolve().then(() => console.log('b')); Promise.resolve().then(() => console.log('c')); setTimeout(() => console.log('d'), 0);` 控制台输出的顺序是？",
+    "options": ["a b c d", "b a c d", "b c a d", "a d b c"],
+    "answer": "C",
+    "analysis": "两个 Promise 微任务按注册顺序先执行，输出 b、c；随后事件循环取出宏任务，两个 setTimeout 回调按入队顺序执行，输出 a、d，整体顺序为 b c a d。",
+    "difficulty": 4,
+    "tag": "事件循环"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `setTimeout(() => console.log(1), 0); new Promise((resolve) => { console.log(2); resolve(); }).then(() => console.log(3)); async function f() { console.log(4); await 0; console.log(5); } f(); console.log(6);` 控制台输出的顺序是？",
+    "options": ["2 4 3 6 5 1", "2 4 6 5 3 1", "6 2 4 3 5 1", "2 4 6 3 5 1"],
+    "answer": "D",
+    "analysis": "同步阶段依次输出 2（executor 同步执行）、4（f 内 await 之前）、6；await 与 then 产生的微任务按入队顺序执行，先 then 的 3 再 await 后续的 5；最后宏任务 setTimeout 输出 1，完整顺序为 2 4 6 3 5 1。",
+    "difficulty": 4,
+    "tag": "事件循环"
+  },
+  {
+    "chapter": "考点4：ES6+与异步编程",
+    "type": "single",
+    "question": "执行 `setTimeout(() => console.log(1), 0); console.log(2); async function f() { console.log(3); await Promise.resolve(); console.log(4); } f(); new Promise((r) => r()).then(() => console.log(5)); console.log(6);` 控制台输出的顺序是？",
+    "options": ["2 3 6 5 4 1", "2 3 4 5 6 1", "6 3 2 5 4 1", "2 3 6 4 5 1"],
+    "answer": "D",
+    "analysis": "同步代码先输出 2、3（await 之前）、6；await 的后续代码与 Promise 的 then 回调都是微任务，按入队先后输出 4、5；setTimeout 的回调作为宏任务最后执行输出 1，完整顺序为 2 3 6 4 5 1。",
+    "difficulty": 5,
+    "tag": "事件循环"
+  }
+]

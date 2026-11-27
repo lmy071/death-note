@@ -1,0 +1,222 @@
+[
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "执行 `typeof null` 得到的值是 \"object\"。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "typeof null 返回 \"object\"，这是 ES 规范中约定的历史遗留 bug，故选 A。因此判断是否为 null 应使用 v === null。",
+    "difficulty": 1,
+    "tag": "typeof"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "表达式 `0.1 + 0.2 === 0.3` 的结果为 true。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "浮点数采用二进制无法精确表示 0.1 与 0.2，二者相加实际上是 0.30000000000000004，不等于 0.3，结果为 false，故选 B。",
+    "difficulty": 2,
+    "tag": "浮点运算"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "在声明语句执行前访问 `let` 声明的变量会抛出 ReferenceError，这是因为暂时性死区的存在。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "let、const 存在暂时性死区，声明语句之前访问会抛出 ReferenceError，故选 A。这与 var 提升后访问得到 undefined 的行为不同。",
+    "difficulty": 2,
+    "tag": "暂时性死区"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "用 `var` 声明的变量具有块级作用域（花括号内外部不可见）。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "var 是函数作用域而非块级作用域，在 if/for 等块内用 var 声明，块外仍可访问，故选 B。块级作用域是 let 与 const 的特性。",
+    "difficulty": 1,
+    "tag": "var作用域"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "用 `const` 声明的对象变量，其对象内部的属性值可以被修改。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "const 只保证绑定不可重新赋值，对象内部属性不受限制，o.x = 2 合法；只有对变量整体赋值（如 o = {}）才报错，故选 A。",
+    "difficulty": 2,
+    "tag": "const"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "`[].push(1)` 的返回值是新数组的长度（即数字 1）。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "push 在数组末尾追加元素并返回新数组的长度，[].push(1) 返回 1，故选 A。与 pop 返回被删除元素不同，注意区分各数组方法的返回值。",
+    "difficulty": 2,
+    "tag": "数组push"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "只要闭包还存在，闭包捕获的外部函数变量就不会被垃圾回收。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "闭包通过作用域链条持有外部函数的变量引用，只要闭包本身仍可达，这些变量就保持可达、不会被回收，故选 A。这也是闭包能实现状态保持的原因。",
+    "difficulty": 3,
+    "tag": "闭包"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "`for...of` 可以直接遍历普通对象（如 `{a: 1}`）的键值。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "普通对象没有实现可迭代协议（Symbol.iterator），直接用 for...of 遍历会抛出 TypeError，故选 B。遍历对象键值应使用 for...in 或 Object.keys/entries。",
+    "difficulty": 2,
+    "tag": "for...of"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "严格模式下，普通函数独立调用时其内部 this 指向全局对象。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "严格模式下普通函数独立调用，this 不会被默认绑定为全局对象而是 undefined，故选 B。只有非严格模式下默认绑定才指向全局对象。",
+    "difficulty": 2,
+    "tag": "严格模式"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "箭头函数没有自己的 this，其 this 继承自定义时所处的外层词法作用域。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "箭头函数不绑定 this，它从外层词法作用域继承 this，且不受调用方式影响，call/apply/bind 也无法改变，故选 A。",
+    "difficulty": 2,
+    "tag": "箭头函数"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "`bind` 方法会立即执行函数，只是绑定 this。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "bind 不立即执行，它返回一个绑定了 this 与初始参数的新函数，需后续调用才执行，故选 B。立即执行且指定 this 的是 call/apply。",
+    "difficulty": 2,
+    "tag": "bind"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "数组的 `map` 方法会修改原数组。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "map 返回由回调返回值组成的新数组，不修改原数组，故选 B。需要修改原数组的是 push、splice、sort、reverse 等方法。",
+    "difficulty": 1,
+    "tag": "数组map"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "表达式 `null == undefined` 的结果为 true。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "按 ES 规范，null 与 undefined 在宽松相等 == 中相等，返回 true，故选 A。但严格相等 === 因类型不同而返回 false。",
+    "difficulty": 2,
+    "tag": "==与==="
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "数组的 `slice` 方法会修改原数组的内容。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "slice 返回原数组的浅拷贝片段（新数组），不修改原数组，故选 B。会修改原数组的是 splice，两者是高频易混点。",
+    "difficulty": 1,
+    "tag": "数组slice"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "`Object.prototype.toString.call([])` 与 `Object.prototype.toString.call({})` 的返回值相同。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "前者返回 \"[object Array]\"，后者返回 \"[object Object]\"，标记不同，故选 B。Object.prototype.toString 正是据此区分数组与普通对象。",
+    "difficulty": 2,
+    "tag": "Object.prototype.toString"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "表达式 `1 === '1'` 的结果为 true。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "严格相等 === 要求类型与值都相同，数字 1 与字符串 '1' 类型不同，结果为 false，故选 B。若用 == 才会做隐式转换并返回 true。",
+    "difficulty": 1,
+    "tag": "==与==="
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "`class` 声明的类存在暂时性死区，在声明前使用会报错。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "class 声明与 let 类似，存在暂时性死区，声明前访问类名会抛出 ReferenceError，故选 A。且类只能通过 new 调用，直接调用也会报错。",
+    "difficulty": 3,
+    "tag": "class"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "`Array.isArray([])` 的结果为 true，它可以跨 iframe 等环境正确判断数组。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "Array.isArray 不依赖当前全局的 Array 构造函数，跨 iframe 等不同执行环境也能正确识别数组，故选 A。这是它优于 instanceof 的地方。",
+    "difficulty": 3,
+    "tag": "Array.isArray"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "用 `JSON.parse(JSON.stringify(obj))` 做深拷贝时，对象中的函数属性会被完整保留。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "JSON.stringify 会忽略值为函数、undefined、Symbol 的属性，因此函数属性会在拷贝中被丢弃，故选 B。需要保留函数时应使用递归拷贝等方案。",
+    "difficulty": 2,
+    "tag": "深拷贝"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "已经绑定的 DOM 事件监听器在元素被移除后无需手动解绑，一定不会造成内存泄漏。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "如果监听器或其闭包持有 DOM 元素的引用，元素被移除后仍可能因引用未被释放而造成内存泄漏，故选 B。现代浏览器对无引用场景可自动回收，但长期存活的对象引用 DOM 时，手动解绑仍是必要实践。",
+    "difficulty": 3,
+    "tag": "内存泄漏"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "使用 `new Person()` 调用构造函数时，函数内部的 this 指向新创建的对象实例。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "new 操作符会创建新对象并把构造函数内的 this 指向它，随后绑定原型并返回，故选 A。这正是 new 绑定规则的含义。",
+    "difficulty": 2,
+    "tag": "this绑定"
+  },
+  {
+    "chapter": "考点3：JavaScript语言核心",
+    "type": "judge",
+    "question": "用 `delete` 运算符可以删除用 `var` 声明的全局变量。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "var 声明的变量其属性特性为不可删除（[[Configurable]] 为 false），delete 无法删除，非严格模式下返回 false，严格模式下直接报错，故选 B。delete 只能删除对象上可配置的属性。",
+    "difficulty": 3,
+    "tag": "delete"
+  }
+]

@@ -1,0 +1,332 @@
+[
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "下列关于 HTML5 语义化标签的说法，正确的有（　）。",
+    "options": [
+      "A、header 标签只能出现在页面最顶部，一个页面中只能有一个 header",
+      "B、nav 标签用于定义页面的导航链接集合",
+      "C、article 标签用于表示独立、可分发或可复用的内容单元，如一篇博文、一条新闻",
+      "D、footer 标签只能放在页面最底部，一个页面只能有一个 footer"
+    ],
+    "answer": "BC",
+    "analysis": "header 与 footer 是页面或区块的页眉、页脚，section、article 等内部都可以有自己的 header 和 footer，并非全页只能有一个，A、D 错误。nav 专用于导航链接集合，article 表示可独立分发的内容单元，语义清晰。",
+    "difficulty": 2,
+    "tag": "语义化标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "语义化标记对无障碍访问（可访问性）的意义，下列说法正确的有（　）。",
+    "options": [
+      "A、屏幕阅读器等辅助技术可以依据标签语义，为视障用户朗读出正确的页面结构与角色",
+      "B、良好的语义让页面在 CSS 失效时仍保持合理的文档顺序，便于线性朗读与理解",
+      "C、使用语义化标签后，开发者就无需再关注键盘可达性等交互无障碍问题",
+      "D、使用语义化标签后，浏览器会自动为页面添加键盘导航和焦点管理功能"
+    ],
+    "answer": "AB",
+    "analysis": "语义化标签自带语义角色（如 nav、main），辅助技术可直接读取，从而减少对 ARIA 的依赖；文档顺序在无样式时依然合理，是无障碍的重要内容。C、D 错误：语义化不代替键盘交互的实现，浏览器也不会自动添加焦点管理。",
+    "difficulty": 1,
+    "tag": "无障碍"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 HTML5 的 main 元素，下列说法正确的有（　）。",
+    "options": [
+      "A、一个页面通常只应包含一个可见的 main 元素",
+      "B、main 可以嵌套在 article、aside、footer、header、nav 等元素内部",
+      "C、main 中的内容不应包含全站重复的导航、侧边栏等页面级公共内容",
+      "D、为了布局灵活，页面中可以出现多个 main 元素分别服务不同区块"
+    ],
+    "answer": "AC",
+    "analysis": "main 表示页面主体内容，规范要求一个页面只能有一个可见的 main，且不应嵌套在 article、aside、footer 等元素内部，B 错误。main 承载页面独有的内容，全站重复的导航等不应放入其中；页面出现多个 main 不符合规范，D 错误。",
+    "difficulty": 3,
+    "tag": "语义化标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 meta 标签的使用，下列说法正确的有（　）。",
+    "options": [
+      "A、charset 声明（如 meta charset=\"UTF-8\"）应尽量放在 head 靠前的位置，保证文档被正确解析",
+      "B、name=\"keywords\" 的 meta 是每个页面的必填项，缺省会影响功能运行",
+      "C、name=\"viewport\" 的 meta 用于移动端视口配置，如 width=device-width",
+      "D、name=\"description\" 可提供页面描述，常被搜索引擎用作结果摘要"
+    ],
+    "answer": "ACD",
+    "analysis": "charset 声明越靠前，越能避免解析器在文档前 1024 字节内猜测字符编码出错；viewport meta 是移动端适配的基础配置；description meta 常被用作搜索结果摘要。B 错误：keywords 并非必填项，缺省不会影响功能，且标准要求 meta 放在 head 中。",
+    "difficulty": 2,
+    "tag": "meta元信息"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 title 标签的作用，下列说法正确的有（　）。",
+    "options": [
+      "A、title 的内容会显示在浏览器标签页或窗口标题上",
+      "B、title 的内容通常作为搜索引擎结果页中的页面标题，也用于辅助技术的页面朗读",
+      "C、title 中的文字会被渲染为页面正文的第一段内容",
+      "D、搜索引擎完全忽略 title 标签的内容"
+    ],
+    "answer": "AB",
+    "analysis": "title 是 head 中重要的元信息：既显示在浏览器标签页/窗口标题上，也是搜索引擎结果标题和无障碍朗读时的页面名称。title 的文字不会作为正文渲染，C 错误；搜索引擎会抓取并展示 title 内容，D 错误。",
+    "difficulty": 1,
+    "tag": "title元信息"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于移动端 viewport 适配，下列说法正确的有（　）。",
+    "options": [
+      "A、写好 viewport 标签后即可自动解决所有移动端适配问题，无需其他布局手段",
+      "B、不设置 viewport 时，移动浏览器通常按约 980px 的默认宽度渲染页面，导致内容被缩小",
+      "C、设置 meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" 可使布局视口宽度等于设备屏幕宽度",
+      "D、移动端适配还需配合 rem、媒体查询、弹性布局等手段"
+    ],
+    "answer": "BCD",
+    "analysis": "viewport 让页面宽度与设备宽度一致，并控制初始缩放；未配置时移动端会按较宽的默认视口（常见约 980px）渲染再缩小，影响阅读体验。C、B 均符合该机制。A 错误：适配还需结合 rem、媒体查询、弹性布局等手段，viewport 并非万能。",
+    "difficulty": 3,
+    "tag": "viewport"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 script 标签的 defer 属性，下列说法正确的有（　）。",
+    "options": [
+      "A、defer 脚本会在 HTML 文档解析完成后、DOMContentLoaded 事件触发前执行",
+      "B、多个 defer 外部脚本会按照在文档中出现的顺序依次执行",
+      "C、给内联脚本（无 src）添加 defer 属性，同样能实现延迟执行",
+      "D、defer 脚本在下载和执行过程中都会阻塞 HTML 解析"
+    ],
+    "answer": "AB",
+    "analysis": "defer 使外部脚本在后台下载、不阻塞解析，并在文档解析完成后按文档顺序于 DOMContentLoaded 之前执行。C 错误：defer 只对外部脚本（带 src）生效，内联脚本的 defer 属性会被忽略。D 错误：defer 的核心价值正是下载与执行都不阻塞 HTML 解析。",
+    "difficulty": 3,
+    "tag": "script加载"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 script 标签的 async 属性，下列说法正确的有（　）。",
+    "options": [
+      "A、async 外部脚本在下载期间不会阻塞 HTML 解析",
+      "B、多个 async 脚本会保证按文档顺序执行",
+      "C、async 脚本适合相互独立、不依赖 DOM 的脚本，如第三方统计脚本",
+      "D、async 脚本下载完成后会尽快执行，其执行可能跨过 DOMContentLoaded 事件"
+    ],
+    "answer": "ACD",
+    "analysis": "async 使脚本在下载期间不阻塞解析，但下载完成后立即执行，因此多个 async 脚本的执行顺序取决于加载完成的先后，无法保证按文档顺序，B 错误。async 适合独立、无依赖的脚本；由于执行时机不确定，可能跨过 DOMContentLoaded。",
+    "difficulty": 4,
+    "tag": "script加载"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 defer 与 async 两种脚本加载方式的比较，下列说法正确的有（　）。",
+    "options": [
+      "A、defer 与 async 的脚本在下载期间都不会阻塞 HTML 解析",
+      "B、defer 保证多个脚本按文档顺序执行，async 不保证执行顺序",
+      "C、async 脚本一定会在 DOMContentLoaded 事件触发之前执行完毕",
+      "D、defer 脚本要等到页面所有资源加载完成、load 事件触发之后才执行"
+    ],
+    "answer": "AB",
+    "analysis": "defer 与 async 的下载都不阻塞解析，区别在执行时机与顺序：defer 延后到解析完成且按文档顺序执行，async 下载完即执行、顺序不保证，A、B 正确。C 错误：async 脚本可能跨过 DOMContentLoaded。D 错误：defer 脚本在 DOMContentLoaded 之前、load 事件之前执行。",
+    "difficulty": 4,
+    "tag": "script加载"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 type=\"module\" 的脚本，下列说法正确的有（　）。",
+    "options": [
+      "A、module 脚本默认延迟执行，行为类似 defer，不阻塞解析且在 DOMContentLoaded 前按顺序执行",
+      "B、module 脚本内的代码默认处于严格模式",
+      "C、module 脚本支持 import 与 export 语法，并拥有独立模块作用域",
+      "D、不支持 ES Module 的浏览器会自动把 module 脚本当作普通脚本执行"
+    ],
+    "answer": "ABC",
+    "analysis": "module 脚本天然具备延迟执行特性（相当于默认 defer），模块内默认严格模式，支持 import/export，并拥有独立模块作用域。D 错误：不支持 ES Module 的浏览器会直接忽略 module 脚本，若需兼容应额外提供带 nomodule 属性的回退脚本。",
+    "difficulty": 3,
+    "tag": "module脚本"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 localStorage 的特性，下列说法正确的有（　）。",
+    "options": [
+      "A、localStorage 中的数据会持久保存，除非主动清除或用户清理浏览器数据",
+      "B、localStorage 中的数据会随每个 HTTP 请求自动发送到服务器",
+      "C、localStorage 的存储容量很大，通常可达数百 MB，基本无限制",
+      "D、localStorage 的数据在同一源（协议、域名、端口均相同）下共享"
+    ],
+    "answer": "AD",
+    "analysis": "localStorage 是 HTML5 的本地持久化存储，键值对形式、按源隔离、无过期时间，A、D 正确。B 错误：随请求自动发送到服务器的是 Cookie，localStorage 中的数据不会进入 HTTP 请求。C 错误：localStorage 单源容量通常约为 5MB，并非无限制。",
+    "difficulty": 2,
+    "tag": "localStorage"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 localStorage 与 sessionStorage 的区别，下列说法正确的有（　）。",
+    "options": [
+      "A、sessionStorage 的数据在标签页关闭后被清除",
+      "B、localStorage 的数据会在关闭浏览器或标签页时立即被清除",
+      "C、localStorage 与 sessionStorage 都遵循同源策略，只能访问同一源的数据",
+      "D、两者的数据都会在每次 HTTP 请求时自动发送到服务器"
+    ],
+    "answer": "AC",
+    "analysis": "sessionStorage 的生命周期绑定单个标签页，页面关闭即失效；localStorage 持久保留，关闭浏览器不会清除其数据，B 错误；两者均按源隔离，C 正确。D 错误：Web Storage 的数据只保存在客户端，不会随请求发送给服务器，这是与 Cookie 的重要区别。",
+    "difficulty": 2,
+    "tag": "Web存储"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 HTML5 Web Storage 的使用，下列说法正确的有（　）。",
+    "options": [
+      "A、localStorage 与 sessionStorage 均以键值对形式存储，且值都是字符串",
+      "B、要存储对象等非字符串数据，需要先经过 JSON.stringify 序列化，读取时再解析",
+      "C、Cookie 的单条容量（约 4KB）远小于 localStorage 的容量",
+      "D、Web Storage 可以用于存储任意大小的二进制文件数据"
+    ],
+    "answer": "ABC",
+    "analysis": "Web Storage 的值必须是字符串，存对象需序列化，这是使用时的常见要点，A、B 正确。C 正确：Cookie 单条约 4KB，容量远小于 localStorage 的约 5MB。D 错误：Web Storage 存字符串且容量有限，不适合存大体积二进制文件。",
+    "difficulty": 3,
+    "tag": "Web存储"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于浏览器解析 HTML 文档的过程，下列说法正确的有（　）。",
+    "options": [
+      "A、HTML 解析器把文档中的标记转换为 DOM 树节点，逐步构建 DOM 树",
+      "B、遇到没有 defer/async 属性的外部脚本时，会暂停解析，先下载并执行该脚本",
+      "C、CSS 被解析为 CSSOM，最终与 DOM 合并以形成渲染所需的渲染树",
+      "D、script 标签在文档中的位置不会影响 DOMContentLoaded 事件的触发时机"
+    ],
+    "answer": "ABC",
+    "analysis": "浏览器解析 HTML 构建 DOM，同步脚本会阻塞解析，CSS 构建 CSSOM 后与 DOM 合成渲染树，这是文档解析流程的基本环节。D 错误：脚本位置直接影响解析进度——阻塞脚本会延后 DOMContentLoaded，defer 脚本则保证在其之前执行。",
+    "difficulty": 4,
+    "tag": "文档解析"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于浏览器的默认样式（User Agent 样式），下列说法正确的有（　）。",
+    "options": [
+      "A、body 元素默认带有一定的 margin（各浏览器具体值不同）",
+      "B、多数浏览器默认给 ul、ol 等列表设置内边距以及 list-style 样式",
+      "C、浏览器默认将 h1～h6 显示为加粗，且字号逐级递减",
+      "D、所有浏览器的默认样式完全一致，因此无需编写任何样式重置"
+    ],
+    "answer": "ABC",
+    "analysis": "浏览器（User Agent）会为元素提供默认样式：body 默认 margin、列表默认缩进与符号、标题默认加粗且字号递减等，A、B、C 正确。D 错误：不同浏览器、不同版本的默认样式存在差异，因此项目中常借助 reset.css 或 Normalize.css 统一基准。",
+    "difficulty": 2,
+    "tag": "默认样式"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 HTML 文档的基本结构，下列说法正确的有（　）。",
+    "options": [
+      "A、<!DOCTYPE html> 声明可以省略，浏览器会自动采用标准模式解析文档",
+      "B、html 是文档的根元素，内部包含 head 与 body 两部分",
+      "C、link 标签用于引入外部资源（如样式表），应放在 head 中",
+      "D、title、meta 等元信息应放在 head 中，而非 body 中"
+    ],
+    "answer": "BCD",
+    "analysis": "DOCTYPE 声明必须写在文档最开头，缺失时浏览器会以怪异模式（quirks mode）解析，默认样式与盒模型行为都可能异常，A 错误。html 为根元素，head 承载元信息（title、meta、link 等），body 承载正文内容，B、C、D 正确。",
+    "difficulty": 2,
+    "tag": "文档结构"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 HTML 安全规范，下列说法正确的有（　）。",
+    "options": [
+      "A、将用户输入的内容插入页面时，应对特殊字符进行 HTML 转义，以防止 XSS 注入",
+      "B、生产环境中应避免使用 innerHTML 向页面插入不可信的动态数据",
+      "C、XSS 只会通过 URL 参数产生，表单提交的数据不会引发 XSS",
+      "D、只要数据经过了数据库的存取，再插入页面就一定是安全的"
+    ],
+    "answer": "AB",
+    "analysis": "XSS 防御的关键是对不可信内容在输出到 HTML 时进行编码转义，并避免用 innerHTML 直接插入动态数据，A、B 正确。C 错误：XSS 可发生在任何输出点，表单提交的数据同样可能携带恶意内容。D 错误：数据来源与传输过程都不能保证其内容安全，必须按输出场景处理。",
+    "difficulty": 3,
+    "tag": "XSS与安全"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "下列做法中，属于有效防御 XSS 攻击的有（　）。",
+    "options": [
+      "A、在把用户内容写入 HTML 时对 & < > \" ' 等字符进行编码转义",
+      "B、插入纯文本时优先使用 textContent 而不是 innerHTML",
+      "C、为站点配置合理的 Content-Security-Policy（CSP），限制脚本来源",
+      "D、为网站启用 HTTPS 加密传输，即可完全杜绝 XSS 攻击"
+    ],
+    "answer": "ABC",
+    "analysis": "输出编码、避免 innerHTML、配置 CSP 都是公认的 XSS 防御手段，分别从数据编码与脚本执行两个层面降低注入风险，A、B、C 正确。D 错误：HTTPS 解决的是传输加密与防篡改，无法阻止注入到页面中的恶意脚本执行。",
+    "difficulty": 4,
+    "tag": "XSS与安全"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 HTML5 新增标签的语义，下列说法正确的有（　）。",
+    "options": [
+      "A、figure 与 figcaption 配合使用，用于表示图表、插图等独立成块的内容及其标题",
+      "B、time 标签可以配合 datetime 属性提供机器可读的时间格式，便于解析与无障碍访问",
+      "C、mark 标签用于对整段文字加粗，表示重点强调",
+      "D、details 标签提供可展开/折叠的交互内容，通常配合 summary 使用"
+    ],
+    "answer": "ABD",
+    "analysis": "figure/figcaption 表示独立的引用内容与标题；time 的 datetime 属性提供机器可读时间；details 通常配合 summary 实现折叠内容，A、B、D 正确。C 错误：mark 表示高亮标记，语义上区别于表示强调的 strong，并非简单地对整段文字加粗。",
+    "difficulty": 3,
+    "tag": "语义化标签"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 alt 属性与无障碍访问，下列说法正确的有（　）。",
+    "options": [
+      "A、img 的 alt 属性为图片提供替代文本，屏幕阅读器会将其朗读给视障用户",
+      "B、对于纯装饰性的图片，可以将 alt 设为空字符串（alt=\"\"），让辅助技术直接跳过",
+      "C、图片加载失败时，浏览器会在原位置显示 alt 文本",
+      "D、video、audio 等多媒体元素无法提供任何形式的文字替代内容"
+    ],
+    "answer": "ABC",
+    "analysis": "alt 提供图片的替代描述，是图片无障碍的基础；装饰性图片用空 alt 可避免无意义朗读；图片加载失败时浏览器会显示 alt 文本，A、B、C 正确。D 错误：video/audio 可通过 track 元素（字幕、描述）或旁白提供替代内容。",
+    "difficulty": 2,
+    "tag": "无障碍"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于 HTML5 存储的安全使用，下列说法正确的有（　）。",
+    "options": [
+      "A、localStorage 适合用于明文存放口令、令牌等敏感信息",
+      "B、存储在 localStorage 中的内容可能被 XSS 窃取，需要配合转义、CSP 等手段防御",
+      "C、localStorage 中的数据在浏览器端默认明文存储，没有加密保护",
+      "D、敏感信息建议放在 httpOnly Cookie 或服务端会话中，避免客户端脚本读取"
+    ],
+    "answer": "BCD",
+    "analysis": "localStorage 数据对同源脚本完全可见且默认明文存储，存放口令、Token 等敏感信息风险很高，A 错误，C 正确。XSS 可直接读取存储内容，因此需结合转义与 CSP 防御，B 正确；敏感信息应放入 httpOnly Cookie 或服务端会话，D 正确。",
+    "difficulty": 3,
+    "tag": "存储安全"
+  },
+  {
+    "chapter": "考点1：HTML与语义化标记",
+    "type": "multiple",
+    "question": "关于表单标签及其无障碍语义，下列说法正确的有（　）。",
+    "options": [
+      "A、label 的 for 属性与控件的 id 关联后，点击 label 文字可以聚焦对应控件",
+      "B、使用 fieldset 与 legend 对表单控件进行分组，对屏幕阅读器理解表单结构没有帮助",
+      "C、表单控件不在 form 元素内部也能正常渲染显示",
+      "D、所有 input 控件都必须与 button 控件配套使用"
+    ],
+    "answer": "AC",
+    "analysis": "label 通过 for/id 与控件建立关联，既能扩大点击命中区域，也让辅助技术能读出控件的提示文字，A 正确。B 错误：fieldset/legend 对相关控件分组，恰恰有助于屏幕阅读器理解表单结构。C 正确：控件不放在 form 内也能正常渲染，只是无法参与该表单的提交；D 错误：input 与 button 并无必然配套关系。",
+    "difficulty": 3,
+    "tag": "表单语义"
+  }
+]

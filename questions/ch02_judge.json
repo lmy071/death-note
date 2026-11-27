@@ -1,0 +1,222 @@
+[
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "两个类选择器 .a 与 .b 同时作用于同一元素，选择器 .a.b 的优先级比单独 .a 或 .b 更高。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": ".a.b 包含两个类选择器，权重为 (0,0,2,0)，大于单个类选择器的 (0,0,1,0)，因此优先级更高。",
+  "difficulty": 3,
+  "tag": "优先级"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "HTML 中 ID 选择器的优先级一定高于十个类选择器叠加的优先级。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "特异性按层级比较：ID 层 (0,1,0,0) 高于类层，因此一个 ID 选择器的优先级高于任意多个类选择器叠加（类层数量再多也不会超过 ID 层级）。",
+  "difficulty": 3,
+  "tag": "优先级"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "!important 声明可以覆盖同为 !important 但来源为更低优先级的声明。",
+  "options": ["正确", "错误"],
+  "answer": "B",
+  "analysis": "在两条都是 !important 的声明之间，仍要按来源（浏览器、用户、作者）和特异性比较优先级，并非所有 !important 一律平级比较书写顺序。",
+  "difficulty": 4,
+  "tag": "层叠"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "box-sizing: content-box 是盒模型默认值，此时 width 指定的是内容区宽度。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "规范规定 box-sizing 默认值为 content-box，width 只包含内容区域，padding 和 border 在宽度之外累加。",
+  "difficulty": 1,
+  "tag": "盒模型"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "一个元素设置了 border 与 padding 之后，box-sizing: border-box 和 content-box 下最终渲染宽度可能不同。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "当元素有内边距或边框时，两种盒模型对 width 的解释不同：content-box 在内容外追加 padding 与 border，border-box 则把 padding 与 border 计入 width，因此最终渲染宽度通常不同。",
+  "difficulty": 1,
+  "tag": "盒模型"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "position: static 是 position 属性的默认值，此时 top、left 等偏移属性依然有效。",
+  "options": ["正确", "错误"],
+  "answer": "B",
+  "analysis": "static 是默认定位方式，但 static 元素上的 top/left/right/bottom 与 z-index 都不会生效；需设置为 relative/absolute 等定位方式后偏移属性才有意义。",
+  "difficulty": 1,
+  "tag": "定位"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "position: relative 的元素偏移后会脱离文档流，周围的元素会填补它原来的位置。",
+  "options": ["正确", "错误"],
+  "answer": "B",
+  "analysis": "relative 偏移不会使元素脱离文档流，元素原本占据的空间依然保留，周围元素不会移动；脱离文档流是 absolute 与 fixed 的行为。",
+  "difficulty": 2,
+  "tag": "定位"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "当父元素设置了浮动的子元素后，父元素高度通常会发生塌陷，需要清除浮动来处理。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "浮动元素脱离文档流，父容器无法根据浮动子元素计算高度，出现高度塌陷；通过 clear、BFC、伪元素清除浮动等方式恢复父容器高度。",
+  "difficulty": 1,
+  "tag": "浮动"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "overflow: visible 可以触发块级格式化上下文（BFC）。",
+  "options": ["正确", "错误"],
+  "answer": "B",
+  "analysis": "只有 overflow 取值为非 visible 的值（hidden、auto、scroll、clip 等）才会触发 BFC，visible 是默认值且不会创建 BFC。",
+  "difficulty": 2,
+  "tag": "BFC"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "两个相邻元素的垂直外边距会发生折叠，取两者中的较大值。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "普通块级流中相邻兄弟的垂直 margin 会折叠，当两个值为正时取较大者；水平 margin 不会折叠。",
+  "difficulty": 2,
+  "tag": "盒模型"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "Flex 容器的子元素如果没有设置宽度，默认会全部等宽排列。",
+  "options": ["正确", "错误"],
+  "answer": "B",
+  "analysis": "Flex 子元素默认按内容宽度排列，flex-basis 默认 auto，并不会自动等宽；只有显式设置 flex: 1 或等宽 flex-basis 等后才会平分空间。",
+  "difficulty": 2,
+  "tag": "Flexbox"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "再设置 justify-content: center 后，主轴方向上的子元素会居中排列。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "justify-content 控制主轴方向的对齐方式，center 让项目在主轴居中；交叉轴居中需要 align-items 或 align-content。",
+  "difficulty": 1,
+  "tag": "Flexbox"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "flex: 1 等价于 flex: 1 1 0%。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "按规范，当 flex 简写只写一个数字时，flex-grow 取该值，flex-shrink 取 1，flex-basis 取 0%，即 flex: 1 1 0%。",
+  "difficulty": 4,
+  "tag": "Flexbox"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "Grid 布局中，grid-template-areas 定义的区域名还可以用小数点表示空单元格。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "在 grid-template-areas 的字符串中，连续的点号（.）代表空单元格，区域名用任意非空白标识符表示，重复出现的名称表示该区域跨多格。",
+  "difficulty": 4,
+  "tag": "Grid"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "在 Grid 布局中，1fr 表示固定宽度 1 像素的轨道。",
+  "options": ["正确", "错误"],
+  "answer": "B",
+  "analysis": "fr 是弹性单位，表示按比例分配容器剩余空间，并非固定像素值；1fr 与 2fr 搭配时空间按 1:2 分配。",
+  "difficulty": 1,
+  "tag": "Grid"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "绝对定位的元素设置了四个方向的偏移值，即使不指定宽高也会被拉伸铺满定位祖先。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "当 absolute 元素同时设置 top 与 bottom（或 left 与 right）且未指定对应方向尺寸时，会被拉伸填充定位祖先的对应空间；这是固定弹层铺满的常用做法。",
+  "difficulty": 3,
+  "tag": "定位"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "z-index 必须配合 position 属性使用，普通 static 元素设置 z-index 没有作用。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "static 元素无法通过 z-index 参与层叠排序；z-index 需要配合定位元素或 flex/grid 项目等场景才有意义。",
+  "difficulty": 2,
+  "tag": "层叠上下文"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "父元素设置 opacity: 0.5 后，其子元素会整体产生透明效果，即使子元素自身 opacity 为 1。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "opacity 作用于整个元素及其所有子内容，子元素无法单独突破父元素的透明度；0.5 的父透明度会让内容整体半透明。",
+  "difficulty": 2,
+  "tag": "层叠上下文"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "CSS 自定义属性（变量）是运行时求值的，JS 也可以通过 getPropertyValue 读取。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "自定义属性在计算阶段解析并支持继承与 var() 引用，可以使用 getComputedStyle 配合 getPropertyValue 读取，也可以使用 setProperty 动态修改。",
+  "difficulty": 3,
+  "tag": "CSS变量"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "rem 单位相对于当前元素的 font-size 计算。",
+  "options": ["正确", "错误"],
+  "answer": "B",
+  "analysis": "rem 是 root em 的缩写，相对根元素 html 的 font-size 计算，与当前元素或父元素无关；相对父元素字号的是 em。",
+  "difficulty": 1,
+  "tag": "单位"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "媒体查询中，max-width 表示视口宽度超过该值即失效，min-width 表示不小于该值即生效。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "max-width: 600px 表示宽度不超过 600px 时匹配，min-width: 600px 表示不小于 600px 时匹配，两者经常成对用于不同断点的样式拆分。",
+  "difficulty": 2,
+  "tag": "响应式"
+},
+{
+  "chapter": "考点2：CSS基础与布局",
+  "type": "judge",
+  "question": "animation 简写属性中，时长必须写在延迟之前，如 animation: fadeIn 1s 0.5s。",
+  "options": ["正确", "错误"],
+  "answer": "A",
+  "analysis": "animation 简写中 duration 在前、delay 在后，二者的顺序约定与 transition 一致；如果写成 0.5s 1s 则会被解析为时长 0.5s、延迟 1s。",
+  "difficulty": 4,
+  "tag": "动画"
+}
+]

@@ -1,0 +1,222 @@
+[
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "document.querySelectorAll() 返回的是静态的 NodeList，而 getElementsByClassName() 返回的是动态的 HTMLCollection，后者会随 DOM 的变化实时更新。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "querySelectorAll 在调用时对匹配结果做一次快照，之后的 DOM 变更不会反映在其中，因此是静态集合；getElementsByClassName 返回的 HTMLCollection 是 live 集合，文档变化时集合内容会自动同步更新。二者返回类型不同，静态与动态的区分是 DOM 查询的常考点。",
+    "difficulty": 2,
+    "tag": "DOM查询"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "元素节点的 offsetWidth 属性表示元素的内容宽度加内边距再加边框宽度，但不包含外边距。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "offsetWidth 是元素布局占用的实际宽度，等于 content 加 padding 加 border，与 box-sizing 无关，且从不包含 margin。与之对比，clientWidth 不含边框，scrollWidth 还包含溢出内容，区分这几个尺寸属性是高频考点。",
+    "difficulty": 2,
+    "tag": "offset属性"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "元素的 scrollTop 属性表示内容顶部被卷去的高度，它既可以读取，也可以通过赋值来改变滚动位置。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "scrollTop 返回元素内容在垂直方向被卷去的像素值，是可读写的属性；给 scrollTop 赋值即可实现回到顶部、滚动定位等效果。结合 offsetTop 计算元素到文档顶部的距离也是常见用法。",
+    "difficulty": 2,
+    "tag": "scroll属性"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "在事件处理函数中调用 e.stopPropagation() 只会阻止事件继续向其他节点传播，不会阻止当前元素上绑定的其他同类型监听器执行。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "stopPropagation 阻止事件在冒泡或捕获阶段继续传到其他节点，但当前节点上已绑定的其他监听器仍会照常执行。若要连当前元素上的其余监听器也一并阻止，需要使用 stopImmediatePropagation 方法。",
+    "difficulty": 4,
+    "tag": "事件对象"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "事件委托的核心原理是利用事件的冒泡机制，把子元素的事件处理逻辑统一挂到它们的共同祖先元素上。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "事件会从目标元素逐级冒泡到祖先节点，因此只需在祖先元素上监听一次，再通过 event.target 判断实际触发者即可。这样既能减少监听器数量、降低内存占用，又能覆盖动态新增的子元素。",
+    "difficulty": 2,
+    "tag": "事件委托"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "采用事件委托后，通过 appendChild 等操作动态新增的子元素无需重新绑定事件，也能被祖先元素上的委托监听器处理。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "由于监听器绑定在祖先元素上，而子元素的点击事件会冒泡到祖先，所以动态添加的子元素天然能被同一监听器捕获。这正是事件委托相比逐个绑定的重要优势，适合列表、表格等频繁增删的场景。",
+    "difficulty": 3,
+    "tag": "事件委托"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "事件对象上的 stopImmediatePropagation() 方法既能阻止事件继续传播，又能阻止当前节点上其余同类型监听器的执行。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "stopImmediatePropagation 是 stopPropagation 的加强版，它同时具备阻止传播和阻止当前元素剩余监听器两个效果。若同一元素绑定了多个同类型监听器，调用该方法后排在后面的监听器将不会再执行。",
+    "difficulty": 4,
+    "tag": "事件对象"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "setTimeout 的返回值是一个数字类型的定时器 ID，把它传给 clearTimeout 可以取消对应的定时任务。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "在浏览器环境中 setTimeout 和 setInterval 都会返回一个正整数形式的定时器 ID，clearTimeout 与 clearInterval 接收该 ID 即可取消定时任务。定时器 ID 互不重复，同一 ID 只能取消其对应的那一个定时器。",
+    "difficulty": 1,
+    "tag": "定时器"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "调用 location.reload() 会重新加载当前页面，效果等同于用户点击浏览器的刷新按钮。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "location.reload() 根据参数决定是否强制从服务器重新获取资源，不带参数时走浏览器的普通刷新逻辑。它是 BOM 中 location 对象常用的页面控制方法，此外 location.href、location.replace 等也能改变当前页面。",
+    "difficulty": 1,
+    "tag": "location对象"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "navigator.userAgent 属性可以获取客户端的用户代理字符串，开发者常据此粗略判断浏览器类型和版本。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "userAgent 字符串包含浏览器名称、版本、内核及操作系统等信息，是 UA 嗅探的基础。不过该字符串可以被用户修改或伪装，实际项目中更推荐用特性检测（如判断 API 是否存在）来替代 UA 判断。",
+    "difficulty": 1,
+    "tag": "navigator对象"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "使用 addEventListener 可以在同一个元素上为同一事件绑定多个监听器，这些监听器会按照绑定的先后顺序依次执行。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "addEventListener 允许同元素同事件注册多个处理函数，且互不覆盖，触发时按注册顺序调用。这一点与直接赋值 onclick 只能保留最后一个处理函数不同，是 addEventListener 的常见优势之一。",
+    "difficulty": 2,
+    "tag": "事件监听"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "addEventListener 的第三个参数传 true 时，表示该监听器会在事件流的冒泡阶段被触发。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "第三个参数为 true 表示在捕获阶段触发监听器，缺省或传 false 才表示在冒泡阶段触发。事件流按捕获、目标、冒泡三个阶段进行，参数 true 常被误记为冒泡阶段，需要特别留意。",
+    "difficulty": 2,
+    "tag": "事件监听"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "在事件处理函数中调用 e.preventDefault() 可以阻止该事件继续冒泡到父元素。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "preventDefault 的作用是取消事件的默认动作，例如阻止表单提交、阻止链接跳转，它完全不干预事件的传播路径。要阻止冒泡应使用 stopPropagation，二者职责不同，不能混用。",
+    "difficulty": 2,
+    "tag": "事件对象"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "事件流三阶段的执行顺序是：冒泡阶段、目标阶段、捕获阶段。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "标准事件流的顺序是捕获阶段、目标阶段、冒泡阶段：事件先从根节点向下捕获到目标元素，在目标上触发，再向上冒泡回根节点。捕获与冒泡方向相反，顺序写反是常见错误。",
+    "difficulty": 1,
+    "tag": "事件流"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "setTimeout(fn, 0) 会保证回调函数在当前同步代码执行完毕之前立即执行。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "setTimeout 的延迟时间是最短等待时长，回调会被放入任务队列，只有当前调用栈中的同步代码全部执行完后才会被取出执行。0 毫秒延时不代表立即同步执行，它仍然排在同步代码之后。",
+    "difficulty": 3,
+    "tag": "定时器"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "history.pushState() 会改变地址栏中的 URL，并立即触发 popstate 事件。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "pushState 会更新地址栏 URL 并往历史栈压入新记录，但不会触发 popstate 事件；popstate 只在用户点击前进后退或调用 history.back、go 等导航操作时触发。这是 SPA 路由实现中容易混淆的细节。",
+    "difficulty": 4,
+    "tag": "history对象"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "document.querySelector() 的参数和 getElementById() 一样，必须是元素的 id。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "getElementById 接收的是不含井号的 id 字符串，而 querySelector 接收的是完整的 CSS 选择器，可以是标签名、类名、id（须加井号）或复杂组合。两者参数格式完全不同，不能互相混用。",
+    "difficulty": 3,
+    "tag": "DOM查询"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "调用 document.createElement('div') 创建的元素会立即插入文档流并在页面中显示。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "createElement 只是创建脱离文档的孤立节点，它不会自动出现在页面中。必须通过 appendChild、insertBefore 等方法把它挂载到文档树，元素才会真正渲染显示。区分创建与插入是节点操作的基础考点。",
+    "difficulty": 1,
+    "tag": "节点操作"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "事件对象的 target 属性始终指向绑定事件监听器的那个元素。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "target 指向实际触发事件的目标元素，而 currentTarget 才指向正在处理该事件、即绑定监听器的元素。在事件委托场景下两者往往不同，判断具体是哪个子元素触发了事件需要读取 target。",
+    "difficulty": 3,
+    "tag": "事件对象"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "sessionStorage 中的数据在浏览器关闭后仍会长期保留，而 localStorage 的数据在关闭标签页时会被清除。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "两者说反了：localStorage 持久化存储，关闭浏览器后数据依然存在；sessionStorage 为会话级存储，只在当前标签页会话期间有效，关闭标签页即被清除。两者都只能存取字符串，且遵循同源限制。",
+    "difficulty": 2,
+    "tag": "浏览器存储"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "在 input 文本框中输入内容时，每敲击一个字符都会触发一次 change 事件。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "实时反映每次输入的是 input 事件；change 事件只在值发生改变并且元素失去焦点或用户按下回车时触发。两者触发时机不同，监听实时输入应使用 input 事件，这是表单场景的常见区分点。",
+    "difficulty": 2,
+    "tag": "表单事件"
+  },
+  {
+    "chapter": "考点5：DOM/BOM与事件",
+    "type": "judge",
+    "question": "对任意元素节点而言，parentNode 与 parentElement 属性返回的节点一定完全相同。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "parentNode 返回父节点（可以是 Document 等非元素节点），parentElement 只返回父元素节点。当某元素的父节点是 Document 时（如 document.documentElement），parentNode 返回 document 而 parentElement 返回 null，两者并不总是相同。",
+    "difficulty": 5,
+    "tag": "节点属性"
+  }
+]

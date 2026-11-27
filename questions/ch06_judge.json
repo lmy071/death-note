@@ -1,0 +1,222 @@
+[
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "浏览器将 HTML 解析为 DOM 树、将 CSS 解析为 CSSOM 树后，二者合并生成渲染树，`display:none` 的元素不会出现在渲染树中。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "渲染树由 DOM 树与 CSSOM 树合并而成，只包含用于实际渲染的可见节点。`display:none` 的元素不占任何布局空间且完全不显示，因此不会进入渲染树，也不参与布局与绘制。",
+    "difficulty": 3,
+    "tag": "渲染流程"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "浏览器必须等整个 HTML 文档解析完成后，才开始下载并解析其中的 CSS 样式表。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "说法错误。HTML 解析过程中遇到 `<link>` 或 `<style>` 会立即发起 CSS 下载并解析，CSSOM 的构建与 HTML 解析是并行推进的。CSS 是渲染阻塞资源，但并非等 HTML 全部解析完才开始处理。",
+    "difficulty": 3,
+    "tag": "渲染流程"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "HTML 解析过程中遇到不带 defer 或 async 属性的普通 `<script>` 标签时，会暂停 DOM 解析，等待该脚本下载并执行完成后再继续。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "普通脚本是解析阻塞资源：解析器遇到它必须停止，先同步下载并执行脚本，脚本可能修改 DOM，因此解析需等待其执行完毕才能继续。defer 与 async 属性正是为了改变这一默认阻塞行为而设计的。",
+    "difficulty": 3,
+    "tag": "渲染流程"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "只修改元素的 background-color 而布局尺寸、位置均不变时，浏览器只会触发重绘（repaint），不会触发重排（reflow）。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "背景色属于纯视觉样式，不影响盒模型的几何尺寸与文档流布局，因此只引起已布局结果的重新绘制。只有改变宽高、位置、字体等影响几何信息的属性才会导致重排。",
+    "difficulty": 2,
+    "tag": "重排重绘"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "visibility:hidden 与 display:none 对页面布局的影响相同，二者都会触发重排。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "说法错误。visibility:hidden 的元素仍然占据原有布局空间，仅不可见，一般只引起重绘；而 display:none 会把元素从文档流中移除，导致周围元素重新布局，触发重排。二者对布局的影响截然不同。",
+    "difficulty": 3,
+    "tag": "重排重绘"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "在修改样式后读取 offsetWidth、clientWidth 等布局几何属性时，浏览器不会强制同步执行重排，而是等到下一帧统一批量处理。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "说法错误。读取 offsetWidth 等几何属性要求获得最新的布局结果，浏览器会强制同步执行一次重排（称为强制同步布局），从而打断批量优化，频繁读写交替会导致 Layout Thrashing，显著降低性能。",
+    "difficulty": 3,
+    "tag": "重排重绘"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "当响应带有 Cache-Control: max-age 等强缓存指令且缓存未过期时，浏览器不会向服务器发起请求，而是直接使用本地缓存的副本。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "强缓存命中时资源仍在有效期内，浏览器直接读本地缓存，不产生网络请求，因此网络面板中该资源往往显示为 memory cache 或 disk cache，并标记 from cache。只有强缓存未命中时才会走协商缓存流程与服务器通信。",
+    "difficulty": 2,
+    "tag": "HTTP缓存"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "协商缓存中，浏览器携带 If-Modified-Since 或 If-None-Match 请求头询问服务器，若资源未发生变化，服务器返回 304 Not Modified，浏览器继续使用本地缓存。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "协商缓存由服务器判断资源是否过期：Last-Modified 对应 If-Modified-Since，ETag 对应 If-None-Match。资源未变化时服务器返回 304 且不带实体内容，浏览器沿用本地缓存；若已变化则返回 200 和最新资源。",
+    "difficulty": 3,
+    "tag": "HTTP缓存"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "浏览器会对所有 HTTP 响应默认进行强缓存，即使服务器没有返回任何与控制缓存相关的响应头。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "说法错误。强缓存必须依赖服务器返回的 Cache-Control 或 Expires 等响应头来声明有效期；没有明确缓存指令时，浏览器只能依据启发式规则做有限度的缓存判断，并非对所有响应默认启用强缓存。",
+    "difficulty": 3,
+    "tag": "HTTP缓存"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "Cookie 设置了 HttpOnly 属性后，JavaScript 通过 document.cookie 无法读取到该 Cookie 的值。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "HttpOnly 是 Cookie 的安全属性，设置后浏览器禁止脚本通过 document.cookie 访问该 Cookie，只能由浏览器在符合请求路径与域名的请求中自动携带，主要用于降低 XSS 窃取会话凭证的风险。",
+    "difficulty": 2,
+    "tag": "Cookie"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "Cookie 会在浏览器向服务器发起的每一次请求中自动携带，包括跨域请求。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "说法错误。Cookie 按域名和路径规则发送，跨域场景下默认不会自动携带：fetch 与 XHR 的 credentials 默认是 same-origin，且现代浏览器对第三方 Cookie 有更严格的限制，不能笼统认为所有请求都会携带 Cookie。",
+    "difficulty": 3,
+    "tag": "Cookie"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "UDP 是面向连接的传输层协议，能够保证数据按序、不丢失地传输到对端。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "说法错误。UDP 是无连接、无可靠性保证的传输层协议，不保证数据按序到达，也不提供丢包重传机制；面向连接、可靠传输是 TCP 的特性。UDP 以牺牲可靠性换取低延迟，常用于音视频、实时游戏等场景。",
+    "difficulty": 1,
+    "tag": "TCP与UDP"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "TCP 第三次握手（客户端发送 ACK）的主要作用之一是防止已失效的连接请求报文段突然到达服务器后建立错误的连接。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "三次握手中第三次握手用于确认双方的连接建立意愿仍然有效：若客户端此前发出的连接请求已超时失效却又被重发到服务器，服务器回复的 ACK 会因为客户端没有对应的 SYN 序号而不被确认，从而不会建立多余连接。",
+    "difficulty": 4,
+    "tag": "TCP三次握手"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "DNS（域名系统）的主要作用是把 IP 地址解析成便于记忆的域名。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "说法错误。DNS 的核心作用是把人类易记的域名解析为对应的 IP 地址（正向解析），反向解析（IP 到域名）只是其补充功能。浏览器发起请求前需要通过 DNS 查询获得目标服务器的 IP。",
+    "difficulty": 1,
+    "tag": "DNS解析"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "HTTP/1.1 支持在同一个 TCP 连接上同时并行发送多个请求，无需等待前一个响应返回。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "说法错误。HTTP/1.1 虽支持持久连接（keep-alive），但同一连接上的请求与响应是串行处理的，存在队头阻塞问题；同一连接同时并行发送多个请求并交错响应是 HTTP/2 多路复用（Multiplexing）的特性。",
+    "difficulty": 4,
+    "tag": "HTTP"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "HTTP 协议本身是无状态的，服务器默认不记录客户端状态，通常借助 Cookie、Token 等机制来维持会话状态。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "HTTP 是无状态协议，每个请求相互独立，服务器不记忆之前的交互。为支撑登录态、购物车等场景，浏览器端用 Cookie 保存会话标识，服务端校验 Token 或 Session，从而在无状态协议之上实现有状态的会话。",
+    "difficulty": 2,
+    "tag": "HTTP"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "localStorage 中保存的数据在浏览器标签页关闭后会被自动清空。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "说法错误。localStorage 遵循持久化存储，关闭标签页甚至重启浏览器后数据依然保留，需手动清除；关闭标签页即清空数据的是 sessionStorage，它只在当前会话内有效。",
+    "difficulty": 2,
+    "tag": "浏览器存储"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "CORS 处理跨域请求时，对于可能携带自定义头或非简单方法的请求，浏览器会先发送一个 OPTIONS 预检请求（preflight）询问服务器是否允许。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "满足简单请求之外的场景（如使用 PUT、自定义请求头等）会触发预检：浏览器先以 OPTIONS 方法发送 Access-Control-Request-Method 等预检头，服务器通过 Access-Control-Allow-Origin、Access-Control-Allow-Methods 等响应头声明许可后，才会真正发出业务请求。",
+    "difficulty": 3,
+    "tag": "跨域方案"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "Web Worker 中运行的 JavaScript 可以直接操作 DOM 并访问 window 对象的全部属性。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "说法错误。Web Worker 运行在独立的线程中，没有 document 和 window 等浏览器环境对象，无法直接操作 DOM；它与主线程只能通过 postMessage 传递结构化数据或使用 SharedArrayBuffer 共享内存进行通信。",
+    "difficulty": 2,
+    "tag": "Web Worker"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "在浏览器事件循环中，每个宏任务执行结束后会清空整个微任务队列，清空后才继续取出下一个宏任务执行。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "事件循环的规则是：执行完一个宏任务后，先处理该宏任务期间产生的全部微任务（微任务队列必须清空），期间若再产生新的微任务会继续执行，然后再进入下一个宏任务的渲染与执行流程。",
+    "difficulty": 4,
+    "tag": "事件循环"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "Promise 的 .then 回调属于宏任务，而 setTimeout 的回调属于微任务，因此 setTimeout 会先于 .then 执行。",
+    "options": ["正确", "错误"],
+    "answer": "B",
+    "analysis": "说法错误，两类任务的归属被说反了。Promise 的 .then 回调属于微任务，setTimeout 回调属于宏任务；同一轮中微任务优先于宏任务执行，因此 .then 通常先于同轮排队的 setTimeout 回调执行。",
+    "difficulty": 2,
+    "tag": "事件循环"
+  },
+  {
+    "chapter": "考点6：浏览器原理与网络基础",
+    "type": "judge",
+    "question": "批量修改 DOM 时先使用 DocumentFragment 暂存节点，或将元素临时移出文档流后再插入，可以减少重排次数。",
+    "options": ["正确", "错误"],
+    "answer": "A",
+    "analysis": "这两种做法都能把多次分散的重排合并为一次。DocumentFragment 是脱离文档的轻量容器，对其中元素的修改不影响页面布局；先将元素 display:none 或移出文档流操作后再恢复，同样能避免每次修改都触发重排，是常见的性能优化手段。",
+    "difficulty": 3,
+    "tag": "性能优化"
+  }
+]
